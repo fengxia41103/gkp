@@ -1,0 +1,92 @@
+{% extends "pi/common/base.html" %}
+{% load staticfiles %}
+
+{% block custom_css %}
+	<style>
+	body {
+		background-image: url("{% static 'img/background-1684.jpg' %}");
+		background-size: cover;
+	}
+	</style>	
+{% endblock %}
+
+{% block navbar %}
+ {% load crispy_forms_tags %}
+ 
+	<div class="container my-header">
+		<div class="row">
+			<div class="col-md-3">
+				<a href="{% url 'home' %}">
+				<span class="my-logo">高考派</span>
+				</a>
+			</div>
+			<div class="col-md-5">
+			</div>
+			<div class="col-md-4">
+				<ul class="list-inline text-right">
+					<li class="dropdown">
+						<a href="#" id="navbar-dropdown-user" class="dropdown-toggle" data-toggle="dropdown">User
+						<b class="caret"></b>
+						</a>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="navbar-dropdown-user">
+							<li><a href="{% url 'login' %}">Login</a></li>
+							<li><a href="{% url 'user_register' %}">Register</a></li>
+						</ul>
+					</li>
+					<li>Report</li>
+					<li>Contact</li>
+				</ul>
+			</div>
+			</div>			
+		</div>
+	</div>
+{% endblock %}
+
+{% block main %}
+	<div class="container my-content">
+		<div class="row">
+			<div class="col-md-2"></div>
+			<div class="col-md-8 text-center">
+				<h1 class="my-banner">学爸在此</h1>
+				<h5 class="my-subbanner">
+					<ul class="list-inline">
+						<li>TEST </li>
+						<li><span class="glyphicon glyphicon-plus"></span></li>
+						<li>YOUR</li>
+						<li><span class="glyphicon glyphicon-plus"></span></li>
+						<li>FUTURE</li>
+						<li>
+							<a href="">
+								<span class="my-button-md">GET STARTED</span></li>
+							</a>
+					</ul>
+				</h5>
+				
+				<div id="iPicture">
+					<div id="picture1" style="background: url('{% static "img/background-1680.jpg" %}')"></div>
+					<div id="picture2" style="background: url('{% static "img/background-1681.jpg" %}')"></div>
+					<div id="picture3" style="background: url('{% static "img/background-1682.jpg" %}')"></div>
+				</div>
+        				
+			</div>
+			<div class="col-md-2"></div>			
+		</div>
+	</div>
+{% endblock %}
+
+	{% block footer %}
+	<div class="row my-footer navbar-fixed-bottom">
+		<div class="col-md-2"></div>
+		<div class="col-md-8">
+			<div class="my-footer-banner">
+			<ul class="list-inline text-center">
+				<li>INTRODUCING THE ALL NEW CRYSTAL BALL</li>
+				<li><span class="my-button-sm">Learn more</span></li>
+			</ul>
+			</div>
+		</div>
+		<div class="col-md-2">
+		</div>
+	</div>	
+	{% endblock %}
+

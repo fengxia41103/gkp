@@ -1,0 +1,33 @@
+{% extends "webtesting/common/base.html" %}
+
+{% block content %}
+<table class="table">
+	<thead>
+		<th>Story</th>
+		<th>In files</th>
+	</thead>
+	<tbody>
+		{% for story,files in created_stories.iteritems %}
+		<tr><td>{{ story }}</td>
+			<td>
+				{% for f in files %}
+					{{ f }}<br />
+				{% endfor %}
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+{% load crispy_forms_tags %}
+<div class="row">
+	<form action="" method="post" role="form">
+    	{% csrf_token %}
+    	<div class="form-group">
+    	{% crispy form %}
+    	</div>
+    	
+	</form>
+</div>
+
+{% endblock %}

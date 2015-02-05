@@ -1,0 +1,21 @@
+{% extends "pi/common/home.html" %}
+
+{% block main %}
+
+{% load crispy_forms_tags %}
+	
+<form action="" method="post">
+	{% csrf_token %}
+	
+	<div class="row">
+		<div class="col-md-8"></div>
+		<div class="col-md-3" style="background-color:#ccc;padding:20px;opacity:0.8;">
+			{% crispy form %}
+			<div class="form-actions">
+				<input class="btn btn-primary default pull-right" type="submit" value="注册用户" />
+			</div>
+		
+		</div>
+	</div>
+</form>
+{% endblock %}

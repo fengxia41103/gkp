@@ -1,0 +1,392 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"Major",
+				"Major"
+			],
+			[
+				"n",
+				"new"
+			],
+			[
+				"url",
+				"urllib2"
+			],
+			[
+				"max_cou",
+				"max_counter_log"
+			],
+			[
+				"admis",
+				"admission_by_school_crawler"
+			],
+			[
+				"get",
+				"get_or_create"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/home/fengxia/Desktop/gaokao"
+	],
+	"file_history":
+	[
+		"/home/fengxia/Desktop/gaokao/pi/templates/pi/import/upload.html",
+		"/home/fengxia/workspace/repo/ProjectJinNeng/晋能一期/30 开发库/3004 测试文档/300403 功能测试/jinneng/webtesting/views.py",
+		"/home/fengxia/workspace/repo/ProjectJinNeng/晋能一期/30 开发库/3004 测试文档/300403 功能测试/jinneng/webtesting/templates/webtesting/common/base.html",
+		"/home/fengxia/Desktop/gaokao/pi/templates/pi/import/local.html",
+		"/home/fengxia/Desktop/gaokao/pi/migrations/0007_myadmissionbymajor_major.py",
+		"/home/fengxia/Desktop/gaokao/pi/__init__.py",
+		"/home/fengxia/Desktop/gaokao/pi/major_counter.log",
+		"/home/fengxia/Desktop/gaokao/pi/major.log",
+		"/home/fengxia/Desktop/gaokao/pi/urls.py",
+		"/home/fengxia/Desktop/gaokao_crawler.py",
+		"/home/fengxia/Desktop/gaokao/pi/templates/pi/common/base.html",
+		"/home/fengxia/Desktop/gaokao/gaokao/settings.py",
+		"/home/fengxia/Desktop/gaokao/static/syntaxhighlighter/compass/shCoreEclipse.scss",
+		"/home/fengxia/Desktop/gaokao/pi/admin.py",
+		"/home/fengxia/Desktop/gaokao/static/syntaxhighlighter/scripts/shBrushAppleScript.js",
+		"/home/fengxia/Desktop/gaokao/static/syntaxhighlighter/scripts/shBrushAS3.js",
+		"/home/fengxia/Desktop/gaokao/static/codemirror/bower.json",
+		"/home/fengxia/Desktop/gaokao/pi/templates/pi/common/home.html",
+		"/home/fengxia/Desktop/gaokao/pi/templates/pi/admission/list.html",
+		"/home/fengxia/Desktop/gaokao/static/ueditor/_parse/list.js",
+		"/home/fengxia/Desktop/gaokao/static/easyui/locale/easyui-lang-it.js",
+		"/home/fengxia/Desktop/gaokao/static/codemirror/LICENSE",
+		"/home/fengxia/Desktop/gaokao/pi/templates/registration/register_form.html",
+		"/home/fengxia/Desktop/gaokao/pi/templates/registration/password_reset_form.html",
+		"/home/fengxia/Desktop/gaokao/pi/templates/registration/password_reset_email.html",
+		"/home/fengxia/Desktop/gaokao/pi/templates/registration/password_reset_done.html",
+		"/home/fengxia/Desktop/gaokao/pi/templates/registration/password_reset_confirm.html",
+		"/home/fengxia/Desktop/gaokao/pi/templates/registration/password_reset_complete.html",
+		"/home/fengxia/Desktop/gaokao/pi/templates/registration/password_change_form.html",
+		"/home/fengxia/Desktop/gaokao/pi/templates/registration/password_change_done.html",
+		"/home/fengxia/Desktop/gaokao/pi/templates/registration/login.html",
+		"/home/fengxia/Desktop/gaokao/static/codemirror/README.md",
+		"/home/fengxia/Desktop/gaokao/pi/templates/registration/logged_out.html",
+		"/home/fengxia/Desktop/gaokao/pi/templates/pi/common/test_result.html",
+		"/home/fengxia/Desktop/gaokao/pi/templates/pi/common/queryset_table.html",
+		"/home/fengxia/Desktop/gaokao/pi/templates/pi/common/filter.html",
+		"/home/fengxia/Desktop/gaokao/static/codemirror/addon/comment/comment.js",
+		"/home/fengxia/Desktop/gaokao/static/codemirror/bin/compress",
+		"/home/fengxia/Desktop/gaokao/static/ueditor/node_modules/grunt-contrib-clean/docs/clean-options.md",
+		"/home/fengxia/Desktop/gaokao/static/codemirror/CONTRIBUTING.md",
+		"/home/fengxia/Desktop/gaokao/pi/templates/pi/common/edit_form.html",
+		"/home/fengxia/Desktop/gaokao/pi/templates/pi/common/delete_form.html",
+		"/home/fengxia/Desktop/gaokao/pi/templates/pi/common/add_form.html",
+		"/home/fengxia/Desktop/gaokao/static/jquery/src/var/hasOwn.js",
+		"/home/fengxia/Desktop/gaokao/static/codemirror/demo/hardwrap.html",
+		"/home/fengxia/Desktop/gaokao/static/codemirror/mode/commonlisp/commonlisp.js",
+		"/home/fengxia/Desktop/jinneng/webtesting/urls.py",
+		"/home/fengxia/Desktop/temp/jinneng/webtesting/urls.py",
+		"/home/fengxia/Desktop/gaokao/gaokao/urls.py",
+		"/home/fengxia/Desktop/gaokao/static/ueditor/node_modules/grunt-contrib-cssmin/node_modules/clean-css/lib/images/url-rebase.js",
+		"/home/fengxia/Desktop/jinneng/webtesting/views.py",
+		"/home/fengxia/Desktop/gaokao/static/ueditor/node_modules/grunt/node_modules/js-yaml/node_modules/argparse/node_modules/underscore.string/libpeerconnection.log",
+		"/home/fengxia/Desktop/gaokao/static/ueditor/node_modules/grunt/node_modules/js-yaml/examples/custom_types.js",
+		"/home/fengxia/Desktop/gaokao/static/ueditor/node_modules/grunt/node_modules/js-yaml/node_modules/argparse/node_modules/underscore/underscore.js",
+		"/home/fengxia/Desktop/gaokao/pi/migrations/0002_remove_myschool_created_by.py",
+		"/home/fengxia/Desktop/gaokao/static/css/my.css",
+		"/home/fengxia/Desktop/gaokao/static/codemirror/theme/vibrant-ink.css",
+		"/home/fengxia/Desktop/gaokao/pi/views.py",
+		"/home/fengxia/Desktop/gaokao/manage.py",
+		"/home/fengxia/Desktop/jinneng/webtesting/models.py",
+		"/home/fengxia/Desktop/jinneng/gaokao/views.py",
+		"/home/fengxia/Desktop/jinneng/gaokao/models.py",
+		"/home/fengxia/Desktop/jinneng/static/ueditor/node_modules/grunt/node_modules/grunt-legacy-util/test/fixtures/Gruntfile-execArgv.js",
+		"/home/fengxia/Desktop/jinneng/static/jquery-file-upload/Gruntfile.js",
+		"/home/fengxia/Desktop/jinneng/webtesting.dot",
+		"/home/fengxia/Desktop/jinneng/webtesting/HTMLTestRunner.py",
+		"/home/fengxia/Desktop/jinneng/gaokao/__init__.py",
+		"/home/fengxia/Desktop/jinneng/gaokao/admin.py",
+		"/home/fengxia/Desktop/jinneng/static/ueditor/node_modules/grunt-contrib-clean/AUTHORS",
+		"/home/fengxia/Desktop/jinneng/webtesting/templates/registration/password_reset_email.html",
+		"/home/fengxia/Desktop/temp/jinneng/static/codemirror/addon/selection/active-line.js",
+		"/home/fengxia/Desktop/temp/alltest.py"
+	],
+	"find":
+	{
+		"height": 25.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"BySchool",
+			"self.tor_utio",
+			"request",
+			"MyAdmissionByMajor",
+			"major_crawler",
+			"admission_major",
+			"MyAdmissionBySchool",
+			"MyAdmissionbyMajor",
+			"admission_school",
+			"admission_",
+			"admission_list",
+			"MyAdmission",
+			"MyAdmissionBySchool",
+			"MyAdmission",
+			"userstory",
+			"UserStory",
+			"userstory",
+			"UserStory",
+			"userstory",
+			"UserStory",
+			"userstory",
+			"UserStory",
+			"userstory",
+			"UserStory",
+			"userstory",
+			"UserStory",
+			"login_required",
+			"UserStoryList",
+			"\n###################################################"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 25.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"project": "gaokao.sublime-project",
+	"replace":
+	{
+		"height": 46.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"upload",
+				"templates/pi/import/upload.html"
+			],
+			[
+				"import",
+				"templates/pi/import/upload.html"
+			],
+			[
+				"base",
+				"templates/pi/common/base.html"
+			],
+			[
+				"url",
+				"urls.py"
+			],
+			[
+				"major_list",
+				"templates/pi/admission/major_list.html"
+			],
+			[
+				"uti",
+				"utility.py"
+			],
+			[
+				"mod",
+				"models.py"
+			],
+			[
+				"view",
+				"views.py"
+			],
+			[
+				"craw",
+				"crawler.py"
+			],
+			[
+				"gao",
+				"gaokao_crawler.py"
+			],
+			[
+				"setting",
+				"gaokao/settings.py"
+			],
+			[
+				"list.html",
+				"pi/templates/pi/admission/list.html"
+			],
+			[
+				"registration/",
+				"pi/templates/registration/register_form.html"
+			],
+			[
+				"common/",
+				"pi/templates/pi/common/filter.html"
+			],
+			[
+				"home",
+				"pi/templates/pi/common/home.html"
+			],
+			[
+				"urls",
+				"gaokao/urls.py"
+			],
+			[
+				"",
+				"pi/utility.py"
+			],
+			[
+				"my_uti",
+				"static/ueditor/node_modules/grunt/node_modules/js-yaml/node_modules/argparse/node_modules/underscore.string/libpeerconnection.log"
+			],
+			[
+				"vi",
+				"pi/views.py"
+			],
+			[
+				"model",
+				"pi/models.py"
+			],
+			[
+				"gaokao/vi",
+				"gaokao/views.py"
+			],
+			[
+				"webtesting/vi",
+				"webtesting/views.py"
+			],
+			[
+				"webtes/mo",
+				"webtesting/models.py"
+			],
+			[
+				"gaokao/mo",
+				"gaokao/models.py"
+			],
+			[
+				"gaokao/model",
+				"gaokao/models.py"
+			],
+			[
+				"webtesting/model",
+				"webtesting/models.py"
+			],
+			[
+				"alltest",
+				"alltest.py"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 150.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

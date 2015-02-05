@@ -1,0 +1,62 @@
+{% extends "webtesting/common/base.html" %}
+
+{% block page-header %}
+<ol class="breadcrumb">
+	<li><a href="{% url 'project_detail' project.id %}">{{ project.name }}</a></li>
+	<li><a href="{% url 'userstory_detail' story.id %}">{{ story.name }}</a></li>
+</ol>
+{% endblock %}
+
+{% block content %}
+	{% if result %}
+	Total Test Run: {{ test_runs }}<br />
+	Start Time: {{ start }}<br />
+	Duration: {{ elapsed }}</br />	
+	Working Dir: {{ working_dir }}
+	
+	<table class="table">
+		<tbody>
+		{% for test, val in result.iteritems %}
+			<tr><td>
+			{% if val.errors or val.failures %}
+				<div class="alert-danger">
+					<span>{{ test }}</span>
+					<span class="pull-right">
+					Not OK	
+					</span>
+
+					{% if val.errors %}
+					<span class="label label-default alert-danger">Errors</span>
+					<p class="list-group-item-text" style="padding: 5px 10px;">			
+						<blockquote>
+							{{ val.errors }}
+						</blockquote>
+					</p>
+					{% endif %}
+					
+					{% if val.failures %}
+					<span class="label label-default">Failures</span>
+					<p class="list-group-item-text alert-danger">			
+						<blockquote>
+							{{ val.failures }}
+						</blockquote>
+					</p>
+					{% endif %}
+
+				</div>
+			{% else %}
+				<div class="alert-success">
+					<span>{{ test }}</span>
+					<span class="pull-right">
+					OK
+					</span>
+				</div>
+			{% endif %}
+	
+			</td></tr>
+		{% endfor %}
+		</tbody>
+	</table>
+	{% endif %}
+	
+{% endblock %}

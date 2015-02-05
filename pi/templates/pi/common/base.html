@@ -1,0 +1,217 @@
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+{% block core-library %}
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <!-- script src="../../assets/js/ie-emulation-modes-warning.js"></script -->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <!-- script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script -->
+      <!-- script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script -->
+      <script src="{% static 'js/html5shiv.min.js' %}"></script>
+      <script src="{% static 'js/respond.min.js' %}"></script>
+    <![endif]-->
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="{% static 'bootstrap3/css/bootstrap.min.css' %}">
+	
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="{% static 'bootstrap3/css/bootstrap-theme.min.css' %}">
+	
+	<!-- link href="//www.fuelcdn.com/fuelux/3.1.0/css/fuelux.min.css" rel="stylesheet" -->
+	<link href="{% static 'css/fuelux.min.css' %}" rel="stylesheet">
+	
+	<!-- easyui stylesheets -->
+	<link rel="stylesheet" type="text/css" href="{% static 'easyui/themes/default/easyui.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'easyui/themes/icon.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'easyui/demo/demo.css' %}">
+
+	<!-- Include *at least* the core style and default theme -->
+	<link href="{% static 'syntaxhighlighter/styles/shCore.css' %}" rel="stylesheet" type="text/css" />
+	<link href="{% static 'syntaxhighlighter/styles/shThemeDefault.css' %}" rel="stylesheet" type="text/css" />
+
+	<!-- codemirror -->
+	<link href="{% static 'codemirror/lib/codemirror.css' %}" rel="stylesheet" type="text/css" />
+	<link href="{% static 'codemirror/theme/lesser-dark.css' %}" rel="stylesheet" type="text/css" />
+
+	<!-- ueditor -->
+	<link href="{% static 'ueditor/dist/utf8-php/themes/default/css/ueditor.min.css' %}" rel="stylesheet" type="text/css" />
+
+	<!-- application specific css -->
+	<link href="{% static 'css/my.css' %}" rel="stylesheet">	
+
+	<!-- JQuery lib -->
+	<!-- script src="http://lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js"></script -->
+	<script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+
+{% endblock %}
+
+{# extra css code #}
+{% block custom_css %}
+{% endblock %}
+
+<title>高考派平台</title>
+</head>
+
+<body class="fuelux">
+
+	{% block navbar %}
+   	<div class="navbar navbar-default" role="navigation">
+  		<div class="container">
+			<div class="navbar-header">
+  				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+    				<span class="sr-only">Toggle navigation</span>
+    				<span class="icon-bar">something</span>
+    				<span class="icon-bar"></span>
+    				<span class="icon-bar"></span>
+  				</button>
+  				<a class="navbar-brand" href="{% url 'home' %}">高考派</a>
+			</div>
+			<div class="collapse navbar-collapse">
+				<div class="row">
+					<div class="col-md-8">
+  						<ul class="nav navbar-nav">
+  							<li class="dropdown">
+  								<a href="" class="" data-toggle="dropdown">
+  									Models
+  									<b class="caret"></b>
+  								</a>
+  								<ul class="dropdown-menu">
+  									<li><a href="{% url 'major_list' %}">Major</a></li>
+  									<li><a href="{% url 'school_list' %}">School</a></li>
+  								</ul>
+  							</li>
+  							
+							<li class="dropdown">
+								<a href="" class="" data-toggle="dropdown">
+									分数线									
+									<b class="caret"></b>
+								</a>
+								<ul class="dropdown-menu">
+									<li><a href="{% url 'admission_school_list' %}">高考派分数线数据 school</a></li>
+									<li><a href="{% url 'admission_major_list' %}">高考派分数线数据 major</a></li>
+								</ul>
+    						</li>
+
+    						<li class="dropdown">
+								<a href="" class="" data-toggle="dropdown">
+									数据Crawler
+									<b class="caret"></b>
+								</a>
+								<ul class="dropdown-menu">
+									<li><a href="{% url 'admission_school_crawler' %}">高考派分数线数据 school</a></li>
+									<li><a href="{% url 'admission_major_crawler' %}">高考派分数线数据 major</a></li>
+									<li><a href="{% url 'school_crawler' %}">高考派School数据</a></li>
+									<li><a href="{% url 'major_crawler' %}">高考派Major数据</a></li>
+								</ul>
+    						</li>
+    						<li class="dropdown">
+								<a href="" class="" data-toggle="dropdown">
+									数据导入
+									<b class="caret"></b>
+								</a>
+								<ul class="dropdown-menu">
+									<li><a href="{% url 'import_admission_school' %}">Admission by school</a></li>
+									<li><a href="{% url 'import_admission_major' %}">Admission by major</a></li>
+									<li><a href="{% url 'import_major' %}">Major codes</a></li>
+								</ul>
+    						</li>    						
+    						<li><a href="#about">About</a></li>
+    						<li><a href="#contact">Contact</a></li>
+  						</ul>
+  					</div>
+  					<div class="col-md-3"></div>
+  					<div class="col-md-3">
+  						<ul class="nav navbar-nav pull-right">
+  							<li><a href="">你好 {{ user }}</a></li>
+  							<li><a href="{% url 'logout' %}"><span class="my-button-sm">Logout</span></a></li>
+  						</ul>
+  					</div>
+  				</div><!-- end of row -->
+  				
+			</div><!--/.nav-collapse -->
+  		</div>
+	</div>
+	{% endblock %}<!-- end of block navbar -->
+	
+	{% block main %}
+	{% block custom_tags %}
+	{% endblock %}
+    <div class="container">
+			{% block page-info %}
+			{% endblock %}
+    	
+		<div class="page-header">
+			<h1>
+				{% block page-header %}
+				{% endblock %}
+			</h1>
+		</div><!-- end of block header -->
+		{% block message %}
+		{% endblock %}
+				
+		{% block content %}
+		{% endblock %}
+    </div><!-- /.container -->
+	{% endblock %}<!-- end of block main -->
+	
+	{% block footer %}
+	{% endblock %}<!- end of block footer -->
+
+    <!-- Placed at the end of the document so the pages load faster -->
+{% block Javascripts %}	
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="{% static 'bootstrap3/js/bootstrap.min.js' %}"></script>
+		
+	<!-- fuelux lib -->
+	<!-- script src="//www.fuelcdn.com/fuelux/3.1.0/js/fuelux.min.js"></script -->
+	<script src="{% static 'js/fuelux.min.js' %}"></script>
+
+	<!-- easyui js -->	
+	<script type="text/javascript" src="{% static 'easyui/jquery.easyui.min.js' %}"></script>
+
+	<!-- syntaxhighlighter -->
+	<script type="text/javascript" src="{% static 'syntaxhighlighter/scripts/shCore.js' %}"></script>
+	<script type="text/javascript" src="{% static 'syntaxhighlighter/scripts/shBrushPython.js' %}"></script>
+
+	<!-- codemirror -->
+	<script type="text/javascript" src="{% static 'codemirror/lib/codemirror.js' %}"></script>
+	<script type="text/javascript" src="{% static 'codemirror/mode/python/python.js' %}"></script>
+	<script type="text/javascript" src="{% static 'codemirror/addon/selection/active-line.js' %}"></script>
+	<script type="text/javascript" src="{% static 'codemirror/addon/selection/mark-selection.js' %}"></script>
+	<script type="text/javascript" src="{% static 'codemirror/addon/edit/matchbrackets.js' %}"></script>
+	
+	<!-- ueditor -->
+	<script type="text/javascript" src="{% static 'ueditor/dist/utf8-php/ueditor.config.js' %}"></script>
+	<script type="text/javascript" src="{% static 'ueditor/dist/utf8-php/ueditor.all.min.js' %}"></script>
+
+	<script type="text/javascript">
+		var j$ = jQuery.noConflict();
+		j$(document).ready(function(){
+			SyntaxHighlighter.all();
+		});		
+	</script>
+{% endblock %} <!-- end of block JS -->
+
+{# extra javascript code #}
+{% block custom_js %}
+{% endblock %}
+
+</body>
+
+</html>
+
+
+
+

@@ -1,0 +1,72 @@
+{% extends "pi/common/base.html" %}
+
+{% block page-header %}
+	Major
+	<a href="{% url 'major_add' %}" class="btn btn-xs addlink">
+		<span class="glyphicon glyphicon-plus"></span>
+		Add
+	</a>
+{% endblock %}
+
+
+{% block content %}
+
+{% include "pi/common/filter.html" %}
+
+<div class="table-responsive">
+	<table class="table table-striped table-hover">
+	<thead>
+		<th></th>
+		<th>代码</th>
+		<th>名称</th>
+		<th>学科</th>
+		<th>大类</th>
+		<th>授予学位</th>
+		<th>注释</th>
+		<th>相关专业</th>
+		<th>简介</th>
+	</thead>
+	<tbody>
+		{% for obj in object_list %}
+		<tr><td>
+     			<a href="{% url 'major_edit' obj.id %}" class="">
+     				Edit
+				</a>
+     			<a href="{% url 'major_delete' obj.id %}" class="">
+					Delete
+				</a>
+			</td><td>
+     			{{ obj.code }}
+     		</td><td>
+     			{{ obj.name }}
+     		</td><td>
+     			{{ obj.subcategory.category }}
+     		</td><td>
+     			{{ obj.subcategory }}
+			</td><td>
+     			{{ obj.degree }}, ({{ obj.degree_type}},{{obj.how_long}})
+     		</td><td>
+     			{% if obj.is_specialized %}
+     			特设专业
+     			{% elif obj.is_gov_controlled %}
+     			国家控制布点专业
+     			{% else %}
+     			基础专业
+     			{% endif %}
+     		</td><td>
+     			<ul>
+     			{% for r in obj.related_majors.all %}
+     				<li>{{ r }}</li>
+     			{% endfor %}
+     			</ul>
+     		</td><td>
+     			{{ obj.description|truncatechars_html:64 }}
+     		</td>
+    	</tr>	
+    	{% endfor %}
+	</tbody>
+	</table>	
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,62 @@
+{% extends "pi/common/base.html" %}
+
+{% block page-header %}
+	Major 分数线 Admission
+	<a href="{% url 'admission_major_add' %}" class="btn btn-xs addlink">
+		<span class="glyphicon glyphicon-plus"></span>
+		Add
+	</a>
+{% endblock %}
+
+
+{% block content %}
+
+{% include "pi/common/filter.html" %}
+
+<div class="table-responsive">
+	<table class="table table-striped table-hover">
+	<thead>
+		<th></th>
+		<th>Major</th>
+		<th>高校名称</th>
+		<th>招生地区</th>
+		<th>考生类别</th>
+		<th>年份</th>
+		<th>录取批次</th>
+		<th>最高分</th>
+		<th>平均分</th>
+	</thead>
+	<tbody>
+		{% for obj in object_list %}
+		<tr><td>
+     			<a href="{% url 'admission_major_edit' obj.id %}" class="">
+     				Edit
+				</a>
+     			<a href="{% url 'admission_major_delete' obj.id %}" class="">
+					Delete
+				</a>
+			</td><td>
+     			{{ obj.major }}				
+			</td><td>
+     			{{ obj.school }}
+     		</td><td>
+				{{ obj.province }}
+     		</td><td>
+     			{{ obj.category }}
+     		</td><td>
+     			{{ obj.year }}
+     		</td><td>
+     			{{ obj.batch }}
+     		</td><td>
+     			{{ obj.max_score }}
+     		</td><td>
+     			{{ obj.avg_score }}
+     		</td>
+    	</tr>	
+    	{% endfor %}
+	</tbody>
+	</table>	
+</div>
+
+{% endblock %}
+

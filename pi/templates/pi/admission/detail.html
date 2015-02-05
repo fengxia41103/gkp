@@ -1,0 +1,62 @@
+{% extends "webtesting/common/base.html" %}
+
+{% block page-header %}
+	{{ story.name }}
+	<a href="{% url 'userstory_edit' story.id %}" class="addLink">Edit</a>
+{% endblock %}
+
+{% block content %}
+	{# story code sections #}
+	<div class="row">
+		<div class="col-md-2">
+			<a href="{% url 'userstory_run' story.id %}" class="btn btn-primary">
+				测试
+			</a>
+			<dl>
+				<dt>用户角色</dt>
+				<dd>{{ story.as_a }}<p /></dd>
+				
+				<dt>希望实现的业务需求</dt>
+				<dd>{{ story.in_order_to }}<p /></dd>
+				
+				<dt>系统提供的功能</dt>
+				<dd>{{ story.i_want }}</dd>
+			</dl>
+		</div>
+		<div class="col-md-9" id="view-code">
+			{% include "webtesting/story/code.html" %}		
+		</div>
+		<div class="col-md-1">
+			<a href="{% url 'userstory_edit' story.id %}#code" class="addLink">
+				Edit
+			</a>		
+		</div>
+	</div>
+	
+	{# scenario code sections #}
+	{% for s in scenarios %}
+	<div class="row">
+		<div class="col-md-2">
+			<dl>
+				<dt>Given</dt>
+				<dd>{{ s.given }}<p /></dd>
+				
+				<dt>When</dt>
+				<dd>{{ s.when }}<p /></dd>
+				
+				<dt>Then</dt>
+				<dd>{{ s.then }}</dd>
+			</dl>
+		</div>
+		<div class="col-md-9" id="view-code">
+			{% include "webtesting/scenario/code.html" %}		
+		</div>
+		<div class="col-md-1">
+			<a href="{% url 'userscenario_edit' s.id %}#code" class="addLink">
+				Edit
+			</a>		
+		</div>
+	</div>
+	{% endfor %}
+{% endblock %}
+
