@@ -112,7 +112,8 @@ STATICFILES_DIRS = (
 	'/var/www/static/',
 )
 MEDIA_ROOT = '/home/fengxia/Desktop/tt'
-    
+STATIC_ROOT='/var/www/static'
+
 # crispy forms
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 

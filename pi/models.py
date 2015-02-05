@@ -10,8 +10,6 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from tagging.fields import TagField
 from mptt.models import MPTTModel, TreeForeignKey
-from audit_log.models.managers import AuditLog
-from audit_log.models import AuthStampedModel
 from django.utils import timezone
 from datetime import datetime
 

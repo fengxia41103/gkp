@@ -31,6 +31,28 @@
 	},
 	"buffers":
 	[
+		{
+			"contents": "# -*- coding: utf-8 -*-\n\n\n\"\"\"\nDjango settings for jinneng project.\n\nFor more information on this file, see\nhttps://docs.djangoproject.com/en/1.7/topics/settings/\n\nFor the full list of settings and their values, see\nhttps://docs.djangoproject.com/en/1.7/ref/settings/\n\"\"\"\n\n# Build paths inside the project like this: os.path.join(BASE_DIR, ...)\nimport os\nBASE_DIR = os.path.dirname(os.path.dirname(__file__))\n\n\n# Quick-start development settings - unsuitable for production\n# See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/\n\n# SECURITY WARNING: keep the secret key used in production secret!\nSECRET_KEY = 's+3msph#0v4o=fvu^*i!42hrp^w5(j6sr#kis@)=8^q3p3=+*m'\n\n# SECURITY WARNING: don't run with debug turned on in production!\nDEBUG = True\n\nTEMPLATE_DEBUG = True\n\nALLOWED_HOSTS = []\n\n\n# Application definition\n\n																		\nINSTALLED_APPS = (\n	'django_admin_bootstrapped.bootstrap3', # django-admin-bootstrapped\n	'django_admin_bootstrapped',\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',\n    'django.contrib.messages',\n    'django.contrib.staticfiles',\n    'django_extensions',\n    # The Django sites framework is required\n    'django.contrib.sites', \n\n    # custom packages\n    'compressor', # django_compressor\n    'django_filters', # django-filter\n    'tagging', # django-tagging\n    'pagination', # django-pagination\n    'crispy_forms', # django-crispy-forms\n    'bootstrap3', # django-bootstrap3\n    'mptt', # django-mptt\n    'pi', \n)\n\nMIDDLEWARE_CLASSES = (\n    'django.contrib.sessions.middleware.SessionMiddleware',\n    'django.middleware.common.CommonMiddleware',\n    'django.middleware.csrf.CsrfViewMiddleware',\n    'django.contrib.auth.middleware.AuthenticationMiddleware',\n    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',\n    'django.contrib.messages.middleware.MessageMiddleware',\n    'django.middleware.clickjacking.XFrameOptionsMiddleware',\n    'pagination.middleware.PaginationMiddleware', # django-pagination\n)\n\nROOT_URLCONF = 'gaokao.urls'\n\nWSGI_APPLICATION = 'gaokao.wsgi.application'\n\n\n# Database\n# https://docs.djangoproject.com/en/1.7/ref/settings/#databases\n\nDATABASES = {\n    #'default': {\n    #    'ENGINE': 'django.db.backends.sqlite3',\n    #    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),\n    #}\n	'default': {\n		'ENGINE': 'django.db.backends.mysql', \n		'NAME': 'gaokaopi',\n		'USER': 'root',\n		'PASSWORD': 'natalie',\n		'HOST': 'localhost',   # Or an IP Address that your DB is hosted on\n		'PORT': '3306',\n	}\n}\n\n# Internationalization\n# https://docs.djangoproject.com/en/1.7/topics/i18n/\n\nLANGUAGE_CODE = 'en-us'\n\nTIME_ZONE = 'UTC'\n\nUSE_I18N = True\n\nUSE_L10N = True\n\nUSE_TZ = True\n\n\n# Static files (CSS, JavaScript, Images)\n# https://docs.djangoproject.com/en/1.7/howto/static-files/\nSTATIC_URL = '/static/'\nSTATICFILES_DIRS = (\n	os.path.join(BASE_DIR, \"static\"),\n	'/var/www/static/',\n)\nMEDIA_ROOT = '/home/fengxia/Desktop/tt'\nSTATIC_ROOT ='/var/www/static'\n    \n# crispy forms\nCRISPY_TEMPLATE_PACK = 'bootstrap3'\n\n# for django-pagination, very COOL!\nfrom django.conf import global_settings\nTEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (\n		'django.core.context_processors.request',\n	)\n\n# for django-allauth\nSITE_ID = 1\n\n\n# LOGIN LOGOUT\nLOGIN_URL ='/gaokao/login'\nLOGOUT_URL ='/gaokao/home'\n\n# libsass \"pip install django-libsass\"\nCOMPRESS_PRECOMPILERS = (\n    ('text/x-scss', 'django_libsass.SassCompiler'),\n)",
+			"file": "gaokao/settings.py",
+			"file_size": -1,
+			"file_write_time": -1,
+			"settings":
+			{
+				"buffer_size": 3488,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "# -*- coding: utf-8 -*-\n\nfrom django.db import models\nfrom django.contrib import admin\nfrom django.forms import ModelForm\nfrom django.contrib.contenttypes.fields import GenericForeignKey\nfrom django.contrib.contenttypes.generic import GenericRelation\nfrom django.contrib.contenttypes.models import ContentType\nfrom django.core.urlresolvers import reverse\nfrom django.contrib.auth.models import User\nfrom tagging.fields import TagField\nfrom mptt.models import MPTTModel, TreeForeignKey\nfrom django.utils import timezone\nfrom datetime import datetime\n\nclass MyBaseModel (models.Model):\n	# basic value fields\n	name = models.CharField(\n			default = None,\n			max_length = 64,\n			verbose_name = u'名称'\n		)\n	description = models.TextField (\n			null=True, \n			blank=True,\n			verbose_name = u'描述'\n		)\n	\n	# help text\n	help_text = models.CharField (\n			max_length = 64,\n			null = True,\n			blank = True,\n			verbose_name = u'帮助提示'\n		)\n		\n	# tags\n	tags = TagField( \n			default = 'default',\n			verbose_name = u'标签'\n		)\n	\n	# attachments\n	attachments = GenericRelation('Attachment')\n	\n	# this is an Abstract model\n	class Meta:\n		abstract=True\n\n	def __unicode__(self):\n		return self.name\n\n######################################################\n#\n#	Attachments\n#\n#####################################################\nclass Attachment (models.Model):\n	# generic foreign key to base model\n	# so we can link attachment to any model defined below\n	content_type = models.ForeignKey(ContentType)\n	object_id = models.PositiveIntegerField()\n	content_object = GenericForeignKey('content_type', 'object_id')\n\n	# instance fields\n	created_by = models.ForeignKey (\n			User,\n			default = None,\n			verbose_name = u'创建用户',\n			help_text = ''\n		)\n		\n	# basic value fields\n	name = models.CharField(\n			default = 'default name',\n			max_length = 64,\n			verbose_name = u'附件名称'\n		)\n	description = models.CharField (\n			max_length = 64,\n			default = 'default description',\n			verbose_name = u'附件描述'\n		)\n	\n	file = models.FileField (\n			upload_to = 'files/%Y/%m/%d',\n			verbose_name = u'附件',\n			help_text = u'附件'\n		)	\n\n	def __unicode__(self):\n		return self.file.name\n\nclass AttachmentForm(ModelForm):\n	class Meta:\n		model = Attachment\n		fields = ['description','file']\n\n######################################################\n#\n#	App specific models\n#\n#####################################################\nclass MyAddress (models.Model):\n	province = models.CharField (\n			max_length = 8,\n			verbose_name = u'省份',\n		)	\n\n	def __unicode__(self):\n		return self.province\n\nclass MyMajorCategory (models.Model):\n	name = models.CharField(\n		max_length = 16,\n		default = '',\n		verbose_name = u'学科门类'\n	)\n	code = models.CharField(\n		max_length = 4,\n		verbose_name = u'代码'\n	)\n	def __unicode__(self):\n		return '%s (%s)' %(self.name, self.code)\n\nclass MyMajorSubcategory (models.Model):\n	name = models.CharField(\n		max_length = 16,\n		default = '',\n		verbose_name = u'专业类'\n	)\n	code = models.CharField(\n		max_length = 4,\n		verbose_name = u'代码'\n	)\n	category = models.ForeignKey (\n			MyMajorCategory,\n			null = True,\n			blank = True,\n			verbose_name = u'学科门类'\n		)\n	def __unicode__(self):\n		return u'%s (%s)' %(self.name,self.code)\n\nclass MyMajor (MyBaseModel):\n	DEGREE_TYPE_CHOICES = (\n		('',''),\n		(u'本科', u'本科'),\n		(u'专科', u'专科'),\n		(u'职业教育', u'职业教育'),\n	)\n\n	code = models.CharField (\n			max_length = 16,\n			default = '',\n			verbose_name = u'专业代码',\n		)\n	subcategory = models.ForeignKey (\n			MyMajorSubcategory,\n			null = True,\n			blank = True,\n			verbose_name = u'专业类'\n		)\n	degree_type = models.CharField (\n			max_length = 8,\n			null = True,\n			blank = True,\n			verbose_name = u'教育类别',\n			choices = DEGREE_TYPE_CHOICES\n		)\n	degree = models.CharField (\n			null = True,\n			blank = True,\n			max_length = 32,\n			verbose_name = u'授予学位'\n		)\n	how_long = models.CharField (\n			null = True,\n			blank = True,\n			max_length = 16,\n			verbose_name = u'修学年限'\n		)\n	course = models.TextField(\n			null = True,\n			blank = True,\n			max_length = 8,\n			verbose_name = u'修学年限'\n		)\n	is_specialized = models.BooleanField (\n			default = False,\n			verbose_name = u''\n		)\n	is_gov_controlled = models.BooleanField (\n			default = False,\n			verbose_name = u''\n		)\n\n	# related models\n	schools = models.ManyToManyField ('MySchool')\n	related_majors = models.ManyToManyField('MyMajor')\n\n	def __unicode__(self):\n		return '%s (%s)' % (self.name, self.code)\n\nclass MyAdmissionBySchool (models.Model):\n	CATEGORY_CHOICES = (\n		(u'文科',u'文科'), \n		(u'理科',u'理科'), \n		(u'综合',u'综合'), \n		(u'其他',u'其他'), \n	)\n	\n	school = models.ForeignKey (\n			'MySchool',\n			verbose_name = u'高校名称'\n		)\n	province = models.ForeignKey (\n			MyAddress,\n			verbose_name = u'招生地区'	\n		)\n	category = models.CharField (\n			max_length = 8,\n			choices = CATEGORY_CHOICES						\n		)\n	year = models.IntegerField ()\n	batch = models.CharField (\n			max_length = 16,\n			verbose_name = u'录取批次'\n		)\n	min_score = models.IntegerField (\n			null=True, \n			blank=True,\n			verbose_name = u'最低分'\n		)\n	max_score = models.IntegerField (\n			null=True, \n			blank=True,\n			verbose_name = u'最高分'\n		)\n	avg_score = models.IntegerField (\n			null=True, \n			blank=True,\n			verbose_name = u'平均分'\n		)\n	province_score = models.IntegerField (\n			null=True, \n			blank=True,\n			verbose_name = u'省控分'\n		)\n\nclass MyAdmissionByMajor (models.Model):\n	CATEGORY_CHOICES = (\n		(u'文科',u'文科'), \n		(u'理科',u'理科'), \n		(u'综合',u'综合'), \n		(u'其他',u'其他'), \n	)\n	\n	school = models.ForeignKey (\n			'MySchool',\n			verbose_name = u'高校名称'\n		)\n	major = models.ForeignKey (\n			MyMajor,\n			verbose_name = u'专业名称'\n		)\n	province = models.ForeignKey (\n			MyAddress,\n			verbose_name = u'招生地区'	\n		)\n	category = models.CharField (\n			max_length = 8,\n			choices = CATEGORY_CHOICES						\n		)\n	year = models.IntegerField ()\n	batch = models.CharField (\n			max_length = 16,\n			verbose_name = u'录取批次'\n		)\n	max_score = models.IntegerField (\n			null=True, \n			blank=True,\n			verbose_name = u'最高分'\n		)\n	avg_score = models.IntegerField (\n			null=True, \n			blank=True,\n			verbose_name = u'平均分'\n		)\n\nclass MySchool (MyBaseModel):\n	raw_page = models.TextField (\n		null = True,\n		blank = True,\n		verbose_name = u'原始html data. Research used ONLY!'\n	)\n	en_name = models.CharField (\n			max_length = 256,\n			null = True,\n			blank = True,\n			verbose_name = u'英文名'\n		)\n	founded = models.IntegerField (\n			null=True, \n			blank=True,\n			verbose_name = u'创建时间'\n		)\n	school_type = models.CharField (\n			max_length = 16,\n			null=True, \n			blank=True,\n			verbose_name = u'学校类型'\n		)\n	no_key_major = models.IntegerField (\n			null=True, \n			blank=True,\n			verbose_name = u'重点学科数目'\n		)\n	no_fellow = models.IntegerField (\n			null=True, \n			blank=True,\n			verbose_name = u'院士人数'\n		)\n	no_student = models.IntegerField (\n			null=True, \n			blank=True,\n			verbose_name = u'学生人数'\n		)\n	no_phd_program = models.IntegerField (\n			null=True, \n			blank=True,\n			verbose_name = u'博士点个数'\n		)\n	no_master_program = models.IntegerField (\n			null=True, \n			blank=True,\n			verbose_name = u'硕士点个数'\n		)\n\n",
+			"file": "pi/models.py",
+			"file_size": -1,
+			"file_write_time": -1,
+			"settings":
+			{
+				"buffer_size": 6948,
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "",
 	"command_palette":
@@ -59,7 +81,6 @@
 	},
 	"expanded_folders":
 	[
-		"/home/fengxia/Desktop/gaokao"
 	],
 	"file_history":
 	[
@@ -198,8 +219,68 @@
 	"groups":
 	[
 		{
+			"selected": 1,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "gaokao/settings.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3488,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1773,
+								1773
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 602.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "pi/models.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6948,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								485,
+								485
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -250,6 +331,14 @@
 		"selected_items":
 		[
 			[
+				"model",
+				"pi/models.py"
+			],
+			[
+				"setting",
+				"gaokao/settings.py"
+			],
+			[
 				"upload",
 				"templates/pi/import/upload.html"
 			],
@@ -290,10 +379,6 @@
 				"gaokao_crawler.py"
 			],
 			[
-				"setting",
-				"gaokao/settings.py"
-			],
-			[
 				"list.html",
 				"pi/templates/pi/admission/list.html"
 			],
@@ -324,10 +409,6 @@
 			[
 				"vi",
 				"pi/views.py"
-			],
-			[
-				"model",
-				"pi/models.py"
 			],
 			[
 				"gaokao/vi",
