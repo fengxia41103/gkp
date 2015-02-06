@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load compress %}
 {% load crispy_forms_tags %}
 
 <!DOCTYPE html>
@@ -23,6 +24,8 @@
       <script src="{% static 'js/html5shiv.min.js' %}"></script>
       <script src="{% static 'js/respond.min.js' %}"></script>
     <![endif]-->
+
+    {% compress css %}
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="{% static 'bootstrap3/css/bootstrap.min.css' %}">
 	
@@ -32,7 +35,6 @@
 	<!-- link href="//www.fuelcdn.com/fuelux/3.1.0/css/fuelux.min.css" rel="stylesheet" -->
 	<link href="{% static 'css/fuelux.min.css' %}" rel="stylesheet">
 	
-
 	<!-- easyui stylesheets -->
 	<link rel="stylesheet" type="text/css" href="{% static 'easyui/themes/default/easyui.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'easyui/themes/icon.css' %}">
@@ -44,6 +46,7 @@
 
 	<!-- application specific css -->
 	<link href="{% static 'css/my.css' %}" rel="stylesheet">	
+	{% endcompress %}
 
 	<!-- JQuery lib -->
 	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
@@ -58,7 +61,7 @@
 <title>高考派平台</title>
 </head>
 
-<body class="fuelux">
+<body class="fuelux landing">
 
 	{% block navbar %}
    	<div class="navbar navbar-default" role="navigation">
@@ -165,6 +168,7 @@
 
     <!-- Placed at the end of the document so the pages load faster -->
 {% block Javascripts %}	
+	{% compress js %}
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="{% static 'bootstrap3/js/bootstrap.min.js' %}"></script>
 		
@@ -185,6 +189,7 @@
 			SyntaxHighlighter.all();
 		});		
 	</script>
+	{% endcompress %}
 {% endblock %} <!-- end of block JS -->
 
 {# extra javascript code #}
