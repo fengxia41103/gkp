@@ -107,7 +107,6 @@ body {
 }
 
 /* Remove border and change up box shadow for more contrast */
-
 .navbar {
   .navbar-inner {
     border: 0;
@@ -130,6 +129,17 @@ body {
   }
 }
 
+.dropdown-menu{
+  li > a {
+    background-color: black;
+  }
+}
+
+.navbar-default .navbar-nav>.open>a {
+  color: #fff !important;
+  background: #fed136 !important;
+  border-radius: 3px;
+}
 /* Downsize the brand/project name a bit */
 
 /* Navbar links: increase padding for taller navbar */
