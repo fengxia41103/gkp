@@ -1,5 +1,12 @@
+@import url(http://fonts.googleapis.com/css?family=Gudea:400,700,400italic&subset=latin,latin-ext);
+@import url(http://fonts.googleapis.com/css?family=Montserrat:400,700);
+@import url(http://fonts.googleapis.com/css?family=Kaushan+Script);
+@import url(http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic);
+@import url(http://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700);
+
 body {
-  font-family: Calibri, Charcoal, sans-serif;
+  /*font-family: Calibri, Charcoal, sans-serif;*/
+  font-family: 'Gudea', sans-serif;
 }
 
 .my-content {
@@ -25,7 +32,6 @@ body {
 }
 
 .my-banner {
-  font-family: Impact, Charcoal, sans-serif;
   font-size: 4.0em;
   font-weight: bold;
   padding-top: 40px;

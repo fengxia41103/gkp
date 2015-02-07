@@ -25,7 +25,6 @@
       <script src="{% static 'js/respond.min.js' %}"></script>
     <![endif]-->
 
-    {% compress css %}
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="{% static 'bootstrap3/css/bootstrap.min.css' %}">
 	
@@ -33,8 +32,12 @@
 	<link rel="stylesheet" href="{% static 'bootstrap3/css/bootstrap-theme.min.css' %}">
 	
 	<!-- link href="//www.fuelcdn.com/fuelux/3.1.0/css/fuelux.min.css" rel="stylesheet" -->
-	<link href="{% static 'css/fuelux.min.css' %}" rel="stylesheet">
-	
+	<!--link href="{% static 'css/fuelux.min.css' %}" rel="stylesheet"-->
+
+	<!-- http://fortawesome.github.io/Font-Awesome/get-started/ -->
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    {% compress css %}	
 	<!-- easyui stylesheets -->
 	<link rel="stylesheet" type="text/css" href="{% static 'easyui/themes/default/easyui.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'easyui/themes/icon.css' %}">
@@ -58,97 +61,97 @@
 {% block custom_css %}
 {% endblock %}
 
-<title>高考派平台</title>
+<title>MySAT Platform</title>
 </head>
 
-<body class="fuelux landing">
+<body>
 
-	{% block navbar %}
-   	<div class="navbar navbar-default" role="navigation">
-  		<div class="container">
-			<div class="navbar-header">
-  				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
-    				<span class="sr-only">Toggle navigation</span>
-    				<span class="icon-bar">something</span>
-    				<span class="icon-bar"></span>
-    				<span class="icon-bar"></span>
-  				</button>
-  				<a class="navbar-brand" href="{% url 'home' %}">高考派</a>
-			</div>
-			<div class="collapse navbar-collapse">
-				<div class="row">
-					<div class="col-md-8">
-  						<ul class="nav navbar-nav">
-  							<li class="dropdown">
-  								<a href="" class="" data-toggle="dropdown">
-  									Models
-  									<b class="caret"></b>
-  								</a>
-  								<ul class="dropdown-menu">
-  									<li><a href="{% url 'major_list' %}">Major</a></li>
-  									<li><a href="{% url 'school_list' %}">School</a></li>
-  								</ul>
-  							</li>
-  							
+{% block navbar %}
+	<div class="navbar navbar-default" role="navigation">
+		<div class="container">
+		<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar">something</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="{% url 'home' %}">MySAT</a>
+		</div>
+		<div class="collapse navbar-collapse">
+			<div class="row">
+				<div class="col-md-8">
+						<ul class="nav navbar-nav">
 							<li class="dropdown">
 								<a href="" class="" data-toggle="dropdown">
-									分数线									
+									Models
 									<b class="caret"></b>
 								</a>
 								<ul class="dropdown-menu">
-									<li><a href="{% url 'admission_school_list' %}">高考派分数线数据 school</a></li>
-									<li><a href="{% url 'admission_major_list' %}">高考派分数线数据 major</a></li>
+									<li><a href="{% url 'major_list' %}">Major</a></li>
+									<li><a href="{% url 'school_list' %}">School</a></li>
 								</ul>
-    						</li>
+							</li>
+							
+						<li class="dropdown">
+							<a href="" class="" data-toggle="dropdown">
+								分数线									
+								<b class="caret"></b>
+							</a>
+							<ul class="dropdown-menu">
+								<li><a href="{% url 'admission_school_list' %}">高考派分数线数据 school</a></li>
+								<li><a href="{% url 'admission_major_list' %}">高考派分数线数据 major</a></li>
+							</ul>
+						</li>
 
-    						<li class="dropdown">
-								<a href="" class="" data-toggle="dropdown">
-									数据Crawler
-									<b class="caret"></b>
-								</a>
-								<ul class="dropdown-menu">
-									<li><a href="{% url 'admission_school_crawler' %}">高考派分数线数据 school</a></li>
-									<li><a href="{% url 'admission_major_crawler' %}">高考派分数线数据 major</a></li>
-									<li><a href="{% url 'school_crawler' %}">高考派School数据</a></li>
-									<li><a href="{% url 'major_crawler' %}">高考派Major数据</a></li>
-								</ul>
-    						</li>
-    						<li class="dropdown">
-								<a href="" class="" data-toggle="dropdown">
-									数据导入
-									<b class="caret"></b>
-								</a>
-								<ul class="dropdown-menu">
-									<li><a href="{% url 'import_admission_school' %}">Admission by school</a></li>
-									<li><a href="{% url 'import_admission_major' %}">Admission by major</a></li>
-									<li><a href="{% url 'import_major' %}">Major codes</a></li>
-								</ul>
-    						</li>    						
-    						<li><a href="#about">About</a></li>
-    						<li><a href="#contact">Contact</a></li>
-  						</ul>
-  					</div>
-  					<div class="col-md-3"></div>
-  					<div class="col-md-3">
-  						<ul class="nav navbar-nav pull-right">
-  							<li><a href="">你好 {{ user }}</a></li>
-  							<li><a href="{% url 'logout' %}"><span class="my-button-sm">Logout</span></a></li>
-  						</ul>
-  					</div>
-  				</div><!-- end of row -->
-  				
-			</div><!--/.nav-collapse -->
-  		</div>
-	</div>
-	{% endblock %}<!-- end of block navbar -->
+						<li class="dropdown">
+							<a href="" class="" data-toggle="dropdown">
+								数据Crawler
+								<b class="caret"></b>
+							</a>
+							<ul class="dropdown-menu">
+								<li><a href="{% url 'admission_school_crawler' %}">高考派分数线数据 school</a></li>
+								<li><a href="{% url 'admission_major_crawler' %}">高考派分数线数据 major</a></li>
+								<li><a href="{% url 'school_crawler' %}">高考派School数据</a></li>
+								<li><a href="{% url 'major_crawler' %}">高考派Major数据</a></li>
+							</ul>
+						</li>
+						<li class="dropdown">
+							<a href="" class="" data-toggle="dropdown">
+								数据导入
+								<b class="caret"></b>
+							</a>
+							<ul class="dropdown-menu">
+								<li><a href="{% url 'import_admission_school' %}">Admission by school</a></li>
+								<li><a href="{% url 'import_admission_major' %}">Admission by major</a></li>
+								<li><a href="{% url 'import_major' %}">Major codes</a></li>
+							</ul>
+						</li>    						
+						<li><a href="#about">About</a></li>
+						<li><a href="#contact">Contact</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3"></div>
+					<div class="col-md-3">
+						<ul class="nav navbar-nav pull-right">
+							<li><a href="">你好 {{ user }}</a></li>
+							<li><a href="{% url 'logout' %}"><span class="my-button-sm">Logout</span></a></li>
+						</ul>
+					</div>
+				</div><!-- end of row -->
+				
+		</div><!--/.nav-collapse -->
+		</div>
+</div>
+{% endblock %}<!-- end of block navbar -->
 	
-	{% block main %}
+{% block main %}
 	{% block custom_tags %}
 	{% endblock %}
-    <div class="container">
+	<div class="container">
 			{% block page-info %}
 			{% endblock %}
-    	
+		
 		<div class="page-header">
 			<h1>
 				{% block page-header %}
@@ -160,13 +163,17 @@
 				
 		{% block content %}
 		{% endblock %}
-    </div><!-- /.container -->
-	{% endblock %}<!-- end of block main -->
-	
-	{% block footer %}
-	{% endblock %}<!- end of block footer -->
+	</div><!-- /.container -->
+{% endblock %}<!-- end of block main -->
 
-    <!-- Placed at the end of the document so the pages load faster -->
+{# sandbox for testing client libs/css/js #}
+{% block test %}	
+{% endblock %}
+
+{% block footer %}
+{% endblock %}<!- end of block footer -->
+
+<!-- Placed at the end of the document so the pages load faster -->
 {% block Javascripts %}	
 	{% compress js %}
 	<!-- Latest compiled and minified JavaScript -->
