@@ -1,5 +1,6 @@
 body {
-  font-family: Calibri, Charcoal, sans-serif;
+  font-family: Calibri, Charcoal, "Hiragino Sans GB", "Microsoft YaHei",
+             "WenQuanYi Micro Hei", sans-serif;
 }
 
 .my-content {
@@ -132,9 +133,18 @@ body {
 .dropdown-menu{
   li > a {
     background-color: black;
+    opacity: 0.7;
   }
 }
 
+.my-login-box {
+  /* used in login and register */
+  background-color:#fff;
+  color: #333;
+  padding:20px;
+  opacity:0.8;  
+  border-radius: 10px;
+}
 .navbar-default .navbar-nav>.open>a {
   color: #fff !important;
   background: #fed136 !important;

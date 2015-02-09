@@ -1,6 +1,6 @@
 {% extends "pi/common/home.html" %}
 
-{% block main %}
+{% block login %}
 
 {% load crispy_forms_tags %}
 	
@@ -9,7 +9,7 @@
 	
 	<div class="row">
 		<div class="col-md-8"></div>
-		<div class="col-md-3" style="background-color:#ccc;padding:20px;opacity:0.8;">
+		<div class="col-md-3 my-login-box">
 			{% crispy form %}
 			<div class="form-actions">
 				<input class="btn btn-primary default pull-right" type="submit" value="注册用户" />

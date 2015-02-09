@@ -1,23 +1,20 @@
 {% extends "pi/common/home.html" %}
 
-{% block main %}
-
-
+{% block login %}
 {% load crispy_forms_tags %}
 	
 <form action="{% url 'django.contrib.auth.views.login' %}" method="post">
 	{% csrf_token %}
-	
-	<div class="row" style="text-align: left;">
+	<div class="row">
 		<div class="col-md-8"></div>
-		<div class="col-md-3">
-		{% if form.errors %}
-			<div class="alert alert-info">
-				Your username and password didn’t match. Please try again.</p>
-			</div>
-		{% endif %}
-		
+		<div class="col-md-3 my-login-box">
 			{% crispy form %}
+			{% if form.errors %}
+				<div class="alert alert-info">
+					Your username and password didn’t match. Please try again.</p>
+				</div>
+			{% endif %}
+		
 			<div class="form-actions">
 				<span class="addLink">
 					<a href="{% url 'user_register' %}">Register</a>
