@@ -5,8 +5,13 @@
 @import url(http://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700);
 
 body {
+<<<<<<< HEAD
   /*font-family: Calibri, Charcoal, sans-serif;*/
   font-family: 'Gudea', sans-serif;
+=======
+  font-family: Calibri, Charcoal, "Hiragino Sans GB", "Microsoft YaHei",
+             "WenQuanYi Micro Hei", sans-serif;
+>>>>>>> home_page
 }
 
 .my-content {
@@ -113,7 +118,6 @@ body {
 }
 
 /* Remove border and change up box shadow for more contrast */
-
 .navbar {
   .navbar-inner {
     border: 0;
@@ -136,6 +140,26 @@ body {
   }
 }
 
+.dropdown-menu{
+  li > a {
+    background-color: black;
+    opacity: 0.7;
+  }
+}
+
+.my-login-box {
+  /* used in login and register */
+  background-color:#fff;
+  color: #333;
+  padding:20px;
+  opacity:0.8;  
+  border-radius: 10px;
+}
+.navbar-default .navbar-nav>.open>a {
+  color: #fff !important;
+  background: #fed136 !important;
+  border-radius: 3px;
+}
 /* Downsize the brand/project name a bit */
 
 /* Navbar links: increase padding for taller navbar */
