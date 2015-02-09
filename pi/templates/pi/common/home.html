@@ -58,7 +58,8 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand page-scroll" href="{% url 'home' %}">GKP Simulation Platform</a>
+                <a class="navbar-brand page-scroll" href="{% url 'home' %}">高考一起
+            </a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -68,28 +69,28 @@
                         <a href="#page-top"></a>
                     </li>
                     <li class="dropdown">
-                        <a href="#" id="navbar-dropdown-user" class="dropdown-toggle" data-toggle="dropdown">User
+                        <a href="#" id="navbar-dropdown-user" class="dropdown-toggle" data-toggle="dropdown">用户
                         <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="navbar-dropdown-user">
-                            <li><a href="{% url 'login' %}">Login</a></li>
-                            <li><a href="{% url 'user_register' %}">Register</a></li>
+                            <li><a href="{% url 'login' %}">登录</a></li>
+                            <li><a href="{% url 'user_register' %}">注册</a></li>
                         </ul>
                     </li>                    
                     <li>
-                        <a class="page-scroll" href="#services">School</a>
+                        <a class="page-scroll" href="#services">学校</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#portfolio">Major</a>
+                        <a class="page-scroll" href="#portfolio">专业</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#about">About</a>
+                        <a class="page-scroll" href="#about">关于我们</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#team">Team</a>
+                        <a class="page-scroll" href="#team">团队</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#contact">Contact</a>
+                        <a class="page-scroll" href="#contact">悄悄话</a>
                     </li>
                 </ul>
             </div>            
@@ -105,7 +106,7 @@
                 {% block login %}
                 <div class="intro-lead-in">College + Univ</div>
                 <div class="intro-heading">Time to Think</div>
-                <a href="#services" class="page-scroll btn btn-xl">Tell Me More</a>
+                <a href="#services" class="page-scroll btn btn-xl">我想知道</a>
                 {% endblock %}
             </div>
         </div>       
@@ -116,7 +117,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    <h2 class="section-heading">Schools</h2>
+                    <h2 class="section-heading">全国高校</h2>
                     <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
                 </div>
             </div>
@@ -154,7 +155,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    <h2 class="section-heading">Major</h2>
+                    <h2 class="section-heading">学点什么？</h2>
                     <h3 class="section-subheading text-muted">Find the best major fitting your dream.</h3>
                 </div>
             </div>
@@ -252,7 +253,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    <h2 class="section-heading">About</h2>
+                    <h2 class="section-heading">一起的故事</h2>
                     <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
                 </div>
             </div>
@@ -333,16 +334,16 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    <h2 class="section-heading">Our Amazing Team</h2>
+                    <h2 class="section-heading">一起策划</h2>
                     <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-4">
                     <div class="team-member">
-                        <img src="img/team/1.jpg" class="img-responsive img-circle" alt="">
-                        <h4>Kay Garland</h4>
-                        <p class="text-muted">Lead Designer</p>
+                        <img src="{%  static 'img/team/1.jpg' %}" class="img-responsive img-circle" alt="">
+                        <h4>张一某</h4>
+                        <p class="text-muted">幕后黑手 + 高考老枪</p>
                         <ul class="list-inline social-buttons">
                             <li><a href="#"><i class="fa fa-twitter"></i></a>
                             </li>
@@ -355,9 +356,9 @@
                 </div>
                 <div class="col-sm-4">
                     <div class="team-member">
-                        <img src="img/team/2.jpg" class="img-responsive img-circle" alt="">
-                        <h4>Larry Parker</h4>
-                        <p class="text-muted">Lead Marketer</p>
+                        <img src="{% static 'img/team/2.jpg' %}" class="img-responsive img-circle" alt="">
+                        <h4>大哥应</h4>
+                        <p class="text-muted">Lead Marketing</p>
                         <ul class="list-inline social-buttons">
                             <li><a href="#"><i class="fa fa-twitter"></i></a>
                             </li>
@@ -370,9 +371,9 @@
                 </div>
                 <div class="col-sm-4">
                     <div class="team-member">
-                        <img src="img/team/3.jpg" class="img-responsive img-circle" alt="">
-                        <h4>Diana Pertersen</h4>
-                        <p class="text-muted">Lead Developer</p>
+                        <img src="{% static 'img/team/3.jpg' %}" class="img-responsive img-circle" alt="">
+                        <h4>也美丽</h4>
+                        <p class="text-muted">Lead Graphic Design</p>
                         <ul class="list-inline social-buttons">
                             <li><a href="#"><i class="fa fa-twitter"></i></a>
                             </li>
