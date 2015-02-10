@@ -1,12 +1,7 @@
 @import url(http://fonts.googleapis.com/css?family=Gudea:400,700,400italic&subset=latin,latin-ext);
-@import url(http://fonts.googleapis.com/css?family=Montserrat:400,700);
-@import url(http://fonts.googleapis.com/css?family=Kaushan+Script);
-@import url(http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic);
-@import url(http://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700);
 
 body {
-  font-family: 'Gudea', Calibri, Charcoal, "Hiragino Sans GB", "Microsoft YaHei",
-             "WenQuanYi Micro Hei", sans-serif;
+  font-family: Gudea, Calibri, Charcoal, "Hiragino Sans GB", "Microsoft YaHei","WenQuanYi Micro Hei", sans-serif;
 }
 
 .my-content {
@@ -100,47 +95,6 @@ body {
 
 /* Special class on .container surrounding .navbar, used for positioning it into place. */
 
-.navbar-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 10;
-  margin-top: 20px;
-  margin-bottom: -90px;
-  /* Negative margin to pull up carousel. 90px is roughly margins and height of navbar. */
-  .navbar {}
-}
-
-/* Remove border and change up box shadow for more contrast */
-.navbar {
-  .navbar-inner {
-    border: 0;
-    -webkit-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
-    -moz-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
-  }
-  .brand {
-    padding: 14px 20px 16px;
-    /* Increase vertical padding to match navbar links */
-    font-size: 16px;
-    font-weight: bold;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
-  }
-  .nav > li > a {
-    padding: 15px 20px;
-  }
-  .btn-navbar {
-    margin-top: 10px;
-  }
-}
-
-.dropdown-menu{
-  li > a {
-    background-color: black;
-    opacity: 0.7;
-  }
-}
 
 .my-login-box {
   /* used in login and register */

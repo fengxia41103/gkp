@@ -32,6 +32,7 @@
     <link href='http://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Monoton' rel='stylesheet' type='text/css'>  
 
     {% compress css %}
     <!-- Latest compiled and minified CSS -->
@@ -43,6 +44,7 @@
     <!-- application specific css -->
     <link href="{% static 'sass/my.scss' %}" rel="stylesheet" type="text/x-scss">   
     {% endcompress %}
+
 </head>
 
 <body id="page-top" class="index">
@@ -58,7 +60,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand page-scroll" href="{% url 'home' %}">高考一起
+                <a class="navbar-brand page-scroll" href="{% url 'home' %}">SAT PREP
             </a>
             </div>
 
@@ -679,7 +681,6 @@
 
     <!-- Contact Form JavaScript -->
     <script src="{% static 'theme/agency/js/jqBootstrapValidation.js' %}"></script>
-    <script src="{% static 'theme/agency/js/contact_me.js' %}"></script>
 
     <!-- Custom Theme JavaScript -->
     <script src="{% static 'theme/agency/js/agency.js' %}"></script>
