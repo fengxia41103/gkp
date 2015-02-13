@@ -61,9 +61,15 @@ def class_view_decorator(function_decorator):
 #
 ###################################################
 def home_view (request):
+	user_auth_form = AuthenticationForm()
 	user_registration_form = UserCreationForm()
 
-	return render_to_response('pi/common/home.html', {'user_registration_form':user_registration_form})
+	forms = {'registration_form':user_registration_form,
+			'auth_form':user_auth_form
+			}
+
+	csrfContext = RequestContext(request,forms)
+	return render_to_response('pi/common/home.html', csrfContext)
 
 ###################################################
 #
@@ -131,7 +137,7 @@ def user_register_view (request):
 	# if a GET (or any other method) we'll create a blank form
 	else: 
 		form = UserCreationForm()
-	return render(request, 'registration/register_form.html', {'form': form})	
+	return render(request, 'registration/register_form.html', {'registration_form': form})	
 
 @login_required
 def logout_view(request):

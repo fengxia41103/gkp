@@ -4,6 +4,37 @@ body {
   font-family: Gudea, Calibri, Charcoal, "Hiragino Sans GB", "Microsoft YaHei","WenQuanYi Micro Hei", sans-serif;
 }
 
+.goto-next {
+    border: 0;
+    bottom: 0;
+    display: block;
+    height: 5em;
+    left: 50%;
+    margin: 0 0 0 -5em;
+    overflow: hidden;
+    position: absolute;
+    text-indent: 10em;
+    white-space: nowrap;
+    width: 10em;
+    z-index: 1;
+
+    :before {
+      background-image: url("images/arrow.svg");
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-size: contain;
+      content: '';
+      display: block;
+      height: 1.5em;
+      left: 50%;
+      margin: -0.75em 0 0 -1em;
+      position: absolute;
+      top: 50%;
+      width: 2em;
+      z-index: 1;      
+    }    
+  }
+
 .my-content {
   color: #eee;
 }
@@ -167,130 +198,6 @@ body {
   }
 }
 
-/* MARKETING CONTENT
--------------------------------------------------- */
-
-/* Center align the text within the three columns below the carousel */
-
-.marketing {
-  .span4 {
-    text-align: center;
-  }
-  h2 {
-    font-weight: normal;
-  }
-  .span4 p {
-    margin-left: 10px;
-    margin-right: 10px;
-  }
-}
-
-/* Featurettes
-------------------------- */
-
-.featurette-divider {
-  margin: 80px 0;
-  /* Space out the Bootstrap <hr> more */
-}
-
-.featurette {
-  padding-top: 120px;
-  /* Vertically center images part 1: add padding above and below text. */
-  overflow: hidden;
-  /* Vertically center images part 2: clear their floats. */
-}
-
-.featurette-image {
-  margin-top: -120px;
-  /* Vertically center images part 3: negative margin up the image the same amount of the padding to center it. */
-  &.pull-left {
-    margin-right: 40px;
-  }
-  &.pull-right {
-    margin-left: 40px;
-  }
-}
-
-/* Give some space on the sides of the floated elements so text doesn't run right into it. */
-
-/* Thin out the marketing headings */
-
-.featurette-heading {
-  font-size: 50px;
-  font-weight: 300;
-  line-height: 1;
-  letter-spacing: -1px;
-}
-
-/* RESPONSIVE CSS
--------------------------------------------------- */
-
-@media (max-width: 979px) {
-  .container.navbar-wrapper {
-    margin-bottom: 0;
-    width: auto;
-  }
-  .navbar-inner {
-    border-radius: 0;
-    margin: -20px 0;
-  }
-  .carousel {
-    .item {
-      height: 500px;
-    }
-    img {
-      width: auto;
-      height: 500px;
-    }
-  }
-  .featurette {
-    height: auto;
-    padding: 0;
-  }
-  .featurette-image {
-    &.pull-left, &.pull-right {
-      display: block;
-      float: none;
-      max-width: 40%;
-      margin: 0 auto 20px;
-    }
-  }
-}
-
-@media (max-width: 767px) {
-  .navbar-inner {
-    margin: -20px;
-  }
-  .carousel {
-    margin-left: -20px;
-    margin-right: -20px;
-    .container {}
-    .item, img {
-      height: 300px;
-    }
-  }
-  .carousel-caption {
-    width: 65%;
-    padding: 0 70px;
-    margin-top: 100px;
-    h1 {
-      font-size: 30px;
-    }
-    .lead, .btn {
-      font-size: 18px;
-    }
-  }
-  .marketing .span4 + .span4 {
-    margin-top: 40px;
-  }
-  .featurette-heading {
-    font-size: 30px;
-  }
-  .featurette .lead {
-    font-size: 18px;
-    line-height: 1.5;
-  }
-}
 
 /* FILTER CSS
 -------------------------------------------------- */
