@@ -175,8 +175,8 @@ fieldset[disabled] .btn-xl.active {
 }
 
 .navbar-default .navbar-brand {
-    font-family: "Kaushan Script","Helvetica Neue",Helvetica,Arial,cursive;
-    color: #fed136;
+    font-family: 'Abril Fatface', cursive;
+    color: #222;
 }
 
 .navbar-default .navbar-brand:hover,
@@ -184,10 +184,12 @@ fieldset[disabled] .btn-xl.active {
 .navbar-default .navbar-brand:active,
 .navbar-default .navbar-brand.active {
     color: #fec503;
+    border-bottom: 6px solid #222;
 }
 
 .navbar-default .navbar-collapse {
     border-color: rgba(255,255,255,.02);
+    border-bottom: 1px solid rgba(255,255,255,0.7);
 }
 
 .navbar-default .navbar-toggle {
@@ -209,13 +211,14 @@ fieldset[disabled] .btn-xl.active {
     font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
     font-weight: 400;
     letter-spacing: 1px;
-    color: #fff;
+    color: #333;
 }
 
 .navbar-default .nav li a:hover,
 .navbar-default .nav li a:focus {
     outline: 0;
     color: #fed136;
+    border-bottom: 6px solid #222;
 }
 
 .navbar-default .navbar-nav>.active>a {
@@ -253,7 +256,7 @@ fieldset[disabled] .btn-xl.active {
 
     .navbar-default.navbar-shrink {
         padding: 10px 0;
-        background-color: #222;
+        background-color: rgba(230,230,230,0.5);
     }
 
     .navbar-default.navbar-shrink .navbar-brand {
@@ -652,18 +655,14 @@ aside.clients img {
 }
 
 section#contact {
-    background-color: #222;
-    background-image: url(../img/map-image.png);
-    background-position: center;
+    background-color:#e0e0e0;
+    background-image: url(/static/img/contact-bg.jpg);
+    background-position: left center;
     background-repeat: no-repeat;
-}
-
-section#contact .section-heading {
-    color: #fff;
-}
-
-section#contact .form-group {
-    margin-bottom: 25px;
+    -webkit-background-size: contain;
+    -moz-background-size: contain;
+    background-size: contain;
+    -o-background-size: contain;
 }
 
 section#contact .form-group input,

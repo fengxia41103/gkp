@@ -34,6 +34,7 @@
     <link href='http://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Abril+Fatface' rel='stylesheet' type='text/css'>
 
     {# Bootstrap CSS #}   
     <link rel="stylesheet" href="{% static 'bootstrap3/css/bootstrap.min.css' %}"> 
@@ -71,11 +72,12 @@
                             一起来                              
                             <b class="caret"></b>
                         </a>
-                        <ul class="dropdown-menu">
-                                <a href="" class="btn" data-toggle="modal" data-target="#loginModal">Login</a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li>
+                                <a href="" class="" data-toggle="modal" data-target="#loginModal">Login</a>
                             </li>
                             <li>
-                                <a href="" class="btn" data-toggle="modal" data-target="#registrationModal">Register</a>
+                                <a href="" class="" data-toggle="modal" data-target="#registrationModal">Register</a>
                             </li>
                         </ul>       
                     </li>
@@ -430,13 +432,15 @@
     <section id="contact">
         <div class="container">
             <div class="row">
-                <div class="col-lg-12 text-center">
+                <div class="col-md-6"></div>
+                <div class="col-md-6 text-center">
                     <h2 class="section-heading">Contact Us</h2>
                     <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-lg-6"></div>
+                <div class="col-lg-6">
                     <form name="sentMessage" id="contactForm" novalidate>
                         <div class="row">
                             <div class="col-md-6">
@@ -669,6 +673,7 @@
         </div>
     </div>
 
+    {# modal windows #}
     {% include 'registration/login.html' %}
     {% include 'registration/register_form.html' %}
 
@@ -683,11 +688,11 @@
     <!-- Bootstrap Core JavaScript -->
     <script src="{% static 'bootstrap3/js/bootstrap.min.js' %}"></script>
 
-    <script src="{% static 'theme/agency/js/classie.js' %}"></script>
-    <script src="{% static 'theme/agency/js/cbpAnimatedHeader.js' %}"></script>
+    <!--script src="{% static 'theme/agency/js/classie.js' %}"></script-->
+    <!--script src="{% static 'theme/agency/js/cbpAnimatedHeader.js' %}"></script-->
 
     <!-- Contact Form JavaScript -->
-    <script src="{% static 'theme/agency/js/jqBootstrapValidation.js' %}"></script>
+    <!--script src="{% static 'theme/agency/js/jqBootstrapValidation.js' %}"></script-->
 
     <!-- Custom Theme JavaScript -->
     <script src="{% static 'theme/agency/js/agency.js' %}"></script>  
