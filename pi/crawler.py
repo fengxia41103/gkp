@@ -99,7 +99,9 @@ class MyCrawler():
 
 	def admission_by_school_persist (self,records):
 		# if we choose to write to DB directly
-		for r in records:
+		total_len = len(records)
+		for index, r in enumerate(records, start=1):
+			print '%d out of %d is being processed' % (index, total_len)
 			school,created = MySchool.objects.get_or_create(name=r[0].strip())
 			province,created = MyAddress.objects.get_or_create(province=r[1].strip())
 			cat = r[2].strip()
@@ -149,8 +151,11 @@ class MyCrawler():
 		#self.admission_by_major_persist (records)
 
 	def admission_by_major_persist (self,records):
+		total_len = len(records)
+
 		# if choose to write to DB directly
-		for r in records:
+		for index, r in enumerate(records,start=1):
+			print '%d out of %d is being processed' % (index, total_len)
 			major,created = MyMajor.objects.get_or_create(name=r[0].strip())		
 			school,created = MySchool.objects.get_or_create(name=r[1].strip())
 	
@@ -169,7 +174,7 @@ class MyCrawler():
 			except: yr = 0
 			batch = r[7].strip()
 				
-			admission, created = MyAdmissionByMajor.objects.get_or_create(
+			admission = MyAdmissionByMajor(
 				school = school,
 				major = major,
 				province = province,
@@ -179,7 +184,7 @@ class MyCrawler():
 				max_score = max_score,
 				avg_score = avg_score
 			)
-			if created: print admission.id, school, province, cat, yr, batch, max_score, avg_score, major
+			admission.save()
 			
 	def fenshu_table_worker(self, base_url, source):
 		# get total page so we know the range
