@@ -1,13 +1,12 @@
 
 {% load crispy_forms_tags %}
-{% load bootstrap3 %}
 
 {# Load CSS and JavaScript #}
-{# Display django.contrib.messages as Bootstrap alerts #}
-{% bootstrap_messages %}
+
+{# Load django_pagination #}
+{% load pagination_tags %}
 
 {% block filter %}
-
 <ul class="nav">
 <li class="dropdown">
 	<a class="dropdown-toggle" data-toggle="dropdown" href="">
@@ -37,7 +36,9 @@
 
 {# paginator #}
 <div class="pull-right">
-	{% bootstrap_pagination page_obj %}
+	{# bootstrap_pagination page_obj #}
+	{# autopaginate object_list #}
+	{% paginate %}	
 </div>
 {% endblock %}
 

@@ -50,9 +50,10 @@ INSTALLED_APPS = (
     'compressor', # django_compressor
     'django_filters', # django-filters
     'tagging', # django-tagging
-    'pagination', # django-pagination
+    'pagination_bootstrap', # django-pagination-bootstrap
     'crispy_forms', # django-crispy-forms
-    'bootstrap3', # django-bootstrap3
+    #'bootstrap3', # django-bootstrap3
+    'debug_toolbar', # django-debug-toolbar
     'pi', 
 )
 
@@ -64,7 +65,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'pagination.middleware.PaginationMiddleware', # django-pagination
+    'debug_toolbar.middleware.DebugToolbarMiddleware', # django-debug-toolbar
+    'pagination_bootstrap.middleware.PaginationMiddleware', # django-pagination-bootstrap
 )
 
 ROOT_URLCONF = 'gaokao.urls'
@@ -143,3 +145,6 @@ COMPRESS_PRECOMPILERS = (
 
 COMPRESS_ENABLED = True
 #COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter']
+
+# django-debug-toolbar
+DEBUG_TOOLBAR_PATCH_SETTINGS = False

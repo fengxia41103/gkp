@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-  
 from django.conf import settings
 
-
 import socks
 import socket
 import re,sys,time,codecs,shutil,tempfile,os.path
@@ -99,9 +98,7 @@ class MyCrawler():
 
 	def admission_by_school_persist (self,records):
 		# if we choose to write to DB directly
-		total_len = len(records)
-		for index, r in enumerate(records, start=1):
-			print '%d out of %d is being processed' % (index, total_len)
+		for r in records:
 			school,created = MySchool.objects.get_or_create(name=r[0].strip())
 			province,created = MyAddress.objects.get_or_create(province=r[1].strip())
 			cat = r[2].strip()
@@ -123,7 +120,7 @@ class MyCrawler():
 				p_score = int(r[8])
 			except: p_score=None
 			
-			admission, created = MyAdmissionBySchool.objects.get_or_create(
+			admission = MyAdmissionBySchool(
 				school = school,
 				province = province,
 				category = cat,
@@ -134,7 +131,10 @@ class MyCrawler():
 				avg_score = avg_score,
 				province_score = p_score
 			)
-			if created: print admission.id, school, province, cat, yr, batch, min_score, max_score, avg_score, p_score
+			admission.save()
+			del admission
+			del school
+			del province
 
 	def admission_by_major_crawler(self, index, url): 
 		content = self.tor_util.request(url)
@@ -151,11 +151,8 @@ class MyCrawler():
 		#self.admission_by_major_persist (records)
 
 	def admission_by_major_persist (self,records):
-		total_len = len(records)
-
 		# if choose to write to DB directly
-		for index, r in enumerate(records,start=1):
-			print '%d out of %d is being processed' % (index, total_len)
+		for r in records:
 			major,created = MyMajor.objects.get_or_create(name=r[0].strip())		
 			school,created = MySchool.objects.get_or_create(name=r[1].strip())
 	
@@ -185,7 +182,7 @@ class MyCrawler():
 				avg_score = avg_score
 			)
 			admission.save()
-			
+
 	def fenshu_table_worker(self, base_url, source):
 		# get total page so we know the range
 		total_page_no = int(self.get_total_page_no ('%s.html' % base_url))+1
