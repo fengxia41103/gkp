@@ -1,21 +1,23 @@
 {% load staticfiles %}
 {% load compress %}
 {% load crispy_forms_tags %}
+{% load compress %}
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="../../favicon.ico">
+
+    <title>GKP</title>
 
 {% block core-library %}
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
-    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-    <!-- script src="../../assets/js/ie-emulation-modes-warning.js"></script -->
+    <!--[if lt IE 9]><script src="{% static 'theme/Oleose/assets/js/ie8-responsive-file-warning.js' %}"></script><![endif]-->
+    <!-- script src="{% static 'theme/Oleose/assets/js/ie-emulation-modes-warning.js' %}"></script -->
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -25,37 +27,26 @@
       <script src="{% static 'js/respond.min.js' %}"></script>
     <![endif]-->
 
-	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="{% static 'bootstrap3/css/bootstrap.min.css' %}">
-	
-	<!-- Optional theme -->
-	<link rel="stylesheet" href="{% static 'bootstrap3/css/bootstrap-theme.min.css' %}">
-	
-	<!-- link href="//www.fuelcdn.com/fuelux/3.1.0/css/fuelux.min.css" rel="stylesheet" -->
-	<!--link href="{% static 'css/fuelux.min.css' %}" rel="stylesheet"-->
+    {# CDN section #}
+    <!-- http://fortawesome.github.io/Font-Awesome/get-started/ -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    
+    {# Custom Fonts #}
+    <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href='http://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Abril+Fatface' rel='stylesheet' type='text/css'>
 
-	<!-- http://fortawesome.github.io/Font-Awesome/get-started/ -->
-	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    {# Bootstrap CSS #}   
+    <link rel="stylesheet" href="{% static 'bootstrap3/css/bootstrap.min.css' %}"> 
+    <!--link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css"-->
 
-    {% compress css %}	
-	<!-- easyui stylesheets -->
-	<link rel="stylesheet" type="text/css" href="{% static 'easyui/themes/default/easyui.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'easyui/themes/icon.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'easyui/demo/demo.css' %}">
-
-	<!-- Include *at least* the core style and default theme -->
-	<link href="{% static 'syntaxhighlighter/styles/shCore.css' %}" rel="stylesheet" type="text/css" />
-	<link href="{% static 'syntaxhighlighter/styles/shThemeDefault.css' %}" rel="stylesheet" type="text/css" />
-
-	<!-- application specific css -->
-	<link rel="stylesheet" type="text/x-scss" href="{% static 'sass/my.scss' %}">	
-	{% endcompress %}
-
-	<!-- JQuery lib -->
-	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
-	<!-- script src="{% static 'jquery/dist/jquery.min.js' %}"></script -->
-
+    {# application specific css #}
+    <link href="{% static 'theme/agency/css/agency.css' %}" rel="stylesheet">
+    <link href="{% static 'sass/my.scss' %}" rel="stylesheet" type="text/x-scss">  
 {% endblock %}
+</head>
 
 {# extra css code #}
 {% block custom_css %}
@@ -174,29 +165,26 @@
 {% endblock %}<!- end of block footer -->
 
 <!-- Placed at the end of the document so the pages load faster -->
-{% block Javascripts %}	
-	{% compress js %}
-	<!-- Latest compiled and minified JavaScript -->
-	<script src="{% static 'bootstrap3/js/bootstrap.min.js' %}"></script>
-		
-	<!-- fuelux lib -->
-	<!-- script src="//www.fuelcdn.com/fuelux/3.1.0/js/fuelux.min.js"></script -->
-	<script src="{% static 'js/fuelux.min.js' %}"></script>
+{% block javascripts %}	
+    {# CDN section #}
+    <!-- JQuery lib -->
+    <script src="https://code.jquery.com/jquery-2.1.3.min.js" type="text/javascript"></script>
+    <script src="{% static 'js/modernizr.custom.32033.js' %}" type="text/javascript"></script>    
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js" type="text/javascript"></script>    
+    <!-- script src="{% static 'jquery/dist/jquery.min.js' %}"></script -->
 
-	<!-- easyui js -->	
-	<script type="text/javascript" src="{% static 'easyui/jquery.easyui.min.js' %}"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static 'bootstrap3/js/bootstrap.min.js' %}"></script>
 
-	<!-- syntaxhighlighter -->
-	<script type="text/javascript" src="{% static 'syntaxhighlighter/scripts/shCore.js' %}"></script>
-	<script type="text/javascript" src="{% static 'syntaxhighlighter/scripts/shBrushPython.js' %}"></script>
+    <!--script src="{% static 'theme/agency/js/classie.js' %}"></script-->
+    <!--script src="{% static 'theme/agency/js/cbpAnimatedHeader.js' %}"></script-->
 
-	<script type="text/javascript">
-		var j$ = jQuery.noConflict();
-		j$(document).ready(function(){
-			SyntaxHighlighter.all();
-		});		
-	</script>
-	{% endcompress %}
+    <!-- Contact Form JavaScript -->
+    <!--script src="{% static 'theme/agency/js/jqBootstrapValidation.js' %}"></script-->
+
+    <!-- Custom Theme JavaScript -->
+    <script src="{% static 'theme/agency/js/agency.js' %}"></script>  
+
 {% endblock %} <!-- end of block JS -->
 
 {# extra javascript code #}

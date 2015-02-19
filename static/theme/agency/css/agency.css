@@ -217,8 +217,11 @@ fieldset[disabled] .btn-xl.active {
 .navbar-default .nav li a:hover,
 .navbar-default .nav li a:focus {
     outline: 0;
-    color: #fed136;
+    color: #222;
+    font-size: 1.5em;
+    font-weight: bold;
     border-bottom: 6px solid #222;
+    transition: all 0.3s;
 }
 
 .navbar-default .navbar-nav>.active>a {
@@ -268,7 +271,7 @@ header {
     text-align: center;
     color: #fff;
     background-attachment: scroll;
-    background-image: url(/static/img/header-bg.jpg);
+    background-image: url(/static/img/header-bg.png);
     background-position: center center;
     background-repeat: none;
     -webkit-background-size: cover;
