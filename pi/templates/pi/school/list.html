@@ -19,7 +19,9 @@
 		<th>名称</th>
 		<th>类型</th>
 		<th>学生数量</th>
-		<th>Description</th>
+		<th>Google map</th>
+		<th>Geocode</th>
+		<th>Formatted address EN</th>
 	</thead>
 	<tbody>
 		{% for obj in object_list %}
@@ -38,10 +40,6 @@
      		</td><td>
      			{{ obj.no_student }}
      		</td><td>
-     			{{ obj.description }}
-
-
-
 <iframe
     width="200"
     height="150"
@@ -50,6 +48,10 @@
       &q={{ obj.name }}
       &attribution_source=Google+Maps+Embed+API"
   </iframe>     			
+     		</td><td>
+     			{{ obj.google_geocode }}
+     		</td><td>
+     			{{ obj.formatted_address_en }}
      		</td>
     	</tr>
     	{% endfor %}

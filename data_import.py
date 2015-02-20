@@ -46,7 +46,6 @@ def admission_by_school_persist (r):
 	)
 	return admission
 
-@profile
 def admission_by_major_persist (r):
 	# if choose to write to DB directly
 	major,created = MyMajor.objects.get_or_create(name=r[0].strip())		
@@ -145,15 +144,7 @@ def import_school_major_relation(filename):
 		
 	print 'Total elapsed time: %f' % ((time.time()-start)/3600.0)
 
-import numpy as np
-def detect_me(filename='data/major.csv'):
-	with open(filename,'r') as fp:
-		idx = 1
-		for line in fp:
-			if len(line.split('\t'))!=8: print idx
-			idx += 1
-
-def main():
+def import_school_major_csv():
 	django.setup()
 	stop_at = int(sys.argv[1])
 	eof=False
@@ -167,6 +158,26 @@ def main():
 	if eof is False: print 'stopped at ', stop_at
 	print 'Total time: %f' % sum(profile)
 	print 'Avg time: %f' % np.mean(profile)
+
+import googlemaps
+def main():
+	django.setup()
+
+	# https://code.google.com/apis/console/?noredirect&pli=1#project:871463256694:access
+	gmaps = googlemaps.Client(key='AIzaSyBs9Lh9SBeGg8azzB5h50y8DDjxFO4SLwA')
+	for s in MySchool.objects.all():
+		if len(s.google_geocode): continue
+
+		print 'Working on ', s.name
+		s.google_geocode = gmaps.geocode(s.name)
+		if len(s.google_geocode) == 1:
+			s.formatted_address_en = s.google_geocode[0][u'formatted_address']
+			s.en_name = s.google_geocode[0][u'address_components'][0][u'long_name']
+		elif len(s.google_geocode) < 1:
+			print 'No geocode info: ', s.name
+		elif len(s.google_geocode) > 1:
+			print '>1 geocode info', s.name
+		s.save()
 
 if __name__ == '__main__':
 	main()

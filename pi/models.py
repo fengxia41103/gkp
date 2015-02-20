@@ -12,6 +12,7 @@ from tagging.fields import TagField
 from mptt.models import MPTTModel, TreeForeignKey
 from django.utils import timezone
 from datetime import datetime
+from annoying.fields import JSONField # django-annoying
 
 class MyBaseModel (models.Model):
 	# basic value fields
@@ -105,6 +106,10 @@ class MyAddress (models.Model):
 	province = models.CharField (
 			max_length = 8,
 			verbose_name = u'省份',
+		)
+	province_en = models.CharField (
+			max_length = 32,
+			verbose_name = u'in English'
 		)	
 
 	def __unicode__(self):
@@ -310,6 +315,17 @@ class MySchool (MyBaseModel):
 			null=True, 
 			blank=True,
 			verbose_name = u'学校类型'
+		)
+	formatted_address_en = models.CharField (
+			max_length = 256,
+			null=True,
+			blank=True,
+			verbose_name = u'Google geocode address'
+		)
+	google_geocode = JSONField (
+			null = True,
+			blank = True,
+			verbose_name = u'Google geocode result'
 		)
 	no_key_major = models.IntegerField (
 			null=True, 
