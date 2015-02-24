@@ -12,6 +12,9 @@ urlpatterns = patterns(
 		url(r'logout/$', views.logout_view, name='logout'),
 		url(r'^register/$', views.user_register_view, name='user_register'),
 
+		# google maps
+		url(r'^google/viewport/filter/', views.googlemap_viewport_filter,name='googlemap_viewport_filter'),
+
 		# file import/export
 		url(r'^import/admission/school/$',views.import_admission_by_school, name='import_admission_school'),
 		url(r'^import/admission/major/$',views.import_admission_by_major, name='import_admission_major'),

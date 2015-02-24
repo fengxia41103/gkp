@@ -117,6 +117,7 @@ def import_admission_by_major (request):
 		form = ImportGeneralUploadForm()
 		content = ''
 		return render(request, 'pi/import/upload.html', {'form': form})			
+
 ###################################################
 #
 #	User views
@@ -466,3 +467,27 @@ def school_crawler_view (request):
 	crawler.thread_school_crawler(base_url)
 
 	return HttpResponseRedirect(reverse_lazy('school_list'))	
+
+###################################################
+#
+#	Googlemap views
+#
+###################################################
+from django.shortcuts import render
+from django.views.decorators.vary import vary_on_headers
+# protect the view with require_POST decorator
+from django.views.decorators.http import require_POST
+import json
+from django.views.decorators.csrf import ensure_csrf_cookie
+
+@ensure_csrf_cookie
+#@require_POST
+@vary_on_headers('HTTP_X_REQUESTED_WITH') # needed if using django cache
+def googlemap_viewport_filter (request):
+	result = {}
+	if request.method == 'POST':
+		# handle ajax
+		1/0
+		return HttpResponse(json.dumps(result), content_type="application/json")
+	else:
+		return render(request, 'pi/common/gmap.html', {})		
