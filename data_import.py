@@ -166,10 +166,11 @@ def main():
 	# https://code.google.com/apis/console/?noredirect&pli=1#project:871463256694:access
 	gmaps = googlemaps.Client(key='AIzaSyBs9Lh9SBeGg8azzB5h50y8DDjxFO4SLwA')
 	for s in MySchool.objects.all():
-		if len(s.google_geocode): continue
+		if u'民办' in s.name: s.name = s.name.replace(u'民办','')
+		if s.google_geocode and len(s.google_geocode): continue
 
 		print 'Working on ', s.name
-		s.google_geocode = gmaps.geocode(s.name)
+		s.google_geocode = gmaps.geocode(address=s.name,components={'country':'CN'})
 		if len(s.google_geocode) == 1:
 			s.formatted_address_en = s.google_geocode[0][u'formatted_address']
 			s.en_name = s.google_geocode[0][u'address_components'][0][u'long_name']
