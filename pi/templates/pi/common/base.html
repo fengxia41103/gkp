@@ -65,7 +65,6 @@
 </head>
 
 <body>
-
 {% block navbar %}
 	<div class="navbar navbar-default" role="navigation">
 		<div class="container">
@@ -199,7 +198,7 @@
 		var j$ = jQuery.noConflict();
 
 		// set up csrf token for jQuery ajax call to Django views
-		var csrftoken = j$.cookie('csrftoken');	
+		var csrftoken = j$.cookie('csrftoken');
 		function csrfSafeMethod(method) {
 		    // these HTTP methods do not require CSRF protection
 		    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
@@ -229,7 +228,7 @@
 		});
 
 	</script>
-	{% endcompress %}
+	{% endcompress %}	
 {% endblock %} <!-- end of block JS -->
 
 {# extra javascript code #}
