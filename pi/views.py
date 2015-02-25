@@ -471,42 +471,56 @@ def school_crawler_view (request):
 ###################################################
 #
 #	Googlemap views
-#from shapely.geometry import Polygon
+#
 ###################################################
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.vary import vary_on_headers
 # protect the view with require_POST decorator
 from django.views.decorators.http import require_POST
-import json
-
-
 from django.views.generic import TemplateView
 from shapely.geometry import box as Box
 from shapely.geometry import Point
-import googlemaps
+import json, googlemaps
+from django.template import loader, Context
 
-class googlemap_viewport_filter (TemplateView):
+class MySchoolMapFilter (TemplateView):
 	template_name = 'pi/common/gmap.html'
+	info_template_name = 'pi/school/gmap_info.html'
+
 	def get_context_data(self, **kwargs):
 	    context = super(TemplateView, self).get_context_data(**kwargs)
 
-	    # TODO: center is now Beijing. Should be based on User's location
-	    context['center'] = {'lat':39.904211,'lng':116.407395}
+	    # TODO: center is now WuHan. Should be based on User's location
+	    context['center'] = {'lat':30.593099,'lng':114.305393}
+	    context['data_url']=reverse('school_map_filter')
 	    return context
 
 	def post(self, request):
 		markers = []
-		coords=request.POST
+		coords=request.POST # viewport bounds
 		bound = Box(float(coords['sw.k']),float(coords['sw.D']), float(coords['ne.k']),float(coords['ne.D']))
+		info_win = loader.get_template(self.info_template_name)
+
+		# filter schools for the ones that are visible at current Zoom level and viewport
 		for s in MySchool.objects.all():
+			# we are iterating all geocode in DB
+			# TODO: some geocode are not correct. We need to clean that data.
 			for g in filter(lambda x: x.has_key('geometry'), s.google_geocode):
 				lat,lng = float(g[u'geometry'][u'location'][u'lat']), float(g[u'geometry'][u'location'][u'lng'])
 				if bound.contains(Point(lat,lng)):
+					c = Context({
+						'id': 'schoold_%d'%s.id,
+						'user': request.user,
+						'ip_address': request.META['REMOTE_ADDR'],
+						'title': s.name,
+						'obj': s
+					})
 					markers.append({
 							'lat': lat,
 							'lng': lng,
 							'name':s.name,
-							'link': reverse('school_edit',args = [s.id])
+							'edit': reverse('school_edit',args = [s.id]),
+							'info_win': info_win.render(c)
 						})
 		return HttpResponse(json.dumps(markers), content_type='application/javascript')	

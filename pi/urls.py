@@ -14,7 +14,6 @@ urlpatterns = patterns(
 		url(r'^register/$', views.user_register_view, name='user_register'),
 
 		# google maps
-		url(r'^google/viewport/filter/', ensure_csrf_cookie(views.googlemap_viewport_filter.as_view()),name='googlemap_viewport_filter'),
 
 		# file import/export
 		url(r'^import/admission/school/$',views.import_admission_by_school, name='import_admission_school'),
@@ -48,6 +47,8 @@ urlpatterns = patterns(
 		url(r'^school/(?P<pk>\d+)/edit/$', views.MySchoolEdit.as_view(), name='school_edit'),
 		url(r'^school/(?P<pk>\d+)/delete/$', views.MySchoolDelete.as_view(), name='school_delete'),
 		#url(r'^school/(?P<pk>\d+)/detail/$', views.school_detail, name='school_detail'),
-		url(r'^school/crawler/$', views.school_crawler_view, name='school_crawler'),		
+		url(r'^school/crawler/$', views.school_crawler_view, name='school_crawler'),
+		url(r'^school/map/filter/', ensure_csrf_cookie(views.MySchoolMapFilter.as_view()),name='school_map_filter'),
+
 
 	)
