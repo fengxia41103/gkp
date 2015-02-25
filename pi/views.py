@@ -479,7 +479,7 @@ from django.views.decorators.vary import vary_on_headers
 # protect the view with require_POST decorator
 from django.views.decorators.http import require_POST
 import json
-from django.views.decorators.csrf import ensure_csrf_cookie
+
 
 from django.views.generic import TemplateView
 from shapely.geometry import box as Box
@@ -490,6 +490,8 @@ class googlemap_viewport_filter (TemplateView):
 	template_name = 'pi/common/gmap.html'
 	def get_context_data(self, **kwargs):
 	    context = super(TemplateView, self).get_context_data(**kwargs)
+
+	    # TODO: center is now Beijing. Should be based on User's location
 	    context['center'] = {'lat':39.904211,'lng':116.407395}
 	    return context
 
@@ -498,10 +500,8 @@ class googlemap_viewport_filter (TemplateView):
 		coords=request.POST
 		bound = Box(float(coords['sw.k']),float(coords['sw.D']), float(coords['ne.k']),float(coords['ne.D']))
 		for s in MySchool.objects.all():
-			geos = filter(lambda x: x.has_key('geometry'), s.google_geocode)
-			for g in geos:
+			for g in filter(lambda x: x.has_key('geometry'), s.google_geocode):
 				lat,lng = float(g[u'geometry'][u'location'][u'lat']), float(g[u'geometry'][u'location'][u'lng'])
-				print lat, lng
 				if bound.contains(Point(lat,lng)):
 					markers.append({
 							'lat': lat,
@@ -509,5 +509,4 @@ class googlemap_viewport_filter (TemplateView):
 							'name':s.name,
 							'link': reverse('school_edit',args = [s.id])
 						})
-		print markers
 		return HttpResponse(json.dumps(markers), content_type='application/javascript')	

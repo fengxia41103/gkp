@@ -4,6 +4,7 @@ from pi import views
 from django.views.generic.edit import CreateView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import login
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 urlpatterns = patterns(
 		'',
@@ -13,7 +14,7 @@ urlpatterns = patterns(
 		url(r'^register/$', views.user_register_view, name='user_register'),
 
 		# google maps
-		url(r'^google/viewport/filter/', views.googlemap_viewport_filter.as_view(),name='googlemap_viewport_filter'),
+		url(r'^google/viewport/filter/', ensure_csrf_cookie(views.googlemap_viewport_filter.as_view()),name='googlemap_viewport_filter'),
 
 		# file import/export
 		url(r'^import/admission/school/$',views.import_admission_by_school, name='import_admission_school'),
