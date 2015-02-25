@@ -18,6 +18,18 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.utils.encoding import smart_text
 from django.views.decorators.csrf import csrf_exempt
 
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.views.decorators.vary import vary_on_headers
+# protect the view with require_POST decorator
+from django.views.decorators.http import require_POST
+from django.views.generic import TemplateView
+
+# map geometry lib
+from shapely.geometry import box as Box
+from shapely.geometry import Point
+from django.template import loader, Context
+
 # django-crispy-forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
@@ -33,6 +45,7 @@ import random,codecs,unittest,time, tempfile, csv
 from datetime import datetime as dt
 from multiprocessing import Process, Queue
 from pi.models import *
+import json, googlemaps
 from utility import MyUtility
 from crawler import MyCrawler
 
@@ -461,6 +474,18 @@ class MySchoolDelete (DeleteView):
 		context['list_url'] = reverse_lazy('school_list')
 		return context
 
+class MySchoolMapDetail(TemplateView):
+	template_name = 'pi/school/gmap_detail.html'
+
+	def post(self,request):
+		obj_id = request.POST['obj_id']
+		school = MySchool.objects.get(id=int(obj_id))
+		content = loader.get_template(self.template_name)
+		content= content.render(Context({'obj':school}))
+
+		return HttpResponse(json.dumps({'content':content}), 
+			content_type='application/javascript')	
+
 def school_crawler_view (request):
 	base_url = 'http://www.gaokaopai.com/daxue-jianjie'
 	crawler = MyCrawler()
@@ -473,17 +498,6 @@ def school_crawler_view (request):
 #	Googlemap views
 #
 ###################################################
-from django.http import HttpResponse
-from django.shortcuts import render
-from django.views.decorators.vary import vary_on_headers
-# protect the view with require_POST decorator
-from django.views.decorators.http import require_POST
-from django.views.generic import TemplateView
-from shapely.geometry import box as Box
-from shapely.geometry import Point
-import json, googlemaps
-from django.template import loader, Context
-
 class MySchoolMapFilter (TemplateView):
 	template_name = 'pi/common/gmap.html'
 	info_template_name = 'pi/school/gmap_info.html'
@@ -493,7 +507,8 @@ class MySchoolMapFilter (TemplateView):
 
 	    # TODO: center is now WuHan. Should be based on User's location
 	    context['center'] = {'lat':30.593099,'lng':114.305393}
-	    context['data_url']=reverse('school_map_filter')
+	    context['marker_url']=reverse('school_map_filter')
+	    context['detail_url']=reverse('school_map_detail')
 	    return context
 
 	def post(self, request):
@@ -517,6 +532,7 @@ class MySchoolMapFilter (TemplateView):
 						'obj': s
 					})
 					markers.append({
+							'obj_id':s.id,
 							'lat': lat,
 							'lng': lng,
 							'name':s.name,

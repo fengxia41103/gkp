@@ -58,9 +58,24 @@
             google.maps.event.addListener(marker, 'mouseover', function() {
                 info_win.open(map,marker);
             }); 
+            google.maps.event.addListener(marker, 'mouseout', function() {
+                info_win.close(map,marker);
+            }); 
 
             // update hash table
             info_wins[hash]=info_win;
+        }
+
+        function getMarkerDetail (marker, obj_id, url){
+            j$.post(
+                url,
+                {
+                    'obj_id':obj_id
+                },
+                function(resp){
+                    console.log(resp);
+                },'json'
+            );
         }
 
 		// update map markers based on viewport
@@ -70,7 +85,7 @@
 			var sw = bounds.getSouthWest();
 
 			// ajax to server to get a list of markers that are within the viewport
-			j$.post("{{ data_url }}", // passed in from view
+			j$.post("{{ marker_url }}", // passed in from view
 					{ 
                 	'ne.k': ne.k,
                 	'ne.D':ne.D,
@@ -92,15 +107,19 @@
 	                			var marker = new google.maps.Marker({
 	                				position: pos,
 	                				map: map,
-	                				title: resp[i].name
-	                				});
+	                				title: resp[i].name,
+                                    obj_id: resp[i].obj_id 
+	                			});
 
+                                // register a click event to read record details on request
+                                google.maps.event.addListener(marker, 'click',function(){
+                                    getMarkerDetail(this, this.obj_id, "{{ detail_url }}");
+                                });
                                 // register infowin
                                 registerInfoWin(hash,marker,resp[i].info_win);
 
                                 // update hashtable
 	                			markers[hash]=marker;
-
 	                		}
                 		}
 
