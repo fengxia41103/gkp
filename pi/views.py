@@ -416,6 +416,7 @@ def major_crawler_view (request):
 #	MySchool views
 #
 ###################################################
+
 class MySchoolListFilter (FilterSet):
 	class Meta:
 		model = MySchool
@@ -514,24 +515,14 @@ class MySchoolMapFilter (TemplateView):
 	    return context
 
 	def post(self, request):
-		markers = []
+		coords=request.POST # viewport bounds
 		
 		# based on filter criteria we conclude a list
-		filtered_objs = {}
+		filtered_objs = MySchool.map_manager.visible((float(coords['sw.k']),float(coords['sw.D']), float(coords['ne.k']),float(coords['ne.D'])))
 
-		coords=request.POST # viewport bounds
-		bound = Box(float(coords['sw.k']),float(coords['sw.D']), float(coords['ne.k']),float(coords['ne.D']))
+		markers = []
 		info_win_template = loader.get_template(self.info_template_name)
 		visible_template = loader.get_template(self.visible_template_name)
-
-		# filter schools for the ones that are visible at current Zoom level and viewport
-		for s in MySchool.objects.all():
-			# we are iterating all geocode in DB
-			# TODO: some geocode are not correct. We need to clean that data.
-			for g in filter(lambda x: x.has_key('geometry'), s.google_geocode):
-				lat,lng = float(g[u'geometry'][u'location'][u'lat']), float(g[u'geometry'][u'location'][u'lng'])
-				if bound.contains(Point(lat,lng)) and s not in filtered_objs: filtered_objs[s]=(lat,lng)
-
 		for s,(lat,lng) in filtered_objs.iteritems():
 			# Compute a hash. This can be done on client side also.
 			md5 = hashlib.md5()

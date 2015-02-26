@@ -293,7 +293,31 @@ class MyAdmissionByMajor (models.Model):
 			verbose_name = u'平均分'
 		)
 
+from shapely.geometry import box as Box
+from shapely.geometry import Point
+
+class MySchoolMapManager(models.Manager):
+	def visible(self,bound):
+		filtered_objs = {}
+
+		# return objects whose geocode is within given bound
+		sw_lat,sw_lng,ne_lat,ne_lng = bound
+		bound = Box(sw_lat, sw_lng,ne_lat,ne_lng)
+
+		# filter schools for the ones that are visible at current Zoom level and viewport
+		for s in self.get_queryset():
+			# we are iterating all geocode in DB
+			# TODO: some geocode are not correct. We need to clean that data.
+			for g in filter(lambda x: x.has_key('geometry'), s.google_geocode):
+				lat,lng = float(g[u'geometry'][u'location'][u'lat']), float(g[u'geometry'][u'location'][u'lng'])
+				if bound.contains(Point(lat,lng)) and s not in filtered_objs: filtered_objs[s]=(lat,lng)
+		return filtered_objs
+
 class MySchool (MyBaseModel):
+	# custom managers
+	map_manager = MySchoolMapManager()
+
+	# fields
 	raw_page = models.TextField (
 		null = True,
 		blank = True,

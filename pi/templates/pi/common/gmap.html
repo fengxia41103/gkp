@@ -92,6 +92,10 @@
                 	'sw.D':sw.D 
             		}, 
             		function(resp) { // success callback
+                        // populate visible list
+                        j$('#map-detail').html(resp.marker_list_html)
+
+                        // update markers and marker clusters
             			var show_keys = [];
             			var show_markers = [];
             			var hide_markers = [];
@@ -124,9 +128,6 @@
 	                			markers[hash]=marker;
 	                		}
                 		}
-
-                        // populate visible list
-                        j$('#map-detail').html(resp.marker_list_html)
 
 						for (var m in markers){
 							if (show_keys.indexOf(m) != -1) { //show
