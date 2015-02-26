@@ -430,16 +430,7 @@ class MySchoolList (FilterView):
 	paginate_by = 10
 	
 	def get_filterset_class(self):
-		return MySchoolListFilter	
-
-	def get_context_data(self, **kwargs):
-	    context = super(FilterView, self).get_context_data(**kwargs)
-
-	    # TODO: center is now WuHan. Should be based on User's location
-	    context['center'] = {'lat':30.593099,'lng':114.305393}
-	    context['marker_url']=reverse('school_map_filter')
-	    context['detail_url']=reverse('school_map_detail')
-	    return context
+		return MySchoolListFilter
 
 @class_view_decorator(login_required)
 class MySchoolAdd (CreateView):
@@ -507,6 +498,7 @@ def school_crawler_view (request):
 #	Googlemap views
 #
 ###################################################
+
 class MySchoolMapFilter (TemplateView):
 	template_name = 'pi/common/gmap.html'
 	info_template_name = 'pi/school/gmap_info.html'
@@ -568,7 +560,10 @@ class MySchoolMapFilter (TemplateView):
 				})
 
 		# Write list html
-		visible_html = visible_template.render(Context({'objs':filtered_objs }))
+		objs = filtered_objs.keys()
+		objs.sort(key=lambda x: x.school_type, reverse=True)
+
+		visible_html = visible_template.render(Context({'objs':objs, 'total':len(objs) }))
 
 		# return to client
 		return HttpResponse(json.dumps({

@@ -1,7 +1,15 @@
 {% load staticfiles %}
 
-<ul class="list-inline">
-{% for obj in objs %}
-<li><span>{{ obj.name }}</span></li>
-{% endfor %}
-</ul>
+<h1>Total of {{ total }}</h1>
+
+<div>
+	{% regroup objs by school_type as obj_list %}
+	<ul class="list-group">
+	{% for school_type in obj_list %}
+	    <li class="list-group-item">
+	    	{{ school_type.grouper }}
+	    	<span class="badge">{{ school_type.list|length }}</span>
+	    </li>
+	{% endfor %}
+	</ul>
+</div>

@@ -67,6 +67,10 @@
                     'obj_id':obj_id
                 },
                 function(resp){
+                    // disable existing marker animation
+                    for (var hash in markers){
+                        markers[hash].setAnimation(null);
+                    }
                     marker.setAnimation(google.maps.Animation.BOUNCE);
                     j$('#map-detail').html(resp['html']);
                 },'json'
