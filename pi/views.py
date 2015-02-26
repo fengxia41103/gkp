@@ -41,7 +41,7 @@ import django_filters
 
 # so what
 import re,os,os.path,json,shutil,subprocess, testtools
-import random,codecs,unittest,time, tempfile, csv
+import random,codecs,unittest,time, tempfile, csv, hashlib
 from datetime import datetime as dt
 from multiprocessing import Process, Queue
 from pi.models import *
@@ -481,9 +481,9 @@ class MySchoolMapDetail(TemplateView):
 		obj_id = request.POST['obj_id']
 		school = MySchool.objects.get(id=int(obj_id))
 		content = loader.get_template(self.template_name)
-		content= content.render(Context({'obj':school}))
+		html= content.render(Context({'obj':school}))
 
-		return HttpResponse(json.dumps({'content':content}), 
+		return HttpResponse(json.dumps({'html':html}), 
 			content_type='application/javascript')	
 
 def school_crawler_view (request):
@@ -501,6 +501,7 @@ def school_crawler_view (request):
 class MySchoolMapFilter (TemplateView):
 	template_name = 'pi/common/gmap.html'
 	info_template_name = 'pi/school/gmap_info.html'
+	visible_template_name = 'pi/school/gmap_visible_list.html'
 
 	def get_context_data(self, **kwargs):
 	    context = super(TemplateView, self).get_context_data(**kwargs)
@@ -513,9 +514,14 @@ class MySchoolMapFilter (TemplateView):
 
 	def post(self, request):
 		markers = []
+		
+		# based on filter criteria we conclude a list
+		filtered_objs = {}
+
 		coords=request.POST # viewport bounds
 		bound = Box(float(coords['sw.k']),float(coords['sw.D']), float(coords['ne.k']),float(coords['ne.D']))
-		info_win = loader.get_template(self.info_template_name)
+		info_win_template = loader.get_template(self.info_template_name)
+		visible_template = loader.get_template(self.visible_template_name)
 
 		# filter schools for the ones that are visible at current Zoom level and viewport
 		for s in MySchool.objects.all():
@@ -523,20 +529,41 @@ class MySchoolMapFilter (TemplateView):
 			# TODO: some geocode are not correct. We need to clean that data.
 			for g in filter(lambda x: x.has_key('geometry'), s.google_geocode):
 				lat,lng = float(g[u'geometry'][u'location'][u'lat']), float(g[u'geometry'][u'location'][u'lng'])
-				if bound.contains(Point(lat,lng)):
-					c = Context({
-						'id': 'schoold_%d'%s.id,
-						'user': request.user,
-						'ip_address': request.META['REMOTE_ADDR'],
-						'title': s.name,
-						'obj': s
-					})
-					markers.append({
-							'obj_id':s.id,
-							'lat': lat,
-							'lng': lng,
-							'name':s.name,
-							'edit': reverse('school_edit',args = [s.id]),
-							'info_win': info_win.render(c)
-						})
-		return HttpResponse(json.dumps(markers), content_type='application/javascript')	
+				if bound.contains(Point(lat,lng)) and s not in filtered_objs: filtered_objs[s]=(lat,lng)
+
+		for s,(lat,lng) in filtered_objs.iteritems():
+			# Compute a hash. This can be done on client side also.
+			md5 = hashlib.md5()
+			md5.update(s.name.encode('utf-8'))
+
+			# infowin Context for html rendering
+			c = Context({
+				'obj_id': 'obj_%d'%s.id,
+				'user': request.user,
+				'ip_address': request.META['REMOTE_ADDR'],
+				'title': s.name,
+				'obj': s
+			})
+
+			# Compose data array for client
+			markers.append({
+					'lat': lat,
+					'lng': lng,	
+
+					# custom data					
+					'hash': md5.hexdigest(),
+					'obj_id':s.id,
+					'name':s.name,
+					'edit': reverse('school_edit',args = [s.id]),
+					'info_win_html': info_win_template.render(c)
+				})
+
+		# Write list html
+		visible_html = visible_template.render(Context({'objs':filtered_objs }))
+
+		# return to client
+		return HttpResponse(json.dumps({
+				'markers':markers, 
+				'marker_list_html':visible_html
+			}), 
+			content_type='application/javascript')	
