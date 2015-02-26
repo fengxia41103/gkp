@@ -7,18 +7,6 @@
     </style>
 {% endblock %}
 
-{% block page-header %}
-    Schools
-{% endblock %}
-
-{% block content %}
-{% csrf_token %}
-    <div class="row">
-        <div id="map-canvas" class="col-md-8" style="height:640px"></div>
-        <div id="map-detail" class="col-md-4">say something</div>
-    </div>
-{% endblock %}
-
 {% block custom_js %}
     <script type="text/javascript"
     	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBs9Lh9SBeGg8azzB5h50y8DDjxFO4SLwA">
@@ -135,7 +123,7 @@
 
                         // populate visible list
                         j$('#map-detail').html(resp.marker_list_html)
-                        
+
 						for (var m in markers){
 							if (show_keys.indexOf(m) != -1) { //show
 								show_markers.push(markers[m]);
@@ -154,5 +142,11 @@
             	);		
 		}
     </script>
+{% endblock %}
 
+{% block content %}
+<div class="row">
+    <div id="map-canvas" class="col-md-8" style="height:640px"></div>
+    <div id="map-detail" class="col-md-4">say something</div>
+</div>
 {% endblock %}

@@ -1,0 +1,19 @@
+{% load staticfiles %}
+
+<div class="page-header">
+	<h3>School Preview</h3>
+</div>
+<div>
+	<h2><span class="label label-default">{{ obj.name }}</span></h2>
+	<small>{{ obj.en_name }}</small>
+</div>
+<div>
+	<dl class="dl-horizontal">
+		<dt>Founded</dt>
+		<dd>{{ obj.founded }}</dd>
+
+		<dt>School Type</dt>
+		<dd>{{ obj.school_type }}</dd>
+	</dl>
+</div>
+<p>{{ obj.description }}</p>

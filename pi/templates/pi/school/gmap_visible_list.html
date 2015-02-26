@@ -1,0 +1,7 @@
+{% load staticfiles %}
+
+<ul class="list-inline">
+{% for obj in objs %}
+<li><span>{{ obj.name }}</span></li>
+{% endfor %}
+</ul>

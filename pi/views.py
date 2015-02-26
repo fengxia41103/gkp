@@ -432,6 +432,15 @@ class MySchoolList (FilterView):
 	def get_filterset_class(self):
 		return MySchoolListFilter	
 
+	def get_context_data(self, **kwargs):
+	    context = super(FilterView, self).get_context_data(**kwargs)
+
+	    # TODO: center is now WuHan. Should be based on User's location
+	    context['center'] = {'lat':30.593099,'lng':114.305393}
+	    context['marker_url']=reverse('school_map_filter')
+	    context['detail_url']=reverse('school_map_detail')
+	    return context
+
 @class_view_decorator(login_required)
 class MySchoolAdd (CreateView):
 	model = MySchool
