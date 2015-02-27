@@ -1,13 +1,15 @@
 #!/usr/bin/python  
 # -*- coding: utf-8 -*- 
 import sys,time,os,gc,csv
+import lxml.html
 
+# setup Django
 import django
-
 sys.path.append(os.path.join(os.path.dirname(__file__), 'gaokao'))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gaokao.settings")
 from django.conf import settings
 
+# import models
 from pi.models import *
 
 def admission_by_school_persist (r):
@@ -162,15 +164,97 @@ def import_school_major_csv():
 import googlemaps
 def main():
 	django.setup()
+	#add_school_address()
+	#google_geocoding()
+	baidu_geocoding()
 
+def add_school_address():
+	objs = filter(lambda x: x.raw_page, MySchool.objects.all())
+	we_want = [u'招生电话：',u'学校地址：',u'所处城市：',u'电子邮箱：']
+
+	for s in objs:
+		html = lxml.html.document_fromstring(s.raw_page.encode('utf-8'))
+		infos = html.xpath('//div[@class="infos"]/ul/li')
+		# 鹤壁能源化工职业学院, the page is essentially empty
+		if len(infos) == 0: continue
+
+		for i in infos:
+			node = i.text_content()
+			label = i.xpath('label')
+			if len(label) and label[0].text_content() in we_want:
+				label = label[0].text_content()
+				val = node[len(label):]
+				val=val.replace(u'...','').strip()
+				if u'暂无' in val: val=''
+
+				print label, val
+
+				if label == u'招生电话：':
+					s.admission_office_phone = val 
+				elif label == u'学校地址：':
+					s.address = val 
+				elif label == u'所处城市：':
+					s.city = val
+				elif label == u'电子邮箱：':
+					s.admission_office_email = val
+		s.save()
+
+import urllib2,json
+from time import sleep
+def baidu_geocoding():
+	ak = '15a027206f52227322d641d63057dde8';
+	url = 'http://api.map.baidu.com/geocoder/v2/';
+
+	for idx, s in enumerate(MySchool.objects.all()):
+		#if s.baidu_geocode: continue
+
+		retry = 3
+		result = None
+
+		print idx, ':', s.name
+		
+		# compose url
+		#if len(s.address): val=s.address
+		#else: val = s.name
+		val = s.name
+		post_url = url+'?address='+val.encode('utf-8')+'&output=json&ak='+ak
+
+		while retry:
+			try:
+				result = urllib2.urlopen(post_url, timeout=5)
+				break
+			except: 
+				print 'retrying....', retry
+				retry -= 1
+
+		if result is None:
+			print 'timed out'		
+		else:
+			try:
+				geo = json.loads(result.read())
+				if geo[u'status'] == 0:
+					location = geo[u'result'][u'location']
+					s.lat = location[u'lat']
+					s.lng = location[u'lng']
+					s.baidu_geocode = geo
+					s.save()
+				else: print 'Status is not 0'				
+			except:
+				print 'json loading failed'
+				print result.read()
+
+def google_geocoding():
 	# https://code.google.com/apis/console/?noredirect&pli=1#project:871463256694:access
 	gmaps = googlemaps.Client(key='AIzaSyBs9Lh9SBeGg8azzB5h50y8DDjxFO4SLwA')
 	for s in MySchool.objects.all():
 		if u'民办' in s.name: s.name = s.name.replace(u'民办','')
-		if s.google_geocode and len(s.google_geocode): continue
+		#if s.google_geocode and len(s.google_geocode): continue
 
 		print 'Working on ', s.name
-		s.google_geocode = gmaps.geocode(address=s.name,components={'country':'CN'})
+		if len(s.address):s.google_geocode = gmaps.geocode(address=s.address,components={'country':'CN'})
+		else: continue 
+			#s.google_geocode = gmaps.geocode(address=s.name,components={'country':'CN'})
+		
 		if len(s.google_geocode) == 1:
 			s.formatted_address_en = s.google_geocode[0][u'formatted_address']
 			s.en_name = s.google_geocode[0][u'address_components'][0][u'long_name']

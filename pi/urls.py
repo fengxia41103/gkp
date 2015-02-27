@@ -14,6 +14,7 @@ urlpatterns = patterns(
 		url(r'^register/$', views.user_register_view, name='user_register'),
 
 		# google maps
+		url(r'^map/baidu/geocoding/ajax', ensure_csrf_cookie(views.MySchoolTemp.as_view()),name='school_baidu_geocoding'),
 
 		# file import/export
 		url(r'^import/admission/school/$',views.import_admission_by_school, name='import_admission_school'),
@@ -50,4 +51,5 @@ urlpatterns = patterns(
 		url(r'^school/crawler/$', views.school_crawler_view, name='school_crawler'),
 		url(r'^school/map/filter/', ensure_csrf_cookie(views.MySchoolMapFilter.as_view()),name='school_map_filter'),
 		url(r'^school/map/detail/', ensure_csrf_cookie(views.MySchoolMapDetail.as_view()),name='school_map_detail'),
+
 	)

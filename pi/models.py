@@ -315,7 +315,8 @@ class MySchoolMapManager(models.Manager):
 
 class MySchool (MyBaseModel):
 	# custom managers
-	map_manager = MySchoolMapManager()
+	# Note: the 1st one defined will be taken as the default!
+	objects = MySchoolMapManager()
 
 	# fields
 	raw_page = models.TextField (
@@ -323,6 +324,50 @@ class MySchool (MyBaseModel):
 		blank = True,
 		verbose_name = u'原始html data. Research used ONLY!'
 	)
+	admission_office_phone = models.CharField(
+			max_length=64,
+			null = True,
+			blank = True,
+			default = '',
+			verbose_name = u'招生电话'
+		)
+	admission_office_email = models.EmailField(
+			null = True,
+			blank = True,
+			default = '',
+			verbose_name = u'招生电子邮箱'
+		)	
+	address = models.CharField (
+			max_length=256,
+			null = True,
+			blank = True,
+			default = '',
+			verbose_name = u'学校地址'
+		)
+	lat = models.DecimalField (
+			max_digits = 20,
+			decimal_places = 15,
+			null = True,
+			blank = True,
+			default = 0,
+			verbose_name = u'Address lat'
+		)
+	lng = models.DecimalField (
+			max_digits = 20,
+			decimal_places = 15,
+			null = True,
+			blank = True,
+			default = 0,
+			verbose_name = u'Address lng'
+		)	
+	city = models.CharField (
+			max_length=64,
+			null = True,
+			blank = True,
+			default = '',
+			verbose_name = u'所处城市'			
+		)
+
 	en_name = models.CharField (
 			max_length = 256,
 			null = True,
@@ -351,6 +396,12 @@ class MySchool (MyBaseModel):
 			blank = True,
 			verbose_name = u'Google geocode result'
 		)
+	baidu_geocode = JSONField (
+			null = True,
+			blank = True,
+			verbose_name = u'Baidu geocode result'
+		)
+
 	no_key_major = models.IntegerField (
 			null=True, 
 			blank=True,
