@@ -308,9 +308,9 @@ class MySchoolMapManager(models.Manager):
 		for s in self.get_queryset():
 			# we are iterating all geocode in DB
 			# TODO: some geocode are not correct. We need to clean that data.
-			for g in filter(lambda x: x.has_key('geometry'), s.google_geocode):
-				lat,lng = float(g[u'geometry'][u'location'][u'lat']), float(g[u'geometry'][u'location'][u'lng'])
-				if bound.contains(Point(lat,lng)) and s not in filtered_objs: filtered_objs[s]=(lat,lng)
+			# for g in filter(lambda x: x.has_key('geometry'), s.google_geocode):
+			#	lat,lng = float(g[u'geometry'][u'location'][u'lat']), float(g[u'geometry'][u'location'][u'lng'])
+			if bound.contains(Point(s.lat,s.lng)) and s not in filtered_objs: filtered_objs[s]=(s.lat,s.lng)
 		return filtered_objs
 
 class MySchool (MyBaseModel):

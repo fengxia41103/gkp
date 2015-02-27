@@ -166,7 +166,8 @@ def main():
 	django.setup()
 	#add_school_address()
 	#google_geocoding()
-	baidu_geocoding()
+	#baidu_geocoding()
+	populate_school_geo()
 
 def add_school_address():
 	objs = filter(lambda x: x.raw_page, MySchool.objects.all())
@@ -202,46 +203,77 @@ def add_school_address():
 import urllib2,json
 from time import sleep
 def baidu_geocoding():
-	ak = '15a027206f52227322d641d63057dde8';
-	url = 'http://api.map.baidu.com/geocoder/v2/';
-
+	failed = []
 	for idx, s in enumerate(MySchool.objects.all()):
-		#if s.baidu_geocode: continue
-
-		retry = 3
-		result = None
-
+		if s.baidu_geocode: continue
 		print idx, ':', s.name
 		
 		# compose url
 		#if len(s.address): val=s.address
 		#else: val = s.name
-		val = s.name
-		post_url = url+'?address='+val.encode('utf-8')+'&output=json&ak='+ak
+		if not baidu_geocoding_2(s.name) and s.address is not None:
+			if not baidu_geocoding_2(s.address):
+				print 'Baidu failed completely!'
+				if s.google_geocode is None or len(s.google_geocode)==0:
+					print 'we have no GEO on file!'
+					failed.appends(s)
+		elif s.address is None and (s.google_geocode is None or len(s.google_geocode)==0):
+			print 'we have no GEO on file!'
+			failed.append(s)
 
-		while retry:
-			try:
-				result = urllib2.urlopen(post_url, timeout=5)
-				break
-			except: 
-				print 'retrying....', retry
-				retry -= 1
+	# list that has no GEO from both Baidu and Google
+	print [s.name for s in failed]
 
-		if result is None:
-			print 'timed out'		
-		else:
-			try:
-				geo = json.loads(result.read())
-				if geo[u'status'] == 0:
-					location = geo[u'result'][u'location']
-					s.lat = location[u'lat']
-					s.lng = location[u'lng']
-					s.baidu_geocode = geo
-					s.save()
-				else: print 'Status is not 0'				
-			except:
-				print 'json loading failed'
-				print result.read()
+def populate_school_geo():
+	for idx, s in enumerate(MySchool.objects.all()):
+		if s.lat and s.lng: continue
+		#try:
+		if s.baidu_geocode:
+			s.lat = s.baidu_geocode['result']['location']['lat']
+			s.lng = s.baidu_geocode['result']['location']['lng']
+		elif s.google_geocode:
+			s.lat = s.google_geocode[0]['geometry']['location']['lat']
+			s.lng = s.google_geocode[0]['geometry']['location']['lng']
+		s.save()
+		#except:
+		#	print s.id, s.name
+		#	continue
+
+def baidu_geocoding_2(val):
+	ak = '15a027206f52227322d641d63057dde8';
+	url = 'http://api.map.baidu.com/geocoder/v2/';
+
+	retry = 3
+	result = None
+	post_url = url+'?address='+val.encode('utf-8')+'&output=json&ak='+ak
+
+	while retry:
+		try:
+			result = urllib2.urlopen(post_url, timeout=5)
+			break
+		except: 
+			print 'retrying....', retry
+			retry -= 1
+
+	if result is None:
+		print 'timed out'
+		return False		
+	else:
+		try:
+			geo = json.loads(result.read())
+			if geo[u'status'] == 0:
+				location = geo[u'result'][u'location']
+				s.lat = location[u'lat']
+				s.lng = location[u'lng']
+				s.baidu_geocode = geo
+				s.save()
+			else: print 'Status is not 0'
+			return True
+		except:
+			print 'json loading failed'
+			print result.read()
+			return False
+	return True
 
 def google_geocoding():
 	# https://code.google.com/apis/console/?noredirect&pli=1#project:871463256694:access

@@ -40,12 +40,12 @@ from django_filters.views import FilterView
 import django_filters
 
 # so what
-import re,os,os.path,json,shutil,subprocess, testtools
+import re,os,os.path,shutil,subprocess, testtools
 import random,codecs,unittest,time, tempfile, csv, hashlib
 from datetime import datetime as dt
 from multiprocessing import Process, Queue
 from pi.models import *
-import json, googlemaps
+import simplejson as json, googlemaps
 from utility import MyUtility
 from crawler import MyCrawler
 
@@ -500,27 +500,6 @@ def school_crawler_view (request):
 #	Googlemap views
 #
 ###################################################
-class MySchoolTemp (TemplateView):
-	template_name = 'pi/school/baidu_geocoding.html'
-
-	def get_context_data(self, **kwargs):
-	    context = super(TemplateView, self).get_context_data(**kwargs)
-
-	    # TODO: center is now WuHan. Should be based on User's location
-	    context['objs'] = MySchool.objects.all()
-	    return context
-
-	def post(self,request):
-		obj_id = request.POST['obj_id']
-		geocoding = request.POST['geocoding']
-		s = MySchoo.objects.get(id=int(obj_id))
-		s.baidu_geocoding = geocoding
-		s.save()
-		return HttpResponse(json.dumps({
-				'status':'ok'
-			}), 
-			content_type='application/javascript')	
-
 class MySchoolMapFilter (TemplateView):
 	template_name = 'pi/common/gmap.html'
 	info_template_name = 'pi/school/gmap_info.html'

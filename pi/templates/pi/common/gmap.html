@@ -109,6 +109,8 @@
                             var hash = visible_markers[i]['hash'];
                 			show_keys.push(hash);
                 			if (!markers.hasOwnProperty(hash)) {
+                                console.log(visible_markers[i].lat, visible_markers[i].lng);
+                                
 	                			var pos = new google.maps.LatLng(visible_markers[i].lat,visible_markers[i].lng);
 	                			var marker = new google.maps.Marker({
 	                				position: pos,

@@ -14,7 +14,6 @@ urlpatterns = patterns(
 		url(r'^register/$', views.user_register_view, name='user_register'),
 
 		# google maps
-		url(r'^map/baidu/geocoding/ajax', ensure_csrf_cookie(views.MySchoolTemp.as_view()),name='school_baidu_geocoding'),
 
 		# file import/export
 		url(r'^import/admission/school/$',views.import_admission_by_school, name='import_admission_school'),
