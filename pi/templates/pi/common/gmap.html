@@ -33,6 +33,7 @@
     	};
     	var markers={}, info_wins={};
         var delay_marker_update_func;
+        var show_keys = [];
 
 		function initialize() {
 			var mapOptions = {
@@ -111,7 +112,7 @@
 
 		// update map markers based on viewport
 		function delayUpdateMarker(){
-            var timeout = 2000; // value after the map has loaded
+            var timeout = 1000; // value after the map has loaded
             if (delay_marker_update_func) {
                 clearTimeout(delay_marker_update_func);
             }else {
@@ -120,86 +121,100 @@
             delay_marker_update_func = setTimeout(ajaxUpdateMarkers, timeout);
         }
 
-        function ajaxUpdateMarkers(){
-            // block ui
-            myBlockUI();
+        function redrawMarkers(visible_markers, marker_list_html) {
+            // populate visible list
+            j$('#map-detail').html(marker_list_html)
 
+            // update markers and marker clusters
+            show_keys = [];
+            var show_markers = [];
+            var hide_markers = [];
+
+            // iterate through markers to add remove old ones from map and add new ones
+            for (var i=0; i<visible_markers.length; i++){
+                // Must use toString. Otherwise a comparsion to markers' key will fail!
+                //var hash = CryptoJS.MD5(resp[i].name).toString();
+                var hash = visible_markers[i]['hash'];
+                show_keys.push(hash);
+                if (!markers.hasOwnProperty(hash)) {  
+                    var pos = new google.maps.LatLng(visible_markers[i].lat,visible_markers[i].lng);
+                    var marker = new google.maps.Marker({
+                        position: pos,
+                        map: map,
+                        title: visible_markers[i].name,
+                        obj_id: visible_markers[i].obj_id 
+                    });
+
+                    // register a click event to read record details on click
+                    google.maps.event.addListener(marker, 'click',function(){
+                        getMarkerDetail(this, this.obj_id, "{{ detail_url }}");
+                    });
+                    // register infowin
+                    registerInfoWin(hash,marker,visible_markers[i].info_win_html);
+
+                    // update hashtable
+                    markers[hash]=marker;
+                }
+            }// end of for
+
+            for (var m in markers){
+                if (show_keys.indexOf(m) != -1) { //show
+                    show_markers.push(markers[m]);
+                }else { // hide
+                    hide_markers.push(markers[m]);
+                }
+            }
+
+            if (mapCluster == null || mapCluster == undefined) {
+                mapCluster = new MarkerClusterer(map, show_markers, mcOptions);
+            }else {
+                mapCluster.removeMarkers(hide_markers);
+                mapCluster.addMarkers(show_markers);
+            }                       
+        }
+
+        function ajaxUpdateMarkers(){
 			var bounds = map.getBounds();
 			var ne = bounds.getNorthEast();
 			var sw = bounds.getSouthWest();
 
 			// ajax to server to get a list of markers that are within the viewport
 			j$.post("{{ marker_url }}", // passed in from view
-					{ 
-                	'ne.k': ne.k,
-                	'ne.D':ne.D,
-                	'sw.k': sw.k,
-                	'sw.D':sw.D 
-            		}, 
-            		function(resp) { // success callback
-                        // populate visible list
-                        j$('#map-detail').html(resp.marker_list_html)
+				{ 
+            	'ne.k': ne.k,
+            	'ne.D':ne.D,
+            	'sw.k': sw.k,
+            	'sw.D':sw.D 
+        		}, 
+        		function(resp) { // success callback
+                    var visible_markers = resp['markers'];
+                    var marker_list_html = resp['marker_list_html'];
 
-                        // update markers and marker clusters
-            			var show_keys = [];
-            			var show_markers = [];
-            			var hide_markers = [];
-                        var visible_markers = resp['markers'];
-                        var marker_list_html = resp['marker_list_html'];
+                    /*
+                    var changed = false;
+                    for (var i=0; i<visible_markers.length;i++){
+                        if (show_keys.indexOf(visible_markers[i]['hash'].toString())==-1){
+                            changed = true;
+                            break;
+                        }
+                    }
+                    console.log(show_keys);
+                    console.log(changed);
 
-				  		// iterate through markers to add remove old ones from map and add new ones
-                		for (var i=0; i<visible_markers.length; i++){
-                			// Must use toString. Otherwise a comparsion to markers' key will fail!
-                			//var hash = CryptoJS.MD5(resp[i].name).toString();
-                            var hash = visible_markers[i]['hash'];
-                			show_keys.push(hash);
-                			if (!markers.hasOwnProperty(hash)) {  
-	                			var pos = new google.maps.LatLng(visible_markers[i].lat,visible_markers[i].lng);
-	                			var marker = new google.maps.Marker({
-	                				position: pos,
-	                				map: map,
-	                				title: visible_markers[i].name,
-                                    obj_id: visible_markers[i].obj_id 
-	                			});
+                    if (changed==false) return;
+                    */
 
-                                // register a click event to read record details on click
-                                google.maps.event.addListener(marker, 'click',function(){
-                                    getMarkerDetail(this, this.obj_id, "{{ detail_url }}");
-                                });
-                                // register infowin
-                                registerInfoWin(hash,marker,visible_markers[i].info_win_html);
+                    redrawMarkers(visible_markers, marker_list_html);
 
-                                // update hashtable
-	                			markers[hash]=marker;
-	                		}
-                		}
-
-						for (var m in markers){
-							if (show_keys.indexOf(m) != -1) { //show
-								show_markers.push(markers[m]);
-							}else { // hide
-								hide_markers.push(markers[m]);
-							}
-						}
-
-                		if (mapCluster == null || mapCluster == undefined) {
-                			mapCluster = new MarkerClusterer(map, show_markers, mcOptions);
-                		}else {
-	                		mapCluster.removeMarkers(hide_markers);
-	                		mapCluster.addMarkers(show_markers);
-                		}
-
-                        // MUST: also the last thing: unblock ui
-                        j$.unblockUI();
-            		},'json'
-            	);		
+        		},'json'
+            );		
 		}
     </script>
 {% endblock %}
 
 {% block content %}
-<div class="row" id="target">
-    <div id="map-canvas" class="col-md-8" style="height:640px"></div>
-    <div id="map-detail" class="col-md-4">say something</div>
-</div>
+    <div class="row" id="target">
+        <div id="map-canvas" class="col-md-12" style="height:640px"></div>
+        <div id="map-detail" class="col-md-12"></div>
+    </div>
 {% endblock %}

@@ -167,7 +167,9 @@ def main():
 	#add_school_address()
 	#google_geocoding()
 	#baidu_geocoding()
-	populate_school_geo()
+	#populate_school_geo()
+	#populate_school_province()
+	populate_hash()
 
 def add_school_address():
 	objs = filter(lambda x: x.raw_page, MySchool.objects.all())
@@ -224,17 +226,41 @@ def baidu_geocoding():
 	# list that has no GEO from both Baidu and Google
 	print [s.name for s in failed]
 
-def populate_school_geo():
+from shapely.geometry import Point
+from decimal import Decimal
+def populate_school_province():
+	states = MyAddress.objects.all()
 	for idx, s in enumerate(MySchool.objects.all()):
-		if s.lat and s.lng: continue
-		#try:
-		if s.baidu_geocode:
-			s.lat = s.baidu_geocode['result']['location']['lat']
-			s.lng = s.baidu_geocode['result']['location']['lng']
-		elif s.google_geocode:
-			s.lat = s.google_geocode[0]['geometry']['location']['lat']
-			s.lng = s.google_geocode[0]['geometry']['location']['lng']
-		s.save()
+		if s.address is None and s.city is None: continue
+
+		for p in states:
+			if p.province in s.address or p.province in s.city:
+				s.province = p
+				print s.name, ':', p.province
+				s.save()
+				break
+
+def populate_school_geo():
+	# wow, this is a hard find: Baidu's geocode is not correct on Google map!
+	# So we use Baidu's as a reference, and iterate through all available Google's geocode
+	# results by distance match, and find the closest one to use!
+	for idx, s in enumerate(MySchool.objects.all()):
+		if not (s.google_geocode and s.lat and s.lng): continue
+		print idx, s.name
+		ref = Point(s.lat,s.lng)
+		min_dist = 1000000
+		min_pair = None
+		for g in filter(lambda x: x.has_key('geometry'), s.google_geocode):
+			lat,lng = Decimal(g[u'geometry'][u'location'][u'lat']), Decimal(g[u'geometry'][u'location'][u'lng'])
+			dist = ref.distance(Point(lat,lng))
+			if dist < min_dist: 
+				min_dist = dist
+				min_pair = (lat,lng)
+		if min_pair:
+			s.lat, s.lng = min_pair
+			s.save()
+			print idx, 'updated...... next >'
+
 		#except:
 		#	print s.id, s.name
 		#	continue
@@ -294,6 +320,14 @@ def google_geocoding():
 			print 'No geocode info: ', s.name
 		elif len(s.google_geocode) > 1:
 			print '>1 geocode info', s.name
+		s.save()
+
+import hashlib
+def populate_hash ():
+	for s in MySchool.objects.all():
+		md5 = hashlib.md5()
+		md5.update(s.name.encode('utf-8'))
+		s.hash = md5.hexdigest()
 		s.save()
 
 if __name__ == '__main__':

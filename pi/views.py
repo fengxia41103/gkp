@@ -523,11 +523,7 @@ class MySchoolMapFilter (TemplateView):
 		markers = []
 		info_win_template = loader.get_template(self.info_template_name)
 		visible_template = loader.get_template(self.visible_template_name)
-		for s,(lat,lng) in filtered_objs.iteritems():
-			# Compute a hash. This can be done on client side also.
-			md5 = hashlib.md5()
-			md5.update(s.name.encode('utf-8'))
-
+		for s in filtered_objs:
 			# infowin Context for html rendering
 			c = Context({
 				'obj_id': 'obj_%d'%s.id,
@@ -539,11 +535,11 @@ class MySchoolMapFilter (TemplateView):
 
 			# Compose data array for client
 			markers.append({
-					'lat': lat,
-					'lng': lng,	
+					'lat': s.lat,
+					'lng': s.lng,	
 
 					# custom data					
-					'hash': md5.hexdigest(),
+					'hash': s.hash,
 					'obj_id':s.id,
 					'name':s.name,
 					'edit': reverse('school_edit',args = [s.id]),
@@ -551,10 +547,12 @@ class MySchoolMapFilter (TemplateView):
 				})
 
 		# Write list html
-		objs = filtered_objs.keys()
-		objs.sort(key=lambda x: x.school_type, reverse=True)
+		# sort is important for using template groupby function
+		#filtered_objs.sort(key=lambda x: x.province, reverse=True)
+		#sorted_objs = sorted(filtered_objs, key=lambda x: x.province)
+		#print [s.province for s in sorted_objs]
 
-		visible_html = visible_template.render(Context({'objs':objs, 'total':len(objs) }))
+		visible_html = visible_template.render(Context({'objs':filtered_objs, 'total':len(filtered_objs) }))
 
 		# return to client
 		return HttpResponse(json.dumps({

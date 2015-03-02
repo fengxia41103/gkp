@@ -298,19 +298,19 @@ from shapely.geometry import Point
 
 class MySchoolMapManager(models.Manager):
 	def visible(self,bound):
-		filtered_objs = {}
+		filtered_objs = []
 
 		# return objects whose geocode is within given bound
 		sw_lat,sw_lng,ne_lat,ne_lng = bound
 		bound = Box(sw_lat, sw_lng,ne_lat,ne_lng)
 
 		# filter schools for the ones that are visible at current Zoom level and viewport
-		for s in self.get_queryset():
+		for s in self.get_queryset().order_by('province'):
 			# we are iterating all geocode in DB
 			# TODO: some geocode are not correct. We need to clean that data.
 			# for g in filter(lambda x: x.has_key('geometry'), s.google_geocode):
 			#	lat,lng = float(g[u'geometry'][u'location'][u'lat']), float(g[u'geometry'][u'location'][u'lng'])
-			if bound.contains(Point(s.lat,s.lng)) and s not in filtered_objs: filtered_objs[s]=(s.lat,s.lng)
+			if bound.contains(Point(s.lat,s.lng)) and s not in filtered_objs: filtered_objs.append(s)
 		return filtered_objs
 
 class MySchool (MyBaseModel):
@@ -319,6 +319,13 @@ class MySchool (MyBaseModel):
 	objects = MySchoolMapManager()
 
 	# fields
+	hash = models.CharField (
+		max_length = 256, # we don't expect using a hash more than 256-bit long!
+		null = True,
+		blank = True,
+		default = '',
+		verbose_name = u'MD5 hash'
+	)
 	raw_page = models.TextField (
 		null = True,
 		blank = True,
@@ -360,6 +367,12 @@ class MySchool (MyBaseModel):
 			default = 0,
 			verbose_name = u'Address lng'
 		)	
+	province = models.ForeignKey (
+			'MyAddress',
+			null = True,
+			blank = True,
+			verbose_name = u'所处省'			
+		)
 	city = models.CharField (
 			max_length=64,
 			null = True,
@@ -367,7 +380,6 @@ class MySchool (MyBaseModel):
 			default = '',
 			verbose_name = u'所处城市'			
 		)
-
 	en_name = models.CharField (
 			max_length = 256,
 			null = True,
