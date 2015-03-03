@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*- 
 import sys,time,os,gc,csv
 import lxml.html
+import urllib
 
 # setup Django
 import django
@@ -161,16 +162,6 @@ def import_school_major_csv():
 	print 'Total time: %f' % sum(profile)
 	print 'Avg time: %f' % np.mean(profile)
 
-import googlemaps
-def main():
-	django.setup()
-	#add_school_address()
-	#google_geocoding()
-	#baidu_geocoding()
-	#populate_school_geo()
-	#populate_school_province()
-	populate_hash()
-
 def add_school_address():
 	objs = filter(lambda x: x.raw_page, MySchool.objects.all())
 	we_want = [u'招生电话：',u'学校地址：',u'所处城市：',u'电子邮箱：']
@@ -265,6 +256,41 @@ def populate_school_geo():
 		#	print s.id, s.name
 		#	continue
 
+from difflib import SequenceMatcher, get_close_matches
+def cleanup_school_name ():
+	for idx, s in enumerate(MySchool.objects.all()):
+		if idx > 2400: continue
+		print idx, s.name
+		try:
+			if not s.google_geocode.has_key('status') or s.google_geocode['status'] != 'OK': continue
+		except:
+			continue
+		pois = []
+		similarity = 0
+		closest_match = None
+		exact = False		
+		for addr in filter(lambda x: x.has_key('geometry') and x.has_key('address_components'), s.google_geocode['results']):
+			for p in filter(lambda x: 'point_of_interest' in x['types'], addr['address_components']):
+				possible_name = p['long_name']
+				diff = SequenceMatcher(None,possible_name,s.name).ratio()
+				if diff > 0.99: # exact match!
+					s.name = possible_name
+					closest_match = addr
+					exact = True
+					break
+				elif diff > similarity: 
+					s.name = possible_name
+					similarity = diff
+					closest_match = addr
+			if exact: break
+		if closest_match:
+			if s.address is '': 
+				s.address= addr['formatted_address']
+			s.lat = addr['geometry']['location']['lat']
+			s.lng = addr['geometry']['location']['lng']
+			s.save()
+			print 'updating ',s.name
+
 def baidu_geocoding_2(val):
 	ak = '15a027206f52227322d641d63057dde8';
 	url = 'http://api.map.baidu.com/geocoder/v2/';
@@ -302,24 +328,37 @@ def baidu_geocoding_2(val):
 	return True
 
 def google_geocoding():
+	#https://maps.googleapis.com/maps/api/geocode/json?address=&sensor=false&key=AIzaSyBs9Lh9SBeGg8azzB5h50y8DDjxFO4SLwA&language=zh-cn
 	# https://code.google.com/apis/console/?noredirect&pli=1#project:871463256694:access
-	gmaps = googlemaps.Client(key='AIzaSyBs9Lh9SBeGg8azzB5h50y8DDjxFO4SLwA')
-	for s in MySchool.objects.all():
+	key='AIzaSyBs9Lh9SBeGg8azzB5h50y8DDjxFO4SLwA'
+	for idx, s in enumerate(MySchool.objects.all()):
 		if u'民办' in s.name: s.name = s.name.replace(u'民办','')
-		#if s.google_geocode and len(s.google_geocode): continue
+		if idx < 3267: continue
 
-		print 'Working on ', s.name
-		if len(s.address):s.google_geocode = gmaps.geocode(address=s.address,components={'country':'CN'})
-		else: continue 
-			#s.google_geocode = gmaps.geocode(address=s.name,components={'country':'CN'})
-		
-		if len(s.google_geocode) == 1:
-			s.formatted_address_en = s.google_geocode[0][u'formatted_address']
-			s.en_name = s.google_geocode[0][u'address_components'][0][u'long_name']
-		elif len(s.google_geocode) < 1:
-			print 'No geocode info: ', s.name
-		elif len(s.google_geocode) > 1:
-			print '>1 geocode info', s.name
+		print idx, ': Working on ', s.name
+		# renew: 2849
+		query = urllib.urlencode({
+			'address':s.name.encode('utf-8'),
+			'sensor':'false',
+			'key':key,
+			'language':'zh-cn'
+		})
+
+		post_url = 'https://maps.googleapis.com/maps/api/geocode/json?' + query
+		result = urllib2.urlopen(post_url, timeout=5)
+		geo = json.loads(result.read())
+		if geo['status'] != 'OK':
+			print 'Error: ',s.name 
+			raw_input()
+			continue
+		if len(geo['results'])>1:
+			print ">1 results!"
+
+		s.google_geocode = geo
+		s.google_placeid = geo['results'][0]['place_id']
+		s.formatted_address_cn = geo['results'][0]['formatted_address']
+		s.lat = geo['results'][0]['geometry']['location']['lat']
+		s.lng = geo['results'][0]['geometry']['location']['lng']
 		s.save()
 
 import hashlib
@@ -329,6 +368,18 @@ def populate_hash ():
 		md5.update(s.name.encode('utf-8'))
 		s.hash = md5.hexdigest()
 		s.save()
+
+import googlemaps
+def main():
+	django.setup()
+	#google_geocoding()
+	#add_school_address()
+	#google_geocoding()
+	#baidu_geocoding()
+	#populate_school_geo()
+	#populate_school_province()
+	#populate_hash()
+	cleanup_school_name()
 
 if __name__ == '__main__':
 	main()

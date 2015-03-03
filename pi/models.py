@@ -305,7 +305,7 @@ class MySchoolMapManager(models.Manager):
 		bound = Box(sw_lat, sw_lng,ne_lat,ne_lng)
 
 		# filter schools for the ones that are visible at current Zoom level and viewport
-		for s in self.get_queryset().order_by('province'):
+		for s in [x for x in self.get_queryset().order_by('province') if x.has_admission]:
 			# we are iterating all geocode in DB
 			# TODO: some geocode are not correct. We need to clean that data.
 			# for g in filter(lambda x: x.has_key('geometry'), s.google_geocode):
@@ -325,6 +325,13 @@ class MySchool (MyBaseModel):
 		blank = True,
 		default = '',
 		verbose_name = u'MD5 hash'
+	)
+	google_placeid = models.CharField (
+		max_length = 64,
+		null = True,
+		blank = True,
+		default = '',
+		verbose_name = u'Google geocoding place id'
 	)
 	raw_page = models.TextField (
 		null = True,
@@ -440,3 +447,10 @@ class MySchool (MyBaseModel):
 			verbose_name = u'硕士点个数'
 		)
 
+	def _has_admission_history(self):
+		'''
+			Look up MyAdmissionBySchool to determine whether this school
+			has admission data on file
+		'''
+		return (MyAdmissionBySchool.objects.filter(school = self.id).count() > 0)
+	has_admission = property(_has_admission_history)
