@@ -166,7 +166,7 @@ def logout_view(request):
 class MyAdmissionBySchoolListFilter (FilterSet):
 	class Meta:
 		model = MyAdmissionBySchool
-		fields = {'school':['exact'],
+		fields = {'school__name':['contains'],
 				'province':['exact'],
 				'category':['contains'],
 				}
@@ -548,10 +548,6 @@ class MySchoolMapFilter (TemplateView):
 
 		# Write list html
 		# sort is important for using template groupby function
-		#filtered_objs.sort(key=lambda x: x.province, reverse=True)
-		#sorted_objs = sorted(filtered_objs, key=lambda x: x.province)
-		#print [s.province for s in sorted_objs]
-
 		visible_html = visible_template.render(Context({'objs':filtered_objs, 'total':len(filtered_objs) }))
 
 		# return to client

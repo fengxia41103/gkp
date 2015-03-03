@@ -36,8 +36,8 @@
 		// block click on the link
 		e.preventDefault();
 
+		// use hash to lookup, and zoom to it
 		var hash = j$(this).attr('hash');
-		console.log('click:'+hash);
 		map.setZoom(17);
 		map.panTo(markers[hash].position);
 	});

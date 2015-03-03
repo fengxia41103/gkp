@@ -189,23 +189,7 @@
         		function(resp) { // success callback
                     var visible_markers = resp['markers'];
                     var marker_list_html = resp['marker_list_html'];
-
-                    /*
-                    var changed = false;
-                    for (var i=0; i<visible_markers.length;i++){
-                        if (show_keys.indexOf(visible_markers[i]['hash'].toString())==-1){
-                            changed = true;
-                            break;
-                        }
-                    }
-                    console.log(show_keys);
-                    console.log(changed);
-
-                    if (changed==false) return;
-                    */
-
                     redrawMarkers(visible_markers, marker_list_html);
-
         		},'json'
             );		
 		}
