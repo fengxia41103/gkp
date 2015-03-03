@@ -18,6 +18,18 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.utils.encoding import smart_text
 from django.views.decorators.csrf import csrf_exempt
 
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.views.decorators.vary import vary_on_headers
+# protect the view with require_POST decorator
+from django.views.decorators.http import require_POST
+from django.views.generic import TemplateView
+
+# map geometry lib
+from shapely.geometry import box as Box
+from shapely.geometry import Point
+from django.template import loader, Context
+
 # django-crispy-forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
@@ -28,11 +40,12 @@ from django_filters.views import FilterView
 import django_filters
 
 # so what
-import re,os,os.path,json,shutil,subprocess, testtools
-import random,codecs,unittest,time, tempfile, csv
+import re,os,os.path,shutil,subprocess, testtools
+import random,codecs,unittest,time, tempfile, csv, hashlib
 from datetime import datetime as dt
 from multiprocessing import Process, Queue
 from pi.models import *
+import simplejson as json, googlemaps
 from utility import MyUtility
 from crawler import MyCrawler
 
@@ -153,7 +166,7 @@ def logout_view(request):
 class MyAdmissionBySchoolListFilter (FilterSet):
 	class Meta:
 		model = MyAdmissionBySchool
-		fields = {'school':['exact'],
+		fields = {'school__name':['contains'],
 				'province':['exact'],
 				'category':['contains'],
 				}
@@ -403,6 +416,7 @@ def major_crawler_view (request):
 #	MySchool views
 #
 ###################################################
+
 class MySchoolListFilter (FilterSet):
 	class Meta:
 		model = MySchool
@@ -417,7 +431,7 @@ class MySchoolList (FilterView):
 	paginate_by = 10
 	
 	def get_filterset_class(self):
-		return MySchoolListFilter	
+		return MySchoolListFilter
 
 @class_view_decorator(login_required)
 class MySchoolAdd (CreateView):
@@ -461,6 +475,19 @@ class MySchoolDelete (DeleteView):
 		context['list_url'] = reverse_lazy('school_list')
 		return context
 
+@class_view_decorator(login_required)
+class MySchoolMapDetail(TemplateView):
+	template_name = 'pi/school/gmap_detail.html'
+
+	def post(self,request):
+		obj_id = request.POST['obj_id']
+		school = MySchool.objects.get(id=int(obj_id))
+		content = loader.get_template(self.template_name)
+		html= content.render(Context({'obj':school}))
+
+		return HttpResponse(json.dumps({'html':html}), 
+			content_type='application/javascript')	
+
 def school_crawler_view (request):
 	base_url = 'http://www.gaokaopai.com/daxue-jianjie'
 	crawler = MyCrawler()
@@ -471,42 +498,61 @@ def school_crawler_view (request):
 ###################################################
 #
 #	Googlemap views
-#from shapely.geometry import Polygon
+#
 ###################################################
-from django.http import HttpResponse
-from django.shortcuts import render
-from django.views.decorators.vary import vary_on_headers
-# protect the view with require_POST decorator
-from django.views.decorators.http import require_POST
-import json
-
-
-from django.views.generic import TemplateView
-from shapely.geometry import box as Box
-from shapely.geometry import Point
-import googlemaps
-
-class googlemap_viewport_filter (TemplateView):
+class MySchoolMapFilter (TemplateView):
 	template_name = 'pi/common/gmap.html'
+	info_template_name = 'pi/school/gmap_info.html'
+	visible_template_name = 'pi/school/gmap_visible_list.html'
+
 	def get_context_data(self, **kwargs):
 	    context = super(TemplateView, self).get_context_data(**kwargs)
 
-	    # TODO: center is now Beijing. Should be based on User's location
-	    context['center'] = {'lat':39.904211,'lng':116.407395}
+	    # TODO: center is now WuHan. Should be based on User's location
+	    context['center'] = {'lat':30.593099,'lng':114.305393}
+	    context['marker_url']=reverse('school_map_filter')
+	    context['detail_url']=reverse('school_map_detail')
 	    return context
 
 	def post(self, request):
+		coords=request.POST # viewport bounds
+		
+		# based on filter criteria we conclude a list
+		filtered_objs = MySchool.objects.visible((float(coords['sw.k']),float(coords['sw.D']), float(coords['ne.k']),float(coords['ne.D'])))
+
 		markers = []
-		coords=request.POST
-		bound = Box(float(coords['sw.k']),float(coords['sw.D']), float(coords['ne.k']),float(coords['ne.D']))
-		for s in MySchool.objects.all():
-			for g in filter(lambda x: x.has_key('geometry'), s.google_geocode):
-				lat,lng = float(g[u'geometry'][u'location'][u'lat']), float(g[u'geometry'][u'location'][u'lng'])
-				if bound.contains(Point(lat,lng)):
-					markers.append({
-							'lat': lat,
-							'lng': lng,
-							'name':s.name,
-							'link': reverse('school_edit',args = [s.id])
-						})
-		return HttpResponse(json.dumps(markers), content_type='application/javascript')	
+		info_win_template = loader.get_template(self.info_template_name)
+		visible_template = loader.get_template(self.visible_template_name)
+		for s in filtered_objs:
+			# infowin Context for html rendering
+			c = Context({
+				'obj_id': 'obj_%d'%s.id,
+				'user': request.user,
+				'ip_address': request.META['REMOTE_ADDR'],
+				'title': s.name,
+				'obj': s
+			})
+
+			# Compose data array for client
+			markers.append({
+					'lat': s.lat,
+					'lng': s.lng,	
+
+					# custom data					
+					'hash': s.hash,
+					'obj_id':s.id,
+					'name':s.name,
+					'edit': reverse('school_edit',args = [s.id]),
+					'info_win_html': info_win_template.render(c)
+				})
+
+		# Write list html
+		# sort is important for using template groupby function
+		visible_html = visible_template.render(Context({'objs':filtered_objs, 'total':len(filtered_objs) }))
+
+		# return to client
+		return HttpResponse(json.dumps({
+				'markers':markers, 
+				'marker_list_html':visible_html
+			}), 
+			content_type='application/javascript')	

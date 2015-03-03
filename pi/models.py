@@ -293,12 +293,100 @@ class MyAdmissionByMajor (models.Model):
 			verbose_name = u'平均分'
 		)
 
+from shapely.geometry import box as Box
+from shapely.geometry import Point
+
+class MySchoolMapManager(models.Manager):
+	def visible(self,bound):
+		filtered_objs = []
+
+		# return objects whose geocode is within given bound
+		sw_lat,sw_lng,ne_lat,ne_lng = bound
+		bound = Box(sw_lat, sw_lng,ne_lat,ne_lng)
+
+		# filter schools for the ones that are visible at current Zoom level and viewport
+		for s in [x for x in self.get_queryset().order_by('province') if x.has_admission]:
+			# we are iterating all geocode in DB
+			# TODO: some geocode are not correct. We need to clean that data.
+			# for g in filter(lambda x: x.has_key('geometry'), s.google_geocode):
+			#	lat,lng = float(g[u'geometry'][u'location'][u'lat']), float(g[u'geometry'][u'location'][u'lng'])
+			if bound.contains(Point(s.lat,s.lng)) and s not in filtered_objs: filtered_objs.append(s)
+		return filtered_objs
+
 class MySchool (MyBaseModel):
+	# custom managers
+	# Note: the 1st one defined will be taken as the default!
+	objects = MySchoolMapManager()
+
+	# fields
+	hash = models.CharField (
+		max_length = 256, # we don't expect using a hash more than 256-bit long!
+		null = True,
+		blank = True,
+		default = '',
+		verbose_name = u'MD5 hash'
+	)
+	google_placeid = models.CharField (
+		max_length = 64,
+		null = True,
+		blank = True,
+		default = '',
+		verbose_name = u'Google geocoding place id'
+	)
 	raw_page = models.TextField (
 		null = True,
 		blank = True,
 		verbose_name = u'原始html data. Research used ONLY!'
 	)
+	admission_office_phone = models.CharField(
+			max_length=64,
+			null = True,
+			blank = True,
+			default = '',
+			verbose_name = u'招生电话'
+		)
+	admission_office_email = models.EmailField(
+			null = True,
+			blank = True,
+			default = '',
+			verbose_name = u'招生电子邮箱'
+		)	
+	address = models.CharField (
+			max_length=256,
+			null = True,
+			blank = True,
+			default = '',
+			verbose_name = u'学校地址'
+		)
+	lat = models.DecimalField (
+			max_digits = 20,
+			decimal_places = 15,
+			null = True,
+			blank = True,
+			default = 0,
+			verbose_name = u'Address lat'
+		)
+	lng = models.DecimalField (
+			max_digits = 20,
+			decimal_places = 15,
+			null = True,
+			blank = True,
+			default = 0,
+			verbose_name = u'Address lng'
+		)	
+	province = models.ForeignKey (
+			'MyAddress',
+			null = True,
+			blank = True,
+			verbose_name = u'所处省'			
+		)
+	city = models.CharField (
+			max_length=64,
+			null = True,
+			blank = True,
+			default = '',
+			verbose_name = u'所处城市'			
+		)
 	en_name = models.CharField (
 			max_length = 256,
 			null = True,
@@ -327,6 +415,12 @@ class MySchool (MyBaseModel):
 			blank = True,
 			verbose_name = u'Google geocode result'
 		)
+	baidu_geocode = JSONField (
+			null = True,
+			blank = True,
+			verbose_name = u'Baidu geocode result'
+		)
+
 	no_key_major = models.IntegerField (
 			null=True, 
 			blank=True,
@@ -353,3 +447,10 @@ class MySchool (MyBaseModel):
 			verbose_name = u'硕士点个数'
 		)
 
+	def _has_admission_history(self):
+		'''
+			Look up MyAdmissionBySchool to determine whether this school
+			has admission data on file
+		'''
+		return (MyAdmissionBySchool.objects.filter(school = self.id).count() > 0)
+	has_admission = property(_has_admission_history)

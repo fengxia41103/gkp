@@ -1,0 +1,44 @@
+{% load staticfiles %}
+
+{% regroup objs by province as obj_list %}
+
+<h1>Total of {{ total }}</h1>
+
+{# list of location groups #}
+<ul class="list-inline">
+	{% for province in obj_list %}
+		<li><span class="label label-default">{{ province.grouper }}</span></li>
+	{% endfor %}
+</ul>
+
+<div class="panel-group">
+	{% for province in obj_list %}
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">
+				{{ province.grouper }}
+				<span class="badge">{{ province.list|length }}</span>
+			</h3>
+		</div>
+		<div class="panel-body">
+			<ul class="list-inline">
+				{% for s in province.list %}
+					<li type="school" hash="{{ s.hash }}"><a href="{% url 'school_edit' s.id %}">{{s.name}}</a></li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	{% endfor %}
+</div>
+
+<script type="text/javascript">
+	j$("li[type='school']").click(function(e){
+		// block click on the link
+		e.preventDefault();
+
+		// use hash to lookup, and zoom to it
+		var hash = j$(this).attr('hash');
+		map.setZoom(17);
+		map.panTo(markers[hash].position);
+	});
+</script>

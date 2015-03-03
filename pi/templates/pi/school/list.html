@@ -19,9 +19,10 @@
 		<th>名称</th>
 		<th>类型</th>
 		<th>学生数量</th>
-		<th>Google map</th>
+		<th>Google geocode</th>
+		<th>Baidu geocode</th>
+		<th>Address</th>
 		<th>Geocode</th>
-		<th>Formatted address EN</th>
 	</thead>
 	<tbody>
 		{% for obj in object_list %}
@@ -40,18 +41,13 @@
      		</td><td>
      			{{ obj.no_student }}
      		</td><td>
-<iframe
-    width="200"
-    height="150"
-    frameborder="0" style="border:0"
-    src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBs9Lh9SBeGg8azzB5h50y8DDjxFO4SLwA
-      &q={{ obj.name }}
-      &attribution_source=Google+Maps+Embed+API">
-  </iframe>     			
-     		</td><td>
      			{{ obj.google_geocode }}
      		</td><td>
-     			{{ obj.formatted_address_en }}
+     			{{ obj.baidu_geocode }}
+     		</td><td>
+     			{{ obj.address }}
+     		</td><td>
+     			({{ obj.lat }}, {{ obj.lng }})
      		</td>
     	</tr>
     	{% endfor %}

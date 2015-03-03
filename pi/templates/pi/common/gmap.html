@@ -7,14 +7,9 @@
     </style>
 {% endblock %}
 
-{% block content %}
-{% csrf_token %}
-<div id="map-canvas" style="height:640px;width:100%;"></div>
-{% endblock %}
-
 {% block custom_js %}
     <script type="text/javascript"
-    	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBs9Lh9SBeGg8azzB5h50y8DDjxFO4SLwA">
+    	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBs9Lh9SBeGg8azzB5h50y8DDjxFO4SLwA&language=zh-cn">
     </script>
 
     {# JS hash library #}
@@ -36,72 +31,174 @@
     		maxZoom: 13,
     		minimumClusterSize: 3
     	};
-    	var markers={}; // maintain a visible list
+    	var markers={}, info_wins={};
+        var delay_marker_update_func;
+        var show_keys = [];
 
 		function initialize() {
 			var mapOptions = {
 				center: { lat: {{ center.lat }}, lng: {{ center.lng }} },
-				zoom: 10
+				zoom: 5,
+                panControl: false,
+                mapTypeControl: false
 			};
+
+            var styles = [
+            /*
+              {
+                featureType: "all",
+                stylers: [
+                  { saturation: -80 }
+                ]
+              },{
+                featureType: "road.arterial",
+                elementType: "geometry",
+                stylers: [
+                  { hue: "#00ffee" },
+                  { saturation: 50 }
+                ]
+              },{
+                featureType: "poi.school",
+                elementType: "labels",
+                stylers: [
+                  { hue: "#ff0000" },
+                  { saturation: 50 }
+                ]
+              }
+            */
+            ];
+
 			map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-			google.maps.event.addListener(map,'idle',updateMarkers);
+            map.setOptions({styles: styles});
+			
+            // plot markers
+            google.maps.event.addListener(map,'idle',delayUpdateMarker);
 		}
 		google.maps.event.addDomListener(window, 'load', initialize);
 
+        // register infowin to marker
+        function registerInfoWin(hash,marker,content){
+            var info_win = new google.maps.InfoWindow({
+                content: content
+            });
+
+            // register a click event to popup info win
+            google.maps.event.addListener(marker, 'mouseover', function() {
+                info_win.open(map,marker);
+            }); 
+            google.maps.event.addListener(marker, 'mouseout', function() {
+                info_win.close(map,marker);
+            }); 
+            // update hash table
+            info_wins[hash]=info_win;
+        }
+
+        function getMarkerDetail (marker, obj_id, url){
+            j$.post(
+                url,
+                {
+                    'obj_id':obj_id
+                },
+                function(resp){
+                    // disable existing marker animation
+                    for (var hash in markers){
+                        markers[hash].setAnimation(null);
+                    }
+                    marker.setAnimation(google.maps.Animation.BOUNCE);
+                    j$('#map-detail').html(resp['html']);
+                },'json'
+            );
+        }
+
 		// update map markers based on viewport
-		function updateMarkers(){
+		function delayUpdateMarker(){
+            var timeout = 1000; // value after the map has loaded
+            if (delay_marker_update_func) {
+                clearTimeout(delay_marker_update_func);
+            }else {
+                timeout = 0;
+            }
+            delay_marker_update_func = setTimeout(ajaxUpdateMarkers, timeout);
+        }
+
+        function redrawMarkers(visible_markers, marker_list_html) {
+            // populate visible list
+            j$('#map-detail').html(marker_list_html)
+
+            // update markers and marker clusters
+            show_keys = [];
+            var show_markers = [];
+            var hide_markers = [];
+
+            // iterate through markers to add remove old ones from map and add new ones
+            for (var i=0; i<visible_markers.length; i++){
+                // Must use toString. Otherwise a comparsion to markers' key will fail!
+                //var hash = CryptoJS.MD5(resp[i].name).toString();
+                var hash = visible_markers[i]['hash'];
+                show_keys.push(hash);
+                if (!markers.hasOwnProperty(hash)) {  
+                    var pos = new google.maps.LatLng(visible_markers[i].lat,visible_markers[i].lng);
+                    var marker = new google.maps.Marker({
+                        position: pos,
+                        map: map,
+                        title: visible_markers[i].name,
+                        obj_id: visible_markers[i].obj_id 
+                    });
+
+                    // register a click event to read record details on click
+                    google.maps.event.addListener(marker, 'click',function(){
+                        getMarkerDetail(this, this.obj_id, "{{ detail_url }}");
+                    });
+                    // register infowin
+                    registerInfoWin(hash,marker,visible_markers[i].info_win_html);
+
+                    // update hashtable
+                    markers[hash]=marker;
+                }
+            }// end of for
+
+            for (var m in markers){
+                if (show_keys.indexOf(m) != -1) { //show
+                    show_markers.push(markers[m]);
+                }else { // hide
+                    hide_markers.push(markers[m]);
+                }
+            }
+
+            if (mapCluster == null || mapCluster == undefined) {
+                mapCluster = new MarkerClusterer(map, show_markers, mcOptions);
+            }else {
+                mapCluster.removeMarkers(hide_markers);
+                mapCluster.addMarkers(show_markers);
+            }                       
+        }
+
+        function ajaxUpdateMarkers(){
 			var bounds = map.getBounds();
 			var ne = bounds.getNorthEast();
 			var sw = bounds.getSouthWest();
 
 			// ajax to server to get a list of markers that are within the viewport
-			j$.post("{% url 'googlemap_viewport_filter' %}",
-					{ 
-                	'ne.k': ne.k,
-                	'ne.D':ne.D,
-                	'sw.k': sw.k,
-                	'sw.D':sw.D 
-            		}, 
-            		function(resp) { // success callback
-            			var show_keys = [];
-            			var show_markers = [];
-            			var hide_markers = [];
-
-				  		// iterate through markers to add remove old ones from map and add new ones
-                		for (var i=0; i<resp.length; i++){
-                			// Must use toString. Otherwise a comparsion to markers' key will fail!
-                			var hash = CryptoJS.MD5(resp[i].name).toString();
-                			show_keys.push(hash);
-                			if (!markers.hasOwnProperty(hash)) {
-	                			var pos = new google.maps.LatLng(resp[i].lat,resp[i].lng);
-	                			var marker = new google.maps.Marker({
-	                				position: pos,
-	                				map: map,
-	                				title: resp[i].name
-	                				});
-	                			markers[hash]=marker
-	                		}
-                		}
-
-						for (var m in markers){
-							if (show_keys.indexOf(m) != -1) { //show
-								show_markers.push(markers[m]);
-							}else { // hide
-								hide_markers.push(markers[m]);
-							}
-						}
-
-                		if (mapCluster == null || mapCluster == undefined) {
-                			mapCluster = new MarkerClusterer(map, show_markers, mcOptions);
-                		}else {
-	                		//mapCluster.clearMarkers();
-	                		mapCluster.removeMarkers(hide_markers);
-	                		mapCluster.addMarkers(show_markers);
-	                		//mapCluster.repaint();
-                		}
-            		},'json'
-            	);		
+			j$.post("{{ marker_url }}", // passed in from view
+				{ 
+            	'ne.k': ne.k,
+            	'ne.D':ne.D,
+            	'sw.k': sw.k,
+            	'sw.D':sw.D 
+        		}, 
+        		function(resp) { // success callback
+                    var visible_markers = resp['markers'];
+                    var marker_list_html = resp['marker_list_html'];
+                    redrawMarkers(visible_markers, marker_list_html);
+        		},'json'
+            );		
 		}
     </script>
+{% endblock %}
 
+{% block content %}
+    <div class="row" id="target">
+        <div id="map-canvas" class="col-md-12" style="height:640px"></div>
+        <div id="map-detail" class="col-md-12"></div>
+    </div>
 {% endblock %}
