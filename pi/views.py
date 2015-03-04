@@ -203,7 +203,7 @@ class MyAdmissionBySchoolEdit (UpdateView):
 	
 	def get_success_url(self):
 		return reverse_lazy('admission_detail', kwargs={'pk':self.get_object().id})
-            
+			
 	def get_context_data(self, **kwargs):
 		context = super(MyAdmissionBySchoolEdit, self).get_context_data(**kwargs)
 		context['title'] = u'编辑fenshuxian(admission)'
@@ -273,7 +273,7 @@ class MyAdmissionByMajorEdit (UpdateView):
 	
 	def get_success_url(self):
 		return reverse_lazy('admission_detail', kwargs={'pk':self.get_object().id})
-            
+			
 	def get_context_data(self, **kwargs):
 		context = super(MyAdmissionByMajorEdit, self).get_context_data(**kwargs)
 		context['title'] = u'编辑fenshuxian(admission)'
@@ -347,7 +347,7 @@ class MyMajorEdit (UpdateView):
 	
 	def get_success_url(self):
 		return reverse_lazy('major_detail', kwargs={'pk':self.get_object().id})
-            
+			
 	def get_context_data(self, **kwargs):
 		context = super(MyMajorEdit, self).get_context_data(**kwargs)
 		context['title'] = u'编辑 Major'
@@ -457,7 +457,7 @@ class MySchoolEdit (UpdateView):
 	
 	def get_success_url(self):
 		return reverse_lazy('school_detail', kwargs={'pk':self.get_object().id})
-            
+			
 	def get_context_data(self, **kwargs):
 		context = super(MySchoolEdit, self).get_context_data(**kwargs)
 		context['title'] = u'编辑 School'
@@ -541,22 +541,33 @@ class MySchoolMapInfo (TemplateView):
 		# return to client
 		return HttpResponse(json.dumps({ 
 				'info_win_html': info_win_template.render(c)
-			}), 
-			content_type='application/javascript')			
+			}), content_type='application/javascript')			
 
 class MySchoolMapFilter (TemplateView):
 	template_name = 'pi/common/gmap.html'
 	visible_template_name = 'pi/school/gmap_visible_list.html'
 
 	def get_context_data(self, **kwargs):
-	    context = super(TemplateView, self).get_context_data(**kwargs)
+		context = super(TemplateView, self).get_context_data(**kwargs)
 
-	    # TODO: center is now WuHan. Should be based on User's location
-	    context['center'] = {'lat':30.593099,'lng':114.305393}
-	    context['marker_url']=reverse('school_map_filter')
-	    context['detail_url']=reverse('school_map_detail')
-	    context['info_win_url']=reverse('school_map_info')
-	    return context
+		# TODO: center is now WuHan. Should be based on User's location
+		context['center'] = {'lat':30.593099,'lng':114.305393}
+		context['marker_url']=reverse('school_map_filter')
+		context['detail_url']=reverse('school_map_detail')
+		context['info_win_url']=reverse('school_map_info')
+		
+		# echart data, group by province
+		result = {}
+		for s in MySchool.objects.has_province():
+			result.setdefault(s.province, []).append(s.id)
+		echart_data = [(key,len(value)) for key,value in result.iteritems()]
+		context['echart_data'] = echart_data
+		context['echart_data_min'] = min([a[1] for a in echart_data])
+		context['echart_data_max'] = max([a[1] for a in echart_data])
+
+		print echart_data
+		print min([a[1] for a in echart_data]), max([a[1] for a in echart_data])
+		return context
 
 	def post(self, request):
 		coords=request.POST # viewport bounds
@@ -582,11 +593,10 @@ class MySchoolMapFilter (TemplateView):
 
 		# Write list html
 		# sort is important for using template groupby function
-		visible_html = visible_template.render(Context({'objs':filtered_objs, 'total':len(filtered_objs) }))
-
+		visible_html = visible_template.render(Context({'objs':filtered_objs, 'total':len(filtered_objs)}))
+		
 		# return to client
 		return HttpResponse(json.dumps({
 				'markers':markers, 
-				'marker_list_html':visible_html
-			}), 
-			content_type='application/javascript')	
+				'marker_list_html':visible_html,
+				}), content_type='application/javascript')

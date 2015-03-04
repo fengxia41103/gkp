@@ -199,11 +199,81 @@
                     redrawMarkers(visible_markers, marker_list_html);
         		},'json'
             );		
-		}
+		}    
 
-        j$('#zoom-to').click(function(){
-            console.log('click to zoom to');
-        });        
+        function echart_map(){
+            var options = {
+                title : {
+                    text: 'School Count',
+                    subtext: '纯属虚构',
+                    x:'center'
+                },
+                tooltip : {
+                    trigger: 'item'
+                },
+                legend: {
+                    orient: 'vertical',
+                    x:'left',
+                    data:['University',]
+                },
+                dataRange: {
+                    min: {{ echart_data_min }},
+                    max: {{ echart_data_max }},
+                    x: 'left',
+                    y: 'bottom',
+                    text:['高','低'],           // 文本，默认为数值文本
+                    //calculable : true,
+                    formatter : function(v, v2){
+                        if (v2 < 100) { return '低于' + v2}
+                        else if (v > 100) { return '高于' + v}
+                        else { return '中' }  
+                    }                  
+                },
+                toolbox: {
+                    show: true,
+                    orient : 'horizontal',
+                    x: 'right',
+                    y: 'top',
+                    feature : {
+                        mark : {show: true},
+                        dataView : {show: true, readOnly: false},
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                roamController: {
+                    show: false,
+                    x: 'right',
+                    mapTypeControl: {
+                        'china': true
+                    }
+                },
+                series : [
+                    {
+                        name: 'University',
+                        type: 'map',
+                        mapType: 'china',
+                        roam: false,
+                        itemStyle:{
+                            normal:{label:{show:true}},
+                            emphasis:{label:{show:true}}
+                        },
+                        data:[
+                            {% for province,count in echart_data %}
+                                {name:'{{ province }}', value:{{ count }}},
+                            {% endfor %}
+                        ]
+                    }
+                ] // end of data series
+            }// end of options
+
+            var myChart = echarts.init(document.getElementById('echart-canvas'),'default');
+            myChart.setOption(options);
+        } // end of func        
+
+        j$(document).ready(function(){
+            echart_map();
+        })
     </script>
 {% endblock %}
 
@@ -212,6 +282,7 @@
 {% endblock %}
 
 {% block content %}
+    <div id="echart-canvas" class="" style="height:520px"></div>
     <div id="map-canvas" class="" style="height:520px"></div>
     <div class="row" id="target">    
         <div id="map-detail" class="col-md-12"></div>

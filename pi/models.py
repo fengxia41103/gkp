@@ -297,7 +297,6 @@ class MyAdmissionByMajor (models.Model):
 
 from shapely.geometry import box as Box
 from shapely.geometry import Point
-
 class MySchoolMapManager(models.Manager):
 	def visible(self,bound):
 		filtered_objs = []
@@ -314,6 +313,9 @@ class MySchoolMapManager(models.Manager):
 			#	lat,lng = float(g[u'geometry'][u'location'][u'lat']), float(g[u'geometry'][u'location'][u'lng'])
 			if bound.contains(Point(s.lat,s.lng)) and s not in filtered_objs: filtered_objs.append(s)
 		return filtered_objs
+
+	def has_province(self):
+		return self.get_queryset().filter(province__isnull=False)
 
 	def has_admission_set(self):
 		return [x for x in self.get_queryset().order_by('province') if x.has_admission]

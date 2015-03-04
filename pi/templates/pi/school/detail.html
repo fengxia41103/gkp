@@ -121,7 +121,7 @@
 		<ul class="list-inline">
 			{% regroup related_schools by batch as obj_list %}
 			{% for batch in obj_list %}
-				<h5>{{ batch.grouper }}</h5>
+				<h5 class="my-section-header">{{ batch.grouper }}</h5>
 				<ul class="list-inline">
 					{% for o in batch.list %}
 						<li>
