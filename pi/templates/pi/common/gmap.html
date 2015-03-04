@@ -31,7 +31,7 @@
     		maxZoom: 13,
     		minimumClusterSize: 3
     	};
-    	var markers={}, info_wins={};
+    	var markers={};
         var delay_marker_update_func;
         var show_keys = [];
 
@@ -77,17 +77,20 @@
 		google.maps.event.addDomListener(window, 'load', initialize);
 
         // register infowin to marker
-        function registerInfoWin(hash,marker,content){
-            var info_win = new google.maps.InfoWindow({
-                content: content
-            });
+        function registerInfoWin(map,marker,obj_id){
+            j$.post(
+                "{{ info_win_url }}",
+                {
+                    'obj_id':obj_id
+                },
+                function(resp){
+                    var info_win = new google.maps.InfoWindow({
+                        content: resp['info_win_html']
+                    });
 
-            // register a click event to popup info win
-            google.maps.event.addListener(marker, 'mouseover', function() {
-                info_win.open(map,marker);
-            }); 
-            // update hash table
-            info_wins[hash]=info_win;
+                    info_win.open(map,marker);
+                },'json'
+            );            
         }
 
         function getMarkerDetail (marker, obj_id, url){
@@ -109,7 +112,7 @@
 
 		// update map markers based on viewport
 		function delayUpdateMarker(){
-            j$('#map-detail').html('Updating information, please wait....');
+            j$('#map-detail').html('Updating information, please wait....');            
             var timeout = 2000; // value after the map has loaded
             if (delay_marker_update_func) {
                 clearTimeout(delay_marker_update_func);
@@ -142,16 +145,17 @@
                         position: pos,
                         map: map,
                         title: visible_markers[i].name,
-                        obj_id: visible_markers[i].obj_id 
+                        obj_id: visible_markers[i].obj_id,
+                        hash:visible_markers[i].hash
                     });
 
                     // register a click event to read record details on click
                     google.maps.event.addListener(marker, 'click',function(){
                         getMarkerDetail(this, this.obj_id, "{{ detail_url }}");
                     });
-                    // register infowin
-                    registerInfoWin(hash,marker,visible_markers[i].info_win_html);
-
+                    google.maps.event.addListener(marker,'mouseover',function(){
+                        registerInfoWin(map,this,this.obj_id);
+                    });
                     // update hashtable
                     markers[hash]=marker;
                 }
@@ -195,6 +199,9 @@
         		},'json'
             );		
 		}
+        j$('span[my-action="zoom-to"]').click(function(){
+            console.log('click to zoom to');
+        });        
     </script>
 {% endblock %}
 

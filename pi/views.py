@@ -17,6 +17,7 @@ from django.shortcuts import render, render_to_response
 from django.http import HttpResponseRedirect, JsonResponse
 from django.utils.encoding import smart_text
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Count
 
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -521,9 +522,25 @@ def school_crawler_view (request):
 #	Googlemap views
 #
 ###################################################
+class MySchoolMapInfo (TemplateView):
+	info_template_name = 'pi/school/gmap_info.html'
+	def post(self,request):
+		school = MySchool.objects.get(id=int(request.POST['obj_id']))
+		info_win_template = loader.get_template(self.info_template_name)
+		# infowin Context for html rendering
+		c = Context({
+			'user': request.user,
+			'ip_address': request.META['REMOTE_ADDR'],
+			'obj': school
+		})
+		# return to client
+		return HttpResponse(json.dumps({ 
+				'info_win_html': info_win_template.render(c)
+			}), 
+			content_type='application/javascript')			
+
 class MySchoolMapFilter (TemplateView):
 	template_name = 'pi/common/gmap.html'
-	info_template_name = 'pi/school/gmap_info.html'
 	visible_template_name = 'pi/school/gmap_visible_list.html'
 
 	def get_context_data(self, **kwargs):
@@ -533,6 +550,7 @@ class MySchoolMapFilter (TemplateView):
 	    context['center'] = {'lat':30.593099,'lng':114.305393}
 	    context['marker_url']=reverse('school_map_filter')
 	    context['detail_url']=reverse('school_map_detail')
+	    context['info_win_url']=reverse('school_map_info')
 	    return context
 
 	def post(self, request):
@@ -542,18 +560,9 @@ class MySchoolMapFilter (TemplateView):
 		filtered_objs = MySchool.objects.visible((float(coords['sw.k']),float(coords['sw.D']), float(coords['ne.k']),float(coords['ne.D'])))
 
 		markers = []
-		info_win_template = loader.get_template(self.info_template_name)
 		visible_template = loader.get_template(self.visible_template_name)
-		for s in filtered_objs:
-			# infowin Context for html rendering
-			c = Context({
-				'obj_id': 'obj_%d'%s.id,
-				'user': request.user,
-				'ip_address': request.META['REMOTE_ADDR'],
-				'title': s.name,
-				'obj': s
-			})
 
+		for s in filtered_objs:
 			# Compose data array for client
 			markers.append({
 					'lat': s.lat,
@@ -564,7 +573,6 @@ class MySchoolMapFilter (TemplateView):
 					'obj_id':s.id,
 					'name':s.name,
 					'edit': reverse('school_edit',args = [s.id]),
-					'info_win_html': info_win_template.render(c)
 				})
 
 		# Write list html

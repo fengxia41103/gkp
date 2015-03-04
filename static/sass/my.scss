@@ -281,9 +281,23 @@ body {
   color: #333;
 }
 
-.dl-horizontal {
+.my-dl-horizontal {
   dt,dd{
-    color: red;
+    border-bottom: 1px dashed #ddd;
+  }
+  dt {
+    font-weight: normal;
+    text-align:left;
   }
 }
 
+body{
+  margin-bottom: 60px;
+}
+
+footer {
+  text-align: center;
+  border-top:2px solid #eeeeee;
+  background-color: #d9230f;
+  padding: 50px 0;
+}

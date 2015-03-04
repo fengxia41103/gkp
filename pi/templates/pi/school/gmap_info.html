@@ -1,10 +1,14 @@
 {% load staticfiles %}
 
 <div>
-	<h2>{{ title }}</h2>
-	<ul>
-		<li>{{ obj.address }}</li>
-		<li>{{ obj.admission_office_phone }}</li>
-		<li>{{ obj.city }}</li>
-	</ul>
+	<h2>
+		<i class="fa fa-university"></i>
+		{{ obj.name }}
+	</h2>
+	<dl class="dl-horizontal my-dl-horizontal">
+		<dt>Address</dt><dd>{{ obj.address|default:"暂无信息" }}</dd>
+		<dt>Phone</dt><dd>{{ obj.admission_office_phone|default:"暂无信息" }}</dd>
+	</dl>
+	<span my-action="zoom-to">Zoom to</span>
+	<a href="{% url 'school_edit' obj.id %}">查看详细>></a>
 </div>

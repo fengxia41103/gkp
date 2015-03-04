@@ -139,11 +139,11 @@ LOGIN_URL ='/gaokao/login'
 LOGOUT_URL ='/gaokao/home'
 
 # libsass "pip install django-libsass"
+COMPRESS_ENABLED = True
+COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter']
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
 )
-COMPRESS_ENABLED = True
-COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter']
 
 # django-debug-toolbar
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
