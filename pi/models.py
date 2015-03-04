@@ -315,6 +315,9 @@ class MySchoolMapManager(models.Manager):
 			if bound.contains(Point(s.lat,s.lng)) and s not in filtered_objs: filtered_objs.append(s)
 		return filtered_objs
 
+	def has_admission_set(self):
+		return [x for x in self.get_queryset().order_by('province') if x.has_admission]
+
 class MySchool (MyBaseModel):
 	# custom managers
 	# Note: the 1st one defined will be taken as the default!

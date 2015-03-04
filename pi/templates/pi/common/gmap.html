@@ -88,6 +88,7 @@
                         content: resp['info_win_html']
                     });
 
+                    // open info win
                     info_win.open(map,marker);
                 },'json'
             );            
@@ -199,7 +200,8 @@
         		},'json'
             );		
 		}
-        j$('span[my-action="zoom-to"]').click(function(){
+
+        j$('#zoom-to').click(function(){
             console.log('click to zoom to');
         });        
     </script>

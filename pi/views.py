@@ -490,8 +490,13 @@ class MySchoolDetail(DetailView):
 		context['school_admission'] = school_admission
 
 		# related list
-		related_schools = MySchool.objects.filter(province = self.get_object().province)[:10]
-		context['related_schools']=related_schools
+		related_schools = MySchool.objects.filter(province = self.get_object().province)[:50]
+		related_list = []
+		for s in related_schools:
+			related_list.append(MyAdmissionBySchool.objects.filter(school = s)[:1][0])
+
+		related_list=sorted(related_list,lambda x,y: cmp(x.batch,y.batch))
+		context['related_schools']=related_list
 		return context
 
 @class_view_decorator(login_required)
