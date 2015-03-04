@@ -70,7 +70,7 @@
 
 			map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
             map.setOptions({styles: styles});
-			
+
             // plot markers
             google.maps.event.addListener(map,'idle',delayUpdateMarker);
 		}
@@ -85,9 +85,6 @@
             // register a click event to popup info win
             google.maps.event.addListener(marker, 'mouseover', function() {
                 info_win.open(map,marker);
-            }); 
-            google.maps.event.addListener(marker, 'mouseout', function() {
-                info_win.close(map,marker);
             }); 
             // update hash table
             info_wins[hash]=info_win;
@@ -112,7 +109,8 @@
 
 		// update map markers based on viewport
 		function delayUpdateMarker(){
-            var timeout = 1000; // value after the map has loaded
+            j$('#map-detail').html('Updating information, please wait....');
+            var timeout = 2000; // value after the map has loaded
             if (delay_marker_update_func) {
                 clearTimeout(delay_marker_update_func);
             }else {
@@ -121,7 +119,9 @@
             delay_marker_update_func = setTimeout(ajaxUpdateMarkers, timeout);
         }
 
-        function redrawMarkers(visible_markers, marker_list_html) {
+        function redrawMarkers(visible_markers, marker_list_html){
+            myBlockUI();
+
             // populate visible list
             j$('#map-detail').html(marker_list_html)
 
@@ -170,7 +170,9 @@
             }else {
                 mapCluster.removeMarkers(hide_markers);
                 mapCluster.addMarkers(show_markers);
-            }                       
+            } 
+
+            j$.unblockUI();                      
         }
 
         function ajaxUpdateMarkers(){
@@ -196,9 +198,13 @@
     </script>
 {% endblock %}
 
+{% block page-header %}
+全国高校一览
+{% endblock %}
+
 {% block content %}
-    <div class="row" id="target">
-        <div id="map-canvas" class="col-md-12" style="height:640px"></div>
+    <div id="map-canvas" class="" style="height:520px"></div>
+    <div class="row" id="target">    
         <div id="map-detail" class="col-md-12"></div>
     </div>
 {% endblock %}

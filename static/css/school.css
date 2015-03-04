@@ -1,0 +1,566 @@
+@charset "utf-8";
+
+.schoolHeader {height: 130px; background-color: #EEF2F2;}
+.schoolHeader .inner {padding-top: 27px; background: url(../Images/schoolName_img.png) no-repeat 100% 3px;}
+.schoolHeader .sham {position: absolute; margin-left: 293px; margin-top: 8px;}
+.schoolHeader .sham a {color: #EE5E45;}
+
+.schoolHeader .catTab {margin: 0;}
+.schoolSeaItem {background-color: #FFF; border: 1px solid #E5E5E5; border-top: 0; height: 66px;}
+.schoolSeaItem .item {padding: 18px 0 0 25px; display: none; line-height: 32px;}
+.schoolSeaItem label {float: left; margin-right: 10px; font-size: 16px;}
+.schoolSeaItem .city, .schoolSeaItem .zy {float: left; width: 130px; line-height: 30px; margin-right: 30px; position: relative; z-index: 999;}
+.schoolSeaItem .city .t, .schoolSeaItem .zy .t {padding: 0 20px 0 12px; cursor: pointer; border: 1px solid #DDD; border-radius: 5px; position: relative; z-index: 2;}
+.schoolSeaItem .city .ico, .schoolSeaItem .zy .ico {background: url(../Images/searchSchool_select.png) no-repeat 100% 0; height: 4px; line-height: 0; position: absolute; right: 10px; top: 16px; width: 7px; z-index: 3;}
+.schoolSeaItem .keyword {float: left; margin-right: 10px;}
+.schoolSeaItem .keyword .inp {border: 1px solid #DDD; border-radius: 5px; width: 150px; height: 30px; line-height: 30px; text-indent: 5px;}
+.schoolSeaItem .btns {float: left;}
+.schoolSeaItem .btn {background-color: #ED5644; color: #FFF; border-bottom: 2px solid #AC3E31; width: 70px; height: 32px;}
+.schoolSeaItem .zy:hover .t {border-radius: 5px 5px 0 0; height: 35px; border-bottom: 0; background-color: #FFF;}
+.schoolSeaItem .zy .sub {display: none; position: absolute; top: 35px; left: 0; background-color: #FFF; width: 100%; z-index: 1;}
+.schoolSeaItem .zy .sub ul {border: 1px solid #DDD; border-radius: 0 0 5px 5px; padding: 5px 2px;}
+.schoolSeaItem .zy .sub li {padding-left: 18px; line-height: 24px; cursor: pointer;}
+.schoolSeaItem .zy .sub li:hover {background-color: #DDD; color: #EE5E45;}
+.schoolSeaItem .sZy2 .sub {width: 200%;}
+.schoolSeaItem .sZy2 .sub li {float: left; width: 42%; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;}
+.schoolSeaItem .xk {float: left; margin-right: 30px;}
+.schoolSeaItem .xk .im {height: 30px; border: 1px solid #DDD; float: left; padding: 0 15px; cursor: pointer;}
+.schoolSeaItem .xk .w {border-radius: 5px 0 0 5px; border-right: 0;}
+.schoolSeaItem .xk .l {border-radius: 0 5px 5px 0;}
+.schoolSeaItem .xk .current {background-color: #55C4B8; color: #FFF; border-color: #55C4B8;}
+.schoolSeaItem .i3 .city {width: 100px;}
+.schoolSeaItem .i3 .inp {width: 80px;}
+
+
+
+.schoolSelect {border: 1px solid #E5E5E5; padding: 10px 20px; margin-top: 20px; display: block;}
+.schoolSelect dl {padding: 10px 0 8px 100px; border-bottom: 1px dashed #E5E5E5; overflow: hidden; zoom: 1;}
+.schoolSelect dt {float: left; text-indent: 6px; margin-left: -100px; width: 95px;}
+.schoolSelect dt strong {float: left;}
+.schoolSelect dt i {width: 6px; height: 9px; float: right; margin: 7px 17px 0 0; background: url(../Images/arrow2.png) no-repeat -25px -25px;}
+.schoolSelect dd {padding-left: 55px;}
+.schoolSelect dd span {margin: 0 15px 2px 0; white-space: nowrap; line-height: 18px; float: left;}
+.schoolSelect dd .all {width: 55px; margin: 0 0 0 -55px;}
+.schoolSelect dd a {color: #05A; padding: 1px 6px; float: left;}
+.schoolSelect dd a:hover {text-decoration: underline;}
+.schoolSelect dd .on a {background-color: #55C4B8; color: #FFF;}
+.schoolSelect dl.lastDL {border: 0;}
+.schoolSelect .sea {display: inline;}
+.schoolSelect .sea input {width: 50px; border: 1px solid #DDD; font-size: 12px; height: 21px; border-radius: 3px; text-align: center;}
+.schoolSelect .sea .btn {background-color: #E5E5E5; border-bottom: 1px solid #9E9E9E; width: 50px; height: 22px;}
+
+.selectActive dd {padding-left: 0;}
+.selectActive dd a {color: #ED5644; border-radius: 5px; border: 1px solid #E5E5E5; padding: 2px 10px;}
+.selectActive dd a:hover {background-color: #E5E5E5; text-decoration: none;}
+.selectActive dd .del {background-color: #ED5644; border-radius: 5px;}
+.selectActive dd .del a, .selectActive dd .del a:hover {border: 0; color: #FFF; background: none;}
+.schoolSelectBtn {width: 230px; height: 25px; margin: -1px auto 0; cursor: pointer; background: url(../Images/schoolSelect_btn.png) no-repeat;}
+.schoolSelectBtn.on {background-position: 0 -40px;}
+
+.schoolFilter {height: 35px; margin-top: 15px; background-color: #F1F1F1; border-bottom: 1px solid #E5E5E5; }
+.schoolFilter .s1 {float: left; border-left: 1px solid #E5E5E5;}
+.schoolFilter .s1 li {float: left; border-right: 1px solid #E5E5E5; line-height: 35px; position: relative; z-index: 1;}
+.schoolFilter .s1 .current {background-color: #FFF; border-top: 1px solid #E5E5E5; position: relative;}
+.schoolFilter .s1 a {display: block; padding: 0 28px 0 18px; color: #666;}
+.schoolFilter .s1 i {position: absolute; right: 13px; top: 15px; width: 7px; height: 8px; background: url(../Images/arrow2.png) no-repeat;}
+.schoolFilter .s1 a:hover {color: #EE5E45;}
+.schoolFilter .s1 i.down {background-position: 0 -50px;}
+.schoolFilter .s1 i.up {background-position: 0 0;}
+.schoolFilter .s1 a:hover .down {background-position: 0 -75px;}
+.schoolFilter .s1 a:hover .up {background-position: 0 -25px;}
+.schoolFilter .s1 .current a {color: #EE5E45;}
+.schoolFilter .s1 .current .down {background-position: 0 -75px;}
+.schoolFilter .s1 .current .up {background-position: 0 -25px;}
+
+.schoolFilter .s2 {float: right;}
+.schoolFilter .s2 .total {float: left; line-height: 28px; color: #ED5644; margin: 3px 15px 0 0; padding: 0 15px; border-right: 1px solid #E5E5E5;}
+.schoolFilter .s2 .pm {float: left; margin-right: 5px;}
+.schoolFilter .s2 .t {line-height: 35px; margin-right: 10px; float: left;}
+.schoolFilter .s2 strong {color: #ED5644; font-weight: normal;}
+.schoolFilter .s2 .a {display: inline-block; float: left; border-width: 5px 8px; border-style: solid; border-color: #FFF; margin: 8px 5px 0 0; width: 6px; height: 9px; overflow: hidden; text-indent: -999px; overflow: hidden; background: #FFF url(../Images/arrow2.png) no-repeat;}
+.schoolFilter .s2 a.p {background-position: -25px -50px;}
+.schoolFilter .s2 span.p {background-position: -25px 0px;}
+.schoolFilter .s2 a.n {background-position: -25px -75px;}
+.schoolFilter .s2 span.n {background-position: -25px -25px;}
+
+
+.schoolList {margin: 5px 0 40px;}
+.schoolList .slist li {padding: 25px 0; border-bottom: 1px solid #E5E5E5; line-height: 25px;}
+.schoolList .pic {float: left; margin-right: 25px;}
+.schoolList .pic a, .schoolList .pic a img {background: url(../Images/dimg.jpg) no-repeat scroll center center #E8E8E8; width: 120px; height: 120px; display: block;}
+.schoolList .pic img {width: 120px; height: 120px;}
+.schoolList .con {float: left;}
+.schoolList .tit {overflow: hidden; zoom: 1; margin: 6px 0;}
+.schoolList h3 {font-size: 20px; font-weight: normal; line-height: 22px; float: left; max-width: 620px;}
+.schoolList .like {margin-left: 20px; float: left; color: #55C4B8; line-height: 18px; font-size: 13px; margin-top: 2px; border: 1px solid #DDD; border-radius: 5px; padding: 0 10px;}
+.schoolList .like i {width: 11px; height: 9px; float: left; margin: 5px 3px 0 0; background: url(../Images/school_img.png) no-repeat -30px -130px;}
+.schoolList .s {float: left; color: #666;}
+.schoolList .s1, .schoolList .s2 {width: 210px;}
+.schoolList .s3 {width: 300px;}
+.schoolList .s3 .sort {color: #ED5644;}
+.schoolList .s3 label {padding-right: 5px;}
+.schoolList .s3 a {background-color: #51C3B7; color: #FFF; display: inline-block; line-height: 20px; padding: 0 5px; font-size: 12px; border-radius: 3px;}
+.schoolList .s3 .bar {display: inline-block; line-height: 12px; font-size: 12px;}
+.schoolList .s3 .bar2 {float: left; height: 12px; background-color: #DCDCDC; margin-right: 5px; width: 100px;}
+.schoolList .s3 .bar2 span {display: inline-block; height: 12px; background-color: #51C3B7;}
+.schoolList .btn {float: left; margin-top: 5px; font-size: 16px; width: 120px; height: 41px; text-indent: 25px; line-height: 40px; border: 0; color: #333; background: url(../Images/school_img.png) no-repeat;}
+.schoolList .btn.current {background-position: 0 -50px; color: #FFF;}
+
+.schoolList .btnContrast.current {background-position: 0 -50px; color: #FFF;}
+.schoolList .tag {clear: both; line-height: 21px; padding-top: 6px;}
+.schoolList .tag span {margin-right: 6px; display: inline-block; background: url(../Images/school_img.png) no-repeat 0 -100px;}
+.schoolList .tag cite {color: #FFF; float: left; height: 22px; margin-left: 22px; padding-right: 12px; background: url(../Images/school_img.png) no-repeat 100% -100px;}
+
+.schoolList .pager {padding-top: 30px;}
+
+/* 大学简介 */
+.schoolIntro_hd {height: 125px; margin-bottom: 25px; background: #EEF2F2 url(../Images/school_hd.png) no-repeat 50% 0;}
+.schoolIntro_hd .inner {}
+.schoolMenu {width: 172px; position: absolute; left: 50%; top: 95px; margin-left: -503px; background: url(../Images/school_menuBg.png) repeat-y;}
+.schoolMenu .schoolLogo {text-align: center; padding: 15px 0;height:120px;background: url(../Images/dimg.jpg) no-repeat 50%;}
+.schoolMenu .menu {text-align: center; padding: 1px 0 60px; background: url(../Images/school_menuMark.png) no-repeat 0 100%;}
+.schoolMenu .menu li {border-top: 1px solid #E5E5E5; border-bottom: 1px solid #E5E5E5; line-height: 36px; margin: -1px 25px 0; font-size: 16px;}
+.schoolMenu .menu li strong {font-weight:normal;}
+.schoolMenu .menu li i {width: 12px; height: 21px; position: absolute; display: none; background: url(../Images/school_menuArrow.png) no-repeat;}
+.schoolMenu .menu li.current {position: relative; z-index: 1;}
+.schoolMenu .menu li.current a {color: #EE5E45;}
+.schoolMenu .menu li.current i {right: -25px; top: 10px; display: block;}
+.schoolName {margin: 35px 0 0 200px; float: left; display: inline; height: 90px; padding-right: 60px; background: url(../Images/schoolName_img.png) no-repeat 100% 100%;}
+.schoolName h1 {float: left; font-size: 30px; font-weight: normal;}
+.schoolName strong {float: left; font-size: 30px; font-weight: normal;}
+.schoolName .ar {float: left; padding: 18px 20px 0 10px; background: url(../Images/ico_map.png) no-repeat 100% 17px;}
+.schoolName .st {float: left; padding: 13px 0 0 10px;}
+.schoolName .enName {clear: both;}
+.schoolInfo {position: absolute; width: 270px; top: 148px; left: 50%; margin-left: 230px;}
+.schoolInfo li {margin-bottom: 10px;}
+.schoolInfo li.i1 {width: 115px; float: left;}
+.schoolInfo li.i2 {float: left;}
+.schoolInfo li.i3 {clear: both;}
+.schoolInfo li i {width: 16px; height: 16px; float: left; margin: 3px 5px 0 0; background: url(../Images/school_img.png) no-repeat -50px -130px;}
+.schoolInfo .i1 i {background-position: -50px -130px;}
+.schoolInfo .i2 i {background-position: -70px -130px;}
+.schoolInfo .i3 i {background-position: -90px -130px;}
+.schoolInfo li .btn {background-color: #ee5e45; color: #FFF; padding: 3px 5px; border-bottom: 1px solid #AC3E31; font-size: 12px;}
+.schoolInfo li .bar {display: inline-block; line-height: 12px; font-size: 12px;}
+.schoolInfo li .bar2 {float: left; height: 12px; background-color: #DCDCDC; margin-right: 5px; width: 130px;}
+.schoolInfo li .bar2 span {display: inline-block; height: 12px; background-color: #EE5E45;}
+/*****************************************************************/
+ /* 分类标题 */
+.catTitle {height: 35px; border-left: 5px solid #55C4B8; padding-left: 20px; margin-bottom: 10px;}
+.catTitle h2 {font-size: 26px; line-height: 35px; font-weight: normal; color: #55C4B8;}
+ /* 表格 */
+.sortTable {width: 100%;}
+.sortTable th {background-color: #55C4B8; line-height: 18px; padding: 10px; color: #FFF; font-size: 16px; border:1px solid #55C4B8; border-bottom: 0;}
+.sortTable td {line-height: 18px; padding: 8px; border: 1px solid #E5E5E5; text-align: center;}
+.sortTable .current {background-color: #FFEEEE; color: #EE5E45;}
+ /* 主选项卡 */
+.catTab {border-bottom: 1px solid #E5E5E5; height: 35px; margin-bottom: 25px;}
+.catTab li {background-color: #E5E5E5; margin-right: 1px; float: left; font-size: 16px;}
+.catTab li a {display: block; padding: 0 25px; line-height: 35px;}
+.catTab li a:hover {color: #EE5E45;}
+.catTab li.current {background-color: #EE5E45; height: 36px; margin-top: 0; position: relative;}
+.catTab li.current a {color: #FFF; line-height: 35px;}
+ /* 子选项卡 */
+.subTab {border-bottom: 1px solid #E5E5E5; height: 35px; margin-bottom: 25px;}
+.subTab ul {padding-left: 25px;}
+.subTab li {border-right: 1px solid #E5E5E5; border-left: 1px solid #E5E5E5; float: left; margin: 2px 0 0 -1px; padding: 0 35px; line-height: 32px; cursor: pointer;}
+.subTab li.current {border: 1px solid #E5E5E5; border-bottom: 0; background-color: #FFF; height: 35px; margin-top: 0; position: relative; color: #EE5E45; font-size: 16px;}
+/*****************************************************************/
+.schoolIntro_con {margin: 0 0 30px 200px; min-height: 500px; width: 510px; float: left; display: inline;}
+.schoolIntro_con .intro {text-align: justify; word-wrap: break-word; margin-bottom: 15px;}
+.schoolIntro_con .txt {text-align: justify; word-wrap: break-word; margin-bottom: 35px;}
+.schoolIntro_con a, .schoolIntro_side a {color: #EE5E45;}
+.schoolIntro_con a:hover, .schoolIntro_side a:hover {color: #55C4B8; text-decoration: underline;}
+.baseInfo {border-top: 2px solid #55C4B8; background: url(../Images/school_baseInfo.png); line-height: 33px; margin-bottom: 20px;}
+.baseInfo_left {float: left; width: 47%;}
+.baseInfo_right {float: right; width: 47%;}
+.baseInfo li {height: 33px;vertical-align: top;}
+.baseInfo .t {float: left;}
+.baseInfo .c {float: right; text-align: right; color: #999;}
+.studentFrom ul {float: left; height: 160px; background: url(../Images/school_zb.png) no-repeat 0 100%; padding-left: 1px;}
+.studentFrom ul li {float: left; width: 65px; text-align: center;}
+.studentFrom li .z {width: 30px; margin: 0 auto; height: 160px; position: relative; z-index: 1;}
+.studentFrom li .z div {background-color: #98D9F5; position: absolute; z-index: 1; bottom: 0; left: 0; font-size: 12px; width: 30px;}
+.studentFrom li .z span {margin-top: -20px; display: block;}
+
+.studentFrom .stuBox {height: 288px; overflow: hidden; margin-bottom: 15px;}
+.studentFrom .stuBox2 {height: 232px; overflow: hidden;}
+.studentFrom .stuAxis {width: 350px; height: 280px; float: left;}
+.studentFrom .stuSex {width: 140px; height: 245px; float: right;}
+.studentFrom .stuSex h3 {color: #EE5E45; font-size: 14px; text-align: center; margin-top: 25px;}
+.studentFrom .barGraph {width: 38px; height: 180px; margin: 20px auto 0;}
+.studentFrom .barGraph .m, .studentFrom .barGraph .f {height: 40px; position: relative; background: url(../Images/school_sex.png) no-repeat;}
+.studentFrom .barGraph .f {background-position: -40px 0;}
+.studentFrom .barGraph .tip {position: absolute; left: 45px; line-height: 15px; font-size: 12px;}
+.studentFrom .barGraph .m .tip {top: 8px; color: #35B4F6;}
+.studentFrom .barGraph .f .tip {bottom: 5px; color: #E148D4;}
+.studentFrom .barGraph .pk {height: 100px; background-color: #E1A5DC;}
+.studentFrom .barGraph .bar {background-color: #79CBF6;}
+.baseInfo_ex {clear:both; text-align: right; margin-bottom: 10px;}
+.baseInfo_ex img {margin-left: 10px;}
+
+.schoolIntro_side {float: right; width: 260px;}
+.schoolIntro_side .pics {}
+.schoolPic_slide img {width: 260px; height: 180px;}
+.schoolPic_slide {width: 260px; height: 180px; overflow: hidden; position: relative;}
+.schoolPic_slide ul {width: 999em; height: 180px; overflow: hidden;}
+.schoolPic_slide li {float: left;}
+.schoolPic_slide .slideNavi {position: absolute; bottom: 7px; right: 5px; line-height: 0; font-size: 0;}
+.schoolPic_slide .slideNavi span {display: inline-block; margin-right: 3px; background-color: #FFF; width: 12px; height: 12px; overflow: hidden; border-radius: 6px; cursor: pointer;}
+.schoolPic_slide .slideNavi span.current {background-color: #EE5E45;}
+.schoolIntro_side .infos {border: 1px solid #E5E5E5;border-top:0;}
+.schoolIntro_side .infos ul {padding: 5px 12px 15px 12px;}
+.schoolIntro_side .infos li {padding: 10px 0 10px 75px; border-bottom: 1px dashed #DDD; line-height: 18px;word-wrap: break-word; overflow: hidden;}
+.schoolIntro_side .infos label {float: left; margin-left: -75px;}
+.schoolIntro_side .infos .map {width: 230px; height: 180px; background-color: #EEE; margin: 15px auto;}
+.schoolIntro_side .website{height:30px;margin-left:15px;}
+.schoolIntro_side .website a{line-height:28px;float:left;border:1px solid #D6D6D6;border-radius:5px;color:#55C4B8;text-align:center;}
+.schoolIntro_side .website .a1{width:90px;margin-right:13px;}
+.schoolIntro_side .website .a2{width:120px;}
+.schoolIntro_side .website a:hover{background-color:#EEE;text-decoration:none;}
+.Specialty {}
+.Specialty .modTitle {border-bottom: 1px solid #DDD;height: 38px;line-height: 30px;}
+.Specialty .modTitle h2 {font-size: 22px;font-weight: normal;border-bottom: 3px solid #55C4B8;	margin-bottom: -2px; position: relative; float: left;height: 37px;padding-right: 10px;}
+.Specialty .modTitle .tab li {font-size: 18px;float: left;margin-right: 35px;padding-right: 10px;cursor: pointer;}
+.Specialty .modTitle .tab li.current {font-size: 22px;border-bottom: 3px solid #55C4B8;margin-bottom: -2px;position: relative;height: 37px;}
+.Specialty .modTitle .tab h2 {font-size: 18px;font-weight: normal;border-bottom: 0;	margin-bottom: 0;	position: relative;	float: none;height: auto;padding-right: 0;}
+.Specialty .modTitle .tab li.current h2 {font-size: 22px;}
+.Specialty .modContent {padding-top: 20px;}
+.Specialty .box {display: none;}
+.Specialty .txt p {padding: 10px 0;}
+.Specialty .txt h3 {color: #55C4B8;font-size: 16px;}
+.Specialty .list {background: url(../Images/school_majorList.png) repeat 0 0; margin-bottom: 15px;}
+
+.Specialty .list li {width: 170px; background: url(../Images/dot.png) no-repeat 0 20px ; float: left; height: 45px; line-height: 45px; overflow: hidden; text-indent: 18px; text-overflow: ellipsis; white-space: nowrap;}
+.Specialty .list a { color: #333;}
+/* 报考指南 */
+.schoolIntro_con2 {margin: 0 0 50px 200px; min-height: 500px;}
+.schoolIntro_con2 p {padding: .6em 0;}
+.schoolIntro_con2 .txt {text-align: justify;    word-wrap: break-word;    font-size: 14px;}
+/* 开设专业 */
+.majorCon {margin-bottom: 25px;}
+.majorCon h3 {padding: 0 0 10px 25px; font-size: 18px; border-bottom: 1px solid #E5E5E5;}
+.majorCon .list {margin-bottom: 15px; background: url(../Images/school_majorList.png);}
+.majorCon .list li {background: url(../Images/dot.png) no-repeat 28px 20px; text-indent: 18px; height: 45px; line-height: 45px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; float: left; width: 175px; padding-left: 25px;}
+.majorCon .list li:hover {color: #55C4B8; background-position: 28px -70px;}
+.majorCon p {padding: 0;}
+.majorCon .moreLink {text-align: right; margin-top: 10px;}
+.majorCon .moreLink a {color: #EE5E45;}
+.majorCon .moreLink a:hover {text-decoration: underline;}
+.majorCon .sortTable .t1 {width: 100px;}
+.majorCon .sortTable .t2 {text-align: left; padding-left: 40px}
+.majorCon .sortTable .t3 {width: 120px;}
+.majorCon .majorAxis {margin-left: 25px;}
+.majorCon .majorAxis .item {height: 320px; display: none;}
+.majorCon .majorAxis .axis {width: 750px; height: 320px;}
+/* 学校图集 */
+.albumCon {padding-top: 15px;}
+.albumCon .list li {float: left; margin: 0 25px 25px 0;}
+.albumCon .list img {width: 240px; height: 160px; vertical-align: top;}
+/* 历年分数线 */
+.markLineCon {margin-bottom: 25px;}
+.markLineCon .subTab ul {padding: 0;}
+.markLineCon .markLineAxis .item {height: 320px; display: none;}
+.markLineCon .markLineAxis .axis {width: 750px; height: 320px;}
+			/* 右角搜索 */
+.markLineCon .mlSearch {float: right; margin-top: -40px; height: 40px;}
+.markLineCon .mlSearch .item {float: left; position: relative; z-index: 1; margin-right: 5px;}
+.markLineCon .mlSearch .t {background-color: #DCDCDC; border-radius: 5px; height: 32px; line-height: 32px; padding: 0 25px 0 20px; position: relative; cursor: pointer;}
+.markLineCon .mlSearch .ico {background: url(../Images/searchSchool_select.png) no-repeat 100% 0; height: 4px; line-height: 0; position: absolute; right: 10px; top: 16px; width: 7px;}
+.markLineCon .mlSearch .item:hover .t {background-color: #CCC; border-radius: 5px 5px 0 0; height: 35px;}
+.markLineCon .mlSearch .sub {display: none; position: absolute; top: 35px; left: 0; background-color: #CCC; border-radius: 5px; width: 100%;}
+.markLineCon .mlSearch .sub ul {margin: 5px 2px;}
+.markLineCon .mlSearch .sub li {padding-left: 18px; line-height: 24px; cursor: pointer;}
+.markLineCon .mlSearch .sub li:hover {background-color: #DDD; color: #EE5E45;}
+.markLineCon .mlSearch .i1 .sub {border-radius: 0 0 5px 5px;}
+.markLineCon .mlSearch .i3 .sub {border-radius: 0 0 5px 5px;}
+.markLineCon .mlSearch .i2 .sub {width: 225px; right: -65px; left: auto;}
+.markLineCon .mlSearch .i2 li {float: left; width: 55px;}
+.markLineCon .mlSearch .btns {float: left;}
+.markLineCon .mlSearch .btn {float: left; background-color: #ED5644; color: #FFF; height: 32px; width: 60px; border: 1px solid #ED5644; border-bottom: 1px solid #AC3E31;}
+.markLineCon .popChart {display: block; width: 25px; height: 14px; background: url(../Images/school_img.png) no-repeat 0 -130px; overflow: hidden; text-indent: -999px; margin: 0 auto;}
+			/* 弹出分数线 */
+.popMarkLine .catTab {margin-top: 15px;}
+.popMarkLineAxis .item {height: 320px; display: none;}
+.popMarkLineAxis .axis {width: 750px; height: 320px;}
+/* 人气校友 */
+.schoolfellowCon {margin-bottom: 25px; position: relative;}
+.schoolfellowCon .list1 li {float: left; margin: 0 25px 20px 0; text-align: center;}
+.schoolfellowCon .list1 img {vertical-align: top; margin-bottom: 5px;}
+.schoolfellowCon .list1 .t {font-size: 12px;}
+.schoolfellowCon .list3 li {float: left; margin: 0 26px 20px 0; text-align: center; height: 160px; width: 134px;}
+.schoolfellowCon .list3 img {vertical-align: top; margin-bottom: 5px; padding: 6px; border: 1px solid #E5E5E5;}
+.schoolfellowCon .list3 .name {white-space: nowrap; text-overflow: ellipsis; overflow: hidden;}
+.schoolfellowCon .list2 {border-left: 1px solid #E5E5E5; margin: 0 20px 0 12px;}
+.schoolfellowCon .list2 li {margin-bottom: 15px;}
+.schoolfellowCon .list2 h3 {margin-left: -14px; padding-left: 35px; background: url(../Images/dot2.png) no-repeat 0 50%; font-size: 20px; font-weight: normal; line-height: 25px;}
+.schoolfellowCon .list2 p {margin-left: 22px;}
+/* 评论 */
+.schoolCommentCon {margin-bottom: 25px;}
+.schoolCommentCon .feedTotel {float: right; margin-top: -35px; height: 35px; font-weight: bold; font-size: 16px;}
+.schoolCommentCon li {padding: 12px 0 12px 65px; border-bottom: 1px solid #E5E5E5;}
+.schoolCommentCon li .face {float: left; margin-left: -65px; display: inline;}
+.schoolCommentCon .name {font-weight: bold; color: #55C4B8;}
+.schoolCommentCon .timer {display: inline; font-size: 12px; margin-left: 20px; color: #999;}
+.schoolCommentCon p {padding: 0; margin-top: 10px;}
+.schoolCommentCon .pager {padding-top: 20px;}
+
+/* 0140704 更新评论 */
+.schoolCommentAll {height: 140px;}
+.schoolCommentAll ul {height: 75px; padding: 10px 0;}
+.schoolCommentAll li {width: 180px; height: 75px; margin-right: 25px; float: left; border-right: 1px solid #DAF1EF; color: #51c3b7; line-height: 1.6em;}
+.schoolCommentAll li.i1 {color: #ee5e45;}
+.schoolCommentAll li.i4 {border-right: 0; margin-right: 0;}
+.schoolCommentAll li .ico {width: 60px; height: 100%; float: left; margin-right: 6px; display: inline; background: url(../Images/school_comment.png) no-repeat 0 50%;}
+.schoolCommentAll li.i2 .ico {background-position: -60px;}
+.schoolCommentAll li.i3 .ico {background-position: -120px;}
+.schoolCommentAll li.i4 .ico {background-position: -180px;}
+.schoolCommentAll li .a {font-size: 24px;}
+.schoolCommentAll li .b {font-size: 16px;}
+.schoolCommentAll li .c {color: #777;}
+.schoolCommentAll .msg {font-size: 12px; color: #999;}
+
+.schoolCommentCon .feedMore, .schoolBaokaoCon .feedMore {float: right; margin-top: -30px; height: 30px;}
+.schoolCommentCon .feedMore a, .schoolBaokaoCon .feedMore a {color: #ee5e45;}
+
+.schoolBaokaoCon .tableHd {height: 40px; line-height: 40px; padding-top: 10px; border-bottom: 1px solid #EEE;}
+.schoolBaokaoCon .tableHd .tab {float: left;}
+.schoolBaokaoCon .tableHd .tab li {float: left; cursor: pointer; background-color: #EEE; height: 30px; line-height: 30px; padding: 0 15px; border-radius: 10px; margin-right: 5px;}
+.schoolBaokaoCon .tableHd .tab li.current {color: #FFF; background-color: #366699;}
+.schoolBaokaoCon .tableHd .thItem {float: right; }
+.schoolBaokaoCon .tableHd .thItem li {float: left; color: #999;}
+.schoolBaokaoCon .tableHd .th2, .schoolBaokaoCon .tableBd .td2 {width: 100px;}
+.schoolBaokaoCon .tableHd .th3, .schoolBaokaoCon .tableBd .td3 {width: 130px;}
+.schoolBaokaoCon .tableHd .th4, .schoolBaokaoCon .tableBd .td4 {width: 80px;}
+.schoolBaokaoCon .tableBd {margin-bottom: 20px;}
+.schoolBaokaoCon .tableBd .box {display: none;}
+.schoolBaokaoCon .tableBd table {width: 100%;}
+.schoolBaokaoCon .tableBd td {border-bottom: 1px solid #EEE;padding: 8px 0;}
+.schoolBaokaoCon .tableBd .tit {padding-right: 20px;}
+.schoolBaokaoCon .tableBd a {color: #366699;}
+.schoolBaokaoCon .tableBd a:hover {text-decoration: underline;}
+
+.schoolBaokaoView .back {float: right; margin-top: -30px; width: 100px; height: 30px; background: url(../Images/school_comment2.png) no-repeat;}
+.schoolBaokaoView .back a {color: #FFF; display: block; line-height: 30px; padding-left: 32px;}
+.schoolBaokaoView .topic {padding: 10px 0;border-bottom: 1px solid #EEE;}
+.schoolBaokaoView .topic .name {font-size: 16px;}
+.schoolBaokaoView .face {float: left; margin-right: 10px;}
+.schoolBaokaoView .name {color: #366699; font-weight: bold; display: block; margin-bottom: 4px;}
+.schoolBaokaoView .time {font-size: 12px; color: #999;}
+.schoolBaokaoView h4 {clear: both; padding: 10px 0 0 25px; color:#EE5E48; font-size: 16px; font-weight: normal;background: url(../Images/school_comment2.png) no-repeat -130px 8px;}
+.schoolBaokaoView .con {padding: 5px 0 0 25px;}
+
+.schoolBaokaoView .reply {padding: 0 0 20px;margin-left: 25px;}
+.schoolBaokaoView .reply .num {color: #52C3B7;line-height: 30px;}
+.schoolBaokaoView .reply .name {margin: 0 20px 0 0;color: #333;display: inline;}
+.schoolBaokaoView .reply img {margin-top: 2px;}
+.schoolBaokaoView .reply li {position: relative;border-bottom: 1px solid #EEE;padding: 10px 15px 10px 0;overflow: hidden;*zoom: 1;}
+.schoolBaokaoView .reply .ding {position: absolute;top: 45px;right: 15px;border: 1px solid #EEE;border-radius: 3px;padding: 0 8px;color: #52C3B7;cursor: pointer;}
+.schoolBaokaoView .reply .icon-ding {background: url(../Images/school_comment2.png) no-repeat -110px -4px;width: 16px;height: 16px;display: inline-block;position: relative;top: 2px;margin-right: 2px;}
+.schoolBaokaoView .reply .con {padding: 12px 80px 0 60px;color: #666;}
+/* 虚假大学榜 */
+.shamSchool h2 {font-size: 26px; margin-top: -10px; height: 45px; line-height: 45px; color: #55C4B8; padding-left: 15px;}
+.shamSchool .schoolHeader {height: auto;}
+.shamSchool .schoolSeaItem {border-top: 1px solid #E5E5E5; height: auto; padding: 18px 0 15px 20px;}
+.shamSchool .keyword .inp {width: 300px;}
+.shamSchool .item {padding: 0;}
+
+.shamResult { margin-top: 6px; padding: 5px 0 0; font-size: 16px;  }
+.shamResult .k {color: #ED5644;}
+
+.shamNews {margin-top: 15px; border: 1px solid #E5E5E5; border-top: 3px solid #55C4B8; padding: 10px 20px;}
+.shamNews h3 {font-size: 18px; color: #55C4B8; margin-bottom: 5px;}
+.shamNews li {padding: 5px 0;}
+.shamNews .date {display: inline-block; width: 100px;}
+.shamContent {padding: 15px 0 30px;}
+
+.shamList .row { overflow: hidden; height: 37px; margin-bottom: 10px;}
+.shamList .hd {height: 35px; line-height: 35px; border: 1px solid #E5E5E5; cursor: pointer; background-color: #EDEEF0;}
+.shamList .hd h3 {color: #55C4B8; padding-left: 15px; font-size: 18px;}
+.shamList .hd .info {float: right; margin-top: -35px; padding-right: 20px;}
+.shamList .hd .s0 {padding-right: 15px; display: inline-block; width: 300px;}
+.shamList .hd .s1 { display: inline-block; width: 150px;}
+.shamList .bd {padding: 10px 20px 20px; border: 1px solid #E5E5E5; border-top: 0;}
+
+.shamList li.on {height: auto;}
+.shamList li.on .hd {background-color: #55C4B8; margin: 0 -1px; border-color: #55C4B8; position: relative;}
+.shamList li.on .hd h3 {color: #FFF;}
+.shamList li.on .hd a:hover {color: #FFF;}
+
+/****** 20140425更新 ******/
+.schoolIntro_sideBd {width: 260px;}
+.schoolIntro_side .hotschool {border: 1px solid #E5E5E5; margin-top: 15px;padding: 3px 10px 10px 15px; background: #fff;}
+.schoolIntro_side .hotschool .hd {border-bottom: 1px solid #d5d5d5; height: 37px; }
+.schoolIntro_side .hotschool .hd h3 {margin-bottom: -2px;color: #55C4B8; line-height: 36px;  border-bottom: 3px solid #55C4B8;float: left;  font-size:16px; padding-right: 10px;}
+.schoolIntro_side .hotschool ul {padding-top: 12px;}
+.schoolIntro_side .hotschool li img ,
+.schoolIntro_side .hotschool li a {text-align: center;display: block; line-height: 30px; color: #333;}
+
+/* 自主招生  */
+#zizhu-list .title { border-bottom: 3px solid #e8e8e8;  }
+#zizhu-list .title h2 { border-bottom: 3px solid #23b8a8; margin-bottom: -3px; display: inline-block;padding:20px 3px 3px 0; color:#23b8a8; font-size: 25px; font-weight: normal;}
+#zizhu-list ul {margin-right: -20px; padding-bottom: 40px;}
+#zizhu-list li {border:1px solid #dcdcdc; width: 318px; height: 105px; float: left; margin: 20px 20px 0 0;}
+#zizhu-list li .pic {float: left; width: 85px; padding: 12px 0 0 10px;}
+#zizhu-list li .info {width: 210px; float: left;padding: 15px 0 0 7px;}
+#zizhu-list li .info h4 {font-size: 20px;font-weight: normal; height:30px;text-overflow: ellipsis;white-space: nowrap; overflow: hidden;}
+#zizhu-list li .button {padding-top: 8px;}
+#zizhu-list li .btn-1 { width: 95px; height: 28px; line-height:28px; text-align: center;font-size: 16px;  display: inline-block; background: #fff; border:1px solid #d6d6d6; border-radius: 3px}
+#zizhu-list li .btn-2 {background: url(../Images/zizhu_btn.png) no-repeat 0 -33px; width: 75px; height: 30px; padding-left: 25px;font-size: 16px; line-height: 30px; display: inline-block;}
+#zizhu-list li .btn-2.current {background-position: 0 0; color: #fff;}
+.zizhu-show-con  {padding: 20px 0 30px 0}
+.zizhu-show-con table { width: 100%; border:1px solid #ddd;border-radius:4px; border-collapse: collapse;}
+.zizhu-show-con	table { table-layout:fixed; }
+.zizhu-show-con	table th,
+.zizhu-show-con	table td {border: 1px solid #DDDDDD; padding: 8px; line-height: 18px}
+.zizhu-show-con	table tr:hover td {background: #f5f5f5}
+.zizhu-show-con	table td a {color: #55C4B8;}
+.zizhu-show-con	table td .intro {overflow: hidden;}
+.zizhu-show-con	table td .intro .h-auto {height: 100%}
+.zizhu-show-con	table td .m {cursor: pointer; color: #55C4B8;}
+.zizhu-show-con	table td .intro .hide {display: none;}
+
+
+/*高职高专*/
+.zhuanzhi-bn {background: url(../Images/gaozhi_bn.jpg) no-repeat; height: 240px; border-bottom: 3px solid #e5e5e5; }
+.zhuanzhi-bn h1 {font-size: 35px;font-weight: normal;color: #39332b; padding-top: 85px;line-height: 40px}
+.zhuanzhi-bn p {color: #999999}
+.zhuanzhi-hotschool {padding: 15px 0 10px 0}
+.zhuanzhi-hotschool ul {margin-right: -20px;}
+.zhuanzhi-hotschool li {float: left; width: 235px; text-align: center; line-height: 36px; font-size: 16px; margin-right: 20px;}
+.zhuanzhi-school-list ul {margin-right: -20px; padding-bottom: 50px;}
+.zhuanzhi-school-list li {border:1px solid #dcdcdc; width: 488px; height: 120px; float: left; margin: 20px 20px 0 0;}
+.zhuanzhi-school-list li .pic {float: left; width: 95px; padding: 12px 0 0 10px;}
+.zhuanzhi-school-list li .info {width: 362px; float: left;padding: 10px 0 0 10px;}
+.zhuanzhi-school-list li .info h4 {font-size: 20px;font-weight: normal; height:30px;text-overflow: ellipsis;white-space: nowrap; overflow: hidden;}
+.zhuanzhi-school-list li .l {width: 260px; float: left; padding-top: 5px;}
+.zhuanzhi-school-list li .r {width: 100px; float: right; margin-top: -3px;}
+.zhuanzhi-school-list li .button {padding-top: 8px;}
+.zhuanzhi-school-list li .btn-1 { width: 98px; height: 28px; line-height:28px; text-align: center;font-size: 16px;  display: inline-block; background: #fff; border:1px solid #d6d6d6; border-radius: 3px; margin-bottom: 5px;}
+.zhuanzhi-school-list li .btn-2 {background: url(../Images/zizhu_btn.png) no-repeat 0 -33px; width: 75px; height: 30px; padding-left: 25px;font-size: 16px; line-height: 30px; display: inline-block;}
+.zhuanzhi-school-list li .btn-2.current {background-position: 0 0; color: #fff;}
+
+
+/* 等效分 */
+.dengxiaofen .dxfContent {border: 1px solid #E5E5E5;padding: 20px;margin: 20px 0;}
+.dengxiaofen h2 {font-size: 26px; text-align: center; height: 45px; line-height: 45px; color: #55C4B8;}
+.dxfSearch {width: 500px; margin: 0 auto; border: 1px solid #E5E5E5; margin-top: 20px; padding: 15px 0;}
+.dxfSearch .row {padding: 5px 0 5px 210px;}
+.dxfSearch .row .alt {text-align: right; width: 195px; padding-right: 15px; line-height: 32px; float: left; margin-left: -210px; display: inline;}
+.dxfSearch .radioBox {overflow: hidden; zoom: 1;}
+.dxfSearch .radioBox label {
+	float: left;
+	border: 1px solid #DDD;
+	padding: 0 30px;
+	height: 30px;
+	line-height: 30px;
+	cursor: pointer;
+	overflow: hidden;
+	color: #666;
+	position: relative;
+	z-index: 1;
+}
+.dxfSearch .radioBox .l {border-right: 0; border-radius: 5px 0 0 5px;}
+.dxfSearch .radioBox .r {border-radius: 0 5px 5px 0;}
+.dxfSearch .radioBox .current {background: #55C4B8; border-color: #55C4B8; color: #FFF;}
+.dxfSearch .radioBox input {position: absolute; margin-left: -999px;}
+.dxfSearch .inp {border: 1px solid #DDD;
+	border-radius: 5px;
+	height: 30px;
+	line-height: 30px;
+	text-indent: 5px;
+	width: 200px;
+}
+.dxfSearch .btn {
+	background-color: #ED5644;
+	border-bottom: 2px solid #AC3E31;
+	color: #FFF;
+	height: 40px;
+	width: 100px;
+	font-size: 18px;
+}
+
+.dxfResult {width: 500px; margin: 15px auto 0; border: 1px solid #E5E5E5; border-top: 3px solid #55C4B8; padding: 15px 0;}
+.dxfResult .txt, .dxfResult .txt2, .dxfResult .table, .dxfResult .msg {padding: 5px 20px;}
+.dxfResult .f {color: #ED5644; font-size: 16px; padding: 0 5px;}
+.dxfResult .txt2 {padding-top: 0;}
+.dxfResult .msg {color: #ED5644;}
+.dxfResult table {width: 100%; text-align: center;}
+.dxfResult caption {color: #55C4B8; padding-bottom: 5px;}
+.dxfResult th, .dxfResult td {border: 1px solid #E5E5E5; padding: 4px 0;}
+.dxfResult th {background-color: #F4F4F4; font-weight: normal;}
+.dxfResult .button {padding: 10px 0; text-align: center;}
+.dxfResult .btn {
+	background-color: #55C4B8;
+	border-bottom: 2px solid #3C8880;
+	color: #FFF;
+	height: 40px;
+	line-height: 40px;
+	font-size: 18px;
+	padding: 0 50px;
+}
+
+
+.mingRenBtn {
+    margin: -42px 25px 0 0;
+    height: 30px;
+    float: right;
+    display: inline;
+}
+.mingRenBtn .btn {
+    background-color: #55C4B8;
+    color: #fff;
+    height: 32px;
+    width: 120px;
+}
+
+#mingRenBox .list {border-left: 1px solid #E5E5E5; margin: 20px 15px;}
+#mingRenBox .list li {margin-bottom: 15px;}
+#mingRenBox .list h3 {margin-left: -14px; padding-left: 35px; background: url(../Images/dot2.png) no-repeat 0 50%; font-size: 20px; font-weight: normal; color: #55C4B8; line-height: 25px;}
+#mingRenBox .list p {margin-left: 22px;}
+
+#xiaoHuaCao {margin-top: 20px;}
+#xiaoHuaCao .box {width: 100%;}
+#xiaoHuaCao ul {position: relative;}
+#xiaoHuaCao .list li {float: left; padding: 0; margin: 0 26px 20px 0; width: 240px; text-align: center; box-shadow: 0 0 5px #CCC;}
+#xiaoHuaCao .list li:hover {box-shadow: 0 0 8px #666;}
+#xiaoHuaCao .list img {vertical-align: top; width: 100%; background: #EEE url(../Images/loading.gif) no-repeat 50%;}
+#xiaoHuaCao .list .name {line-height: 40px;}
+
+#huaCaoDetail, #mingRenDetail {padding-top: 15px;}
+#huaCaoDetail .photo {width: 300px; float: left;}
+#huaCaoDetail .share {padding: 10px 0;}
+#huaCaoDetail .comment {width: 470px; float: right;}
+
+#huaCaoDetail #SOHUCS #SOHU_MAIN .section-title-w {padding-top: 0;}
+
+.schoolIntro_con2 .catBack {margin-top: -40px; float: right;}
+.schoolIntro_con2 .catBack a {color: #ee5e45;
+    background-color: #55C4B8;
+    color: #fff;
+    height: 30px;
+    line-height: 30px;
+    width: 120px;
+}
+/* 院系师资 */
+.yuanxiCon h3 {padding: 10px 0 10px 25px; font-weight: normal; font-size: 16px; border-bottom: 1px solid #E5E5E5;}
+.yuanxiCon h3 strong {font-weight: normal; color: #55c4b8;}
+.yuanxiCon .list {margin-bottom: 15px; background: url(../Images/school_majorList.png);}
+.yuanxiCon .list li {background: url(../Images/dot.png) no-repeat 28px 20px; text-indent: 18px; height: 45px; line-height: 45px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; float: left; width: 240px; padding-left: 25px;}
+.yuanxiCon .list li span {margin-left: 10px; font-size: 12px; color: #55c4b8;}
+.yuanxiCon .list .tea {}
+.yuanxiCon .list .ac {border-left: 1px solid #DDD; padding-left: 25px; cursor:pointer; background:url(../Images/school_icon.png) no-repeat;}
+.yuanxiCon .list .ding {background-position: 5px -8px;}
+.yuanxiCon .list .hua {background-position: 5px -67px;}
+.yuanxiCon .list .ding.active {background-position: 5px -38px; color: #ee5e45;}
+.yuanxiCon .list .hua.active {background-position: 5px -97px; color: #ee5e45;}
+
+.popTeacher {padding: 15px 10px 15px 0;}
+.popTeacher .base {padding-left: 140px;}
+.popTeacher .pic {margin-left: -140px; float: left; display: inline;}
+.popTeacher .base li {font-size: 16px; line-height: 36px; border-bottom: 1px dashed #DDD;}
+.popTeacher .commontTit {margin-top: 15px; font-size: 14px; padding-left: 5px; font-weight: bold;border-bottom: 1px solid #DDD; background-color:#EEF2F2;line-height:30px;}
+.popTeacher .commontTit strong {color: #55c4b8;}
+.popTeacher .commontList li {border-bottom: 1px dashed #DDD; margin: 0 0; padding: 10px 5px;}
+.popTeacher .commontList .info {font-size: 12px; color: #666;}
+.popTeacher .pager {padding-top: 20px;}

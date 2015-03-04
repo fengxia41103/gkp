@@ -16,4 +16,4 @@
 		<dd>{{ obj.school_type }}</dd>
 	</dl>
 </div>
-<p>{{ obj.description }}</p>
+<p>{{ obj.description|truncatechars:50 }}<a href="{% url 'school_detail' obj.id %}">查看详细>></a></p>

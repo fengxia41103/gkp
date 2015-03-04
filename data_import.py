@@ -369,6 +369,19 @@ def populate_hash ():
 		s.hash = md5.hexdigest()
 		s.save()
 
+def cleanupSchoolAdmission():
+	large_qs = MyAdmissionBySchool.objects.all().values_list("id", flat=True)
+	for idx, id in enumerate(large_qs):
+		s = MyAdmissionBySchool.objects.get(id=id)
+		print idx, s.school.name
+		if s.batch == u'':
+			s.batch = u'一批'
+		elif u'本科第二批' in s.batch:
+			s.batch = u'二批'
+		elif s.batch == u'本科3批':
+			s.batch = u'三批'
+		s.save()
+			
 import googlemaps
 def main():
 	django.setup()
@@ -379,7 +392,8 @@ def main():
 	#populate_school_geo()
 	#populate_school_province()
 	#populate_hash()
-	cleanup_school_name()
+	#cleanup_school_name()
+	cleanupSchoolAdmission()
 
 if __name__ == '__main__':
 	main()

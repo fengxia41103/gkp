@@ -142,9 +142,8 @@ LOGOUT_URL ='/gaokao/home'
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
 )
-
 COMPRESS_ENABLED = True
-#COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter']
+COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter']
 
 # django-debug-toolbar
 DEBUG_TOOLBAR_PATCH_SETTINGS = False

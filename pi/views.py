@@ -476,7 +476,28 @@ class MySchoolDelete (DeleteView):
 		return context
 
 @class_view_decorator(login_required)
+class MySchoolDetail(DetailView):
+	model = MySchool
+	template_name = 'pi/school/detail.html'
+
+	def get_context_data(self, **kwargs):
+		context = super(MySchoolDetail, self).get_context_data(**kwargs)
+		context['list_url'] = reverse_lazy('school_list')
+
+		# school admission data by year
+		school_admission = MyAdmissionBySchool.objects.filter(school = self.get_object().id).order_by('year').reverse()
+		context['school_admission'] = school_admission
+
+		# related list
+		related_schools = MySchool.objects.filter(province = self.get_object().province)[:10]
+		context['related_schools']=related_schools
+		return context
+
+@class_view_decorator(login_required)
 class MySchoolMapDetail(TemplateView):
+	'''
+		AJAX post view
+	'''
 	template_name = 'pi/school/gmap_detail.html'
 
 	def post(self,request):

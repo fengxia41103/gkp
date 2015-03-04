@@ -209,6 +209,7 @@ class MyMajor (MyBaseModel):
 
 class MyAdmissionBySchool (models.Model):
 	CATEGORY_CHOICES = (
+		('',''),		
 		(u'文科',u'文科'), 
 		(u'理科',u'理科'), 
 		(u'综合',u'综合'), 
@@ -255,6 +256,7 @@ class MyAdmissionBySchool (models.Model):
 
 class MyAdmissionByMajor (models.Model):
 	CATEGORY_CHOICES = (
+		('',''),		
 		(u'文科',u'文科'), 
 		(u'理科',u'理科'), 
 		(u'综合',u'综合'), 

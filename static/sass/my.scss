@@ -1,7 +1,9 @@
 @import url(http://fonts.googleapis.com/css?family=Gudea:400,700,400italic&subset=latin,latin-ext);
 
 body {
+  //color: #333;
   font-family: Gudea, Calibri, Charcoal, "Hiragino Sans GB", "Microsoft YaHei","WenQuanYi Micro Hei", sans-serif;
+  //font:14px/1.5 'Microsoft YaHei', '微软雅黑', 'Tahoma', 'SimSun', '宋体', 'Arial';
 }
 
 .goto-next {
@@ -278,3 +280,10 @@ body {
 .dropdown-menu { 
   color: #333;
 }
+
+.dl-horizontal {
+  dt,dd{
+    color: red;
+  }
+}
+

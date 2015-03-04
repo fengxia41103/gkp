@@ -1,61 +1,131 @@
-{% extends "webtesting/common/base.html" %}
+{% extends 'pi/common/base.html' %}
+
+{% load staticfiles %}
+{% block custom_css %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/school.css' %}">
+{% endblock %}
 
 {% block page-header %}
-	{{ scenario.name }}
-	<a href="{% url 'userscenario_edit' scenario.id %}" class="addLink">Edit</a>
+	{{ object.name }}
+	<a href="{% url 'school_edit' object.id %}" class="btn btn-xs addlink">
+		<span class="glyphicon glyphicon-plus"></span>
+		edit
+	</a>
+
+  <div class="st">
+    <img src="http://www.gaokaopai.com/Public/Images/ico1.png" alt="211" title="211">    <img src="http://www.gaokaopai.com/Public/Images/ico2.png" alt="985" title="985">    <img src="http://www.gaokaopai.com/Public/Images/ico3.png" alt="研究生院" title="研究生院">    <img src="http://www.gaokaopai.com/Public/Images/ico4.png" alt="自主招生" title="自主招生">    <img src="http://www.gaokaopai.com/Public/Images/ico5.png" alt="国防生" title="国防生">      </div>	
 {% endblock %}
 
 {% block content %}
-	{# scenario code sections #}
-	<div class="row">
-		<div class="col-md-2">
-			<a href="{% url 'userscenario_run' scenario.id %}" class="btn btn-primary">
-				测试
-			</a>
-			<dl>
-				<dt>Given</dt>
-				<dd>{{ scenario.given }}<p /></dd>
-				
-				<dt>When</dt>
-				<dd>{{ scenario.when }}<p /></dd>
-				
-				<dt>Then</dt>
-				<dd>{{ scenario.then }}</dd>
-			</dl>
-		</div>
-		<div class="col-md-9" id="view-code">
-			{% include "webtesting/scenario/code.html" %}		
-		</div>
-		<div class="col-md-1">
-			<a href="{% url 'userscenario_edit' scenario.id %}#code" class="addLink">
-				Edit
-			</a>
-		</div>
+<div class="row">
+	<div class="col-md-2">
+		{# in page navigator #}
+		<ul class="list-unstyled">
+			<li><a href="#school-intro">学校简介</a></li>
+			<li><a href="#school-admission">录取分数线</a></li>
+		</ul>
 	</div>
 
-	{# story code sections #}
-	<div class="row">
-		<div class="col-md-2">
-			<dl>
-				<dt>用户角色</dt>
-				<dd>{{ story.as_a }}<p /></dd>
-				
-				<dt>希望实现的业务需求</dt>
-				<dd>{{ story.in_order_to }}<p /></dd>
-				
-				<dt>系统提供的功能</dt>
-				<dd>{{ story.i_want }}</dd>
-			</dl>
-		</div>
-		<div class="col-md-9" id="view-code">
-			{% include "webtesting/story/code.html" %}		
-		</div>
-		<div class="col-md-1">
-			<a href="{% url 'userstory_edit' story.id %}#code" class="addLink">
-				Edit
-			</a>
-		</div>
+	<div class="col-md-7">
+		{# page content #}
+
+		<section>
+<iframe
+  width="100%"
+  height="250"
+  frameborder="0" style="border:0"
+  src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBs9Lh9SBeGg8azzB5h50y8DDjxFO4SLwA&q={{ object.name }}&language=zh-cn">
+</iframe>
+
+		</section>
+		<section id="school-intro">
+			<h2>学校简介</h2>
+			{{ object.description|default_if_none:""|truncatechars:1000 }}
+		</section>
+
+		<section id="school-admission">
+			<h2>录取分数线</h2>
+			{% regroup school_admission by year as obj_list %}
+			{% for year in obj_list %}
+				<h3>{{ year.grouper }}年</h3>
+				<table class="table table-condensed table-striped table-hover">
+					<thead><tr>
+						<th>招生地区</th>
+						<th>Category</th>
+						<th>batch</th>
+						<th>Min</th>
+						<th>Max</th>
+						<th>Avg</th>
+					</tr></thead>
+					<tbody>
+						{% for s in year.list %}
+						<tr>
+							<td>{{ s.province|default_if_none:"暂无信息" }}</td>
+							<td>{{ s.category|default_if_none:"暂无信息" }}</td>
+							<td>{{ s.batch|default_if_none:"暂无信息" }}</td>
+							<td>{{ s.min_score|default_if_none:"" }}</td>
+							<td>{{ s.max_score|default_if_none:"" }}</td>
+							<td>{{ s.avg_score|default_if_none:"" }}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			{% endfor %}
+		</section>
 	</div>
-	
+
+	<div class="col-md-3" style="border: 1px solid #ccc;">
+		{# float to right, attributes #}
+		<h4>
+			<i class="fa fa-university"></i>
+			 学校快照
+		</h4>
+		<dl class="dl-horizontal">
+			<dt>City</dt><dd>{{ object.city|default:"暂无信息"}}</dd>
+			<dt>Province</dt><dd>{{ object.province|default:"暂无信息" }}</dd>
+			<dt>创建时间</dt><dd>{{ object.founded|default:"暂无信息" }}</dd>
+			<dt>学校类型</dt><dd>{{ object.school_type|default:"暂无信息"}}</dd>
+			<dt>学生人数</dt><dd>{{ object.no_student|default:"暂无信息" }}
+				{% if object.no_student %}
+					人
+				{% endif %}
+			</dd>
+			<dt>院士人数</dt><dd>{{ object.no_fellow|default:"暂无信息" }}
+				{% if object.no_fellow %}
+					人
+				{% endif %}
+			</dd>
+			<dt>博士点个数</dt><dd>{{ object.no_phd_program|default:"暂无信息" }}
+				{% if object.no_phd_program %}
+					个
+				{% endif %}
+			</dd>
+			<dt>硕士点个数</dt><dd>{{ object.no_master_program|default:"暂无信息" }}
+				{% if object.no_master_program %}
+					个
+				{% endif %}			
+			</dd>
+			<dt>重点学科</dt><dd>{{ obj.no_key_major|default:"暂无信息" }}
+				{% if object.no_key_major %}
+					个
+				{% endif %}					
+			</dd>
+			<dt>隶属于</dt><dd>教育部</dd>
+		</dl>
+
+		{# float to right, related #}
+		<h4>
+			<i class="fa fa-star"></i>
+			院校推荐
+		</h4>
+		<ul class="list-inline">
+			{% for r in related_schools %}
+				<li>
+					<a href="{% url 'school_detail' r.id %}">{{ r.name }}</a>
+				</li>
+			{% endfor %}
+		</ul>
+	</div>
+</div>
+
 {% endblock %}
-
