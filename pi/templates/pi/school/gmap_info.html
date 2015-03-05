@@ -10,9 +10,10 @@
 		</small>
 	</h3>
 	<dl class="dl-horizontal my-dl-horizontal">
-		<dt>{{ obj.province }}</dt><dd>{{ obj.city }}</dd>
-		<dt>招生电话: {{ obj.admission_office_phone|default:"暂无信息" }}</dt>
-		<dd>招生电子邮箱: {{ obj.admission_office_email|default:"暂无信息" }}</dd>
+		<dt>Province</dt><dd>{{ obj.province }}</dd>
+		<dt>City</dt><dd>{{ obj.city }}</dd>
+		<dt>招生电话</dt><dd>{{ obj.admission_office_phone|default:"暂无信息" }}</dd>
+		<dt>招生电子邮箱</dt><dd>{{ obj.admission_office_email|default:"暂无信息" }}</dd>
 	</dl>
 	<a href="{% url 'school_detail' obj.id %}" class="pull-right">查看详细>></a>
 </div>

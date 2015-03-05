@@ -1,12 +1,53 @@
 {% load staticfiles %}
 
 <h2 class="page-header">
-	{{ category }}
+	{{ schools.0.province }}
+	<a href="{% url 'school_emap_list' schools.0.province.id %}" class="btn btn-xs addlink">
+		更多信息 ....
+		<i class="fa fa-angle-double-right"></i>
+	</a>
 </h2>
 <div class="container">
-	<ul class="list-unstyled">
-		{% for obj in objs %}
-		<li><a href="{% url 'school_detail' obj.id %}">{{ obj.name }}</a></li>
+	{# some aggregated data as a teaser so user will click to see more details #}
+	根据我们的统计，{{ schools.0.province}}共有{{ schools|length }}个大、专院校招生。其中，
+	{{ bachelors|length}}个院校招收本科，{{ associates|length }}个院校招收专科。这其中，
+	{{ bachelor_and_associate|length }}个院校既有本科也有专科招生，并且有{{ pre|length }}个院校
+	提前招生。
+	
+	<section>
+		<h3>本科招生</h3>
+		{% regroup bachelors by city as obj_list %}
+		{% for city in obj_list %}
+			<h4>{{ city.grouper }}</h4>
+				<ul class="list-inline">
+					{% for obj in city.list %}
+						<li><a href="{% url 'school_detail' obj.id %}">{{ obj.name }}</a></li>
+					{% endfor %}
+				</ul>
 		{% endfor %}
-	</ul>
+	</section>
+	<section>
+		<h3>专科招生</h3>
+		<ul class="list-inline">
+			{% for obj in associates %}
+				<li><a href="{% url 'school_detail' obj.id %}">{{ obj.name }}</a></li>
+			{% endfor %}
+		</ul>
+	</section>
+	<section>
+		<h3>本科+专科招生</h3>
+		<ul class="list-inline">
+			{% for obj in bachelors_and_associates %}
+				<li><a href="{% url 'school_detail' obj.id %}">{{ obj.name }}</a></li>
+			{% endfor %}
+		</ul>
+	</section>			
+	<section>
+		<h3>提前录取</h3>
+		<ul class="list-inline">
+			{% for obj in pre %}
+				<li><a href="{% url 'school_detail' obj.id %}">{{ obj.name }}</a></li>
+			{% endfor %}
+		</ul>
+	</section>			
 </div>

@@ -461,3 +461,20 @@ class MySchool (MyBaseModel):
 		'''
 		return (MyAdmissionBySchool.objects.filter(school = self.id).count() > 0)
 	has_admission = property(_has_admission_history)
+
+	def _has_bachelor_admission(self):
+		'''
+			Look up MyAdmissionBySchool batch info. If it has "专科", we assume
+			this school offers Associate degree; otherwise, we assume it offers
+			"Bachelor" degree.
+		'''
+		return (MyAdmissionBySchool.objects.filter(school = self.id, batch__in=[u'一批',u'二批',u'三批']).count() > 0)
+	has_bachelor_admission = property(_has_bachelor_admission)
+	
+	def _has_associate_admission(self):
+		return (MyAdmissionBySchool.objects.filter(school = self.id, batch__startswith=u'专科').count() > 0)
+	has_associate_admission = property(_has_associate_admission)	
+
+	def _has_pre_admission(self):
+		return (MyAdmissionBySchool.objects.filter(school = self.id, batch__startswith=u'提前').count() > 0)
+	has_pre_admission = property(_has_pre_admission)

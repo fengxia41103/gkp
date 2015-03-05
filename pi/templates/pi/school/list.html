@@ -3,7 +3,7 @@
 {% block page-header %}
 	学校 School
 	<a href="{% url 'school_add' %}" class="btn btn-xs addlink">
-		<span class="glyphicon glyphicon-plus"></span>
+		<i class="fa fa-plus"></i>
 		Add
 	</a>
 {% endblock %}
@@ -18,10 +18,7 @@
 		<th>名称</th>
 		<th>类型</th>
 		<th>学生数量</th>
-		<th>Google geocode</th>
-		<th>Baidu geocode</th>
-		<th>Address</th>
-		<th>Geocode</th>
+		<th>Majors</th>
 	</thead>
 	<tbody>
 		{% for obj in object_list %}
@@ -43,13 +40,11 @@
      		</td><td>
      			{{ obj.no_student }}
      		</td><td>
-     			{{ obj.google_geocode }}
-     		</td><td>
-     			{{ obj.baidu_geocode }}
-     		</td><td>
-     			{{ obj.address }}
-     		</td><td>
-     			({{ obj.lat }}, {{ obj.lng }})
+     			<ul class="list-inline">
+     			{% for s in obj.myadmissionbymajor_set.all|slice:":10" %}
+     				<li>{{ s.major}} ({{s.year}},{{s.batch}},{{s.max_score}})</li>
+     			{% endfor %}
+     			</ul>
      		</td>
     	</tr>
     	{% endfor %}

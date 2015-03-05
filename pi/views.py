@@ -490,7 +490,7 @@ class MySchoolDetail(DetailView):
 		context['school_admission'] = school_admission
 
 		# related list
-		related_schools = MySchool.objects.filter(province = self.get_object().province)[:50]
+		related_schools = [x for x in MySchool.objects.filter(province = self.get_object().province) if x.has_admission]
 		related_list = []
 		for s in related_schools:
 			related_list.append(MyAdmissionBySchool.objects.filter(school = s)[:1][0])
@@ -535,8 +535,22 @@ class MySchoolEchartMapFilter(TemplateView):
 
 	def post(self,request):
 		schools = MySchool.objects.filter(province = int(request.POST['p_id']))
+
+		# categorized by admissions
+
+		bachelors = sorted([s for s in schools if s.has_bachelor_admission],lambda x,y:cmp(x.city,y.city))
+		associates = sorted([s for s in schools if s.has_associate_admission],lambda x,y:cmp(x.city,y.city))
+		bachelor_and_associate = sorted(list(set(bachelors).intersection(associates)),lambda x,y:cmp(x.city,y.city))
+		pre = sorted([s for s in schools if s.has_pre_admission],lambda x,y:cmp(x.city,y.city))
+
 		content = loader.get_template(self.by_province_template_name)
-		html= content.render(Context({'objs':schools,'category':schools[0].province.province }))
+		html= content.render(Context({
+			'schools':schools,
+			'bachelors':bachelors,
+			'associates':associates,
+			'bachelor_and_associate': bachelor_and_associate,
+			'pre':pre
+			}))
 
 		return HttpResponse(json.dumps({'html':html}), 
 			content_type='application/javascript')	
@@ -548,7 +562,7 @@ class MySchoolEchartMapList(ListView):
 		context = super(ListView, self).get_context_data(**kwargs)
 		context['province'] = MyAddress.objects.get(id = int(self.kwargs['pk'])).province
 		return context
-		
+
 	def get_queryset(self):
 		return MySchool.objects.filter(province = int(self.kwargs['pk']))
 
@@ -625,3 +639,9 @@ class MySchoolMapFilter (TemplateView):
 				'markers':markers, 
 				'marker_list_html':visible_html,
 				}), content_type='application/javascript')
+
+###################################################
+#
+#	Analysis views
+#
+###################################################
