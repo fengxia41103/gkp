@@ -1,0 +1,16 @@
+{% extends 'pi/common/base.html' %}
+{% load staticfiles %}
+
+{% block page-header %}
+	{{ province }}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+	<ul class="list-unstyled">
+		{% for obj in object_list %}
+		<li><a href="{% url 'school_detail' obj.id %}">{{ obj.name }}</a></li>
+		{% endfor %}
+	</ul>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% load staticfiles %}
+
+<h2 class="page-header">
+	{{ category }}
+</h2>
+<div class="container">
+	<ul class="list-unstyled">
+		{% for obj in objs %}
+		<li><a href="{% url 'school_detail' obj.id %}">{{ obj.name }}</a></li>
+		{% endfor %}
+	</ul>
+</div>

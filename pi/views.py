@@ -515,6 +515,43 @@ class MySchoolMapDetail(TemplateView):
 		return HttpResponse(json.dumps({'html':html}), 
 			content_type='application/javascript')	
 
+@class_view_decorator(login_required)
+class MySchoolEchartMapFilter(TemplateView):
+	template_name = 'pi/school/emap.html'
+	by_province_template_name = 'pi/school/emap_province.html'
+
+	def get_context_data(self, **kwargs):
+		context = super(TemplateView, self).get_context_data(**kwargs)
+
+		# echart data, group by province
+		result = {}
+		for s in MySchool.objects.has_province():
+			result.setdefault(s.province, []).append(s.id)
+		echart_data = [(key.id, key,len(value)) for key,value in result.iteritems()]
+		context['echart_data'] = echart_data
+		context['echart_data_min'] = min([a[2] for a in echart_data])
+		context['echart_data_max'] = max([a[2] for a in echart_data])
+		return context
+
+	def post(self,request):
+		schools = MySchool.objects.filter(province = int(request.POST['p_id']))
+		content = loader.get_template(self.by_province_template_name)
+		html= content.render(Context({'objs':schools,'category':schools[0].province.province }))
+
+		return HttpResponse(json.dumps({'html':html}), 
+			content_type='application/javascript')	
+
+@class_view_decorator(login_required)
+class MySchoolEchartMapList(ListView):
+	template_name = 'pi/school/emap_list.html'
+	def get_context_data(self, **kwargs):
+		context = super(ListView, self).get_context_data(**kwargs)
+		context['province'] = MyAddress.objects.get(id = int(self.kwargs['pk'])).province
+		return context
+		
+	def get_queryset(self):
+		return MySchool.objects.filter(province = int(self.kwargs['pk']))
+
 def school_crawler_view (request):
 	base_url = 'http://www.gaokaopai.com/daxue-jianjie'
 	crawler = MyCrawler()
@@ -544,7 +581,7 @@ class MySchoolMapInfo (TemplateView):
 			}), content_type='application/javascript')			
 
 class MySchoolMapFilter (TemplateView):
-	template_name = 'pi/common/gmap.html'
+	template_name = 'pi/school/gmap.html'
 	visible_template_name = 'pi/school/gmap_visible_list.html'
 
 	def get_context_data(self, **kwargs):
@@ -555,18 +592,6 @@ class MySchoolMapFilter (TemplateView):
 		context['marker_url']=reverse('school_map_filter')
 		context['detail_url']=reverse('school_map_detail')
 		context['info_win_url']=reverse('school_map_info')
-		
-		# echart data, group by province
-		result = {}
-		for s in MySchool.objects.has_province():
-			result.setdefault(s.province, []).append(s.id)
-		echart_data = [(key,len(value)) for key,value in result.iteritems()]
-		context['echart_data'] = echart_data
-		context['echart_data_min'] = min([a[1] for a in echart_data])
-		context['echart_data_max'] = max([a[1] for a in echart_data])
-
-		print echart_data
-		print min([a[1] for a in echart_data]), max([a[1] for a in echart_data])
 		return context
 
 	def post(self, request):

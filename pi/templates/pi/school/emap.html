@@ -1,0 +1,113 @@
+{% extends "pi/common/base.html" %}
+{% load staticfiles %}
+
+{% block custom_css %}
+    <style type="text/css">
+      html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
+    </style>
+{% endblock %}
+
+{% block custom_js %}
+    <script type="text/javascript">
+    	var j$ = jQuery.noConflict();
+        function echart_map(){
+            var options = {
+                title : {
+                    text: 'School Count',
+                    subtext: '纯属虚构',
+                    x:'center'
+                },
+                tooltip : {
+                    trigger: 'item'
+                },
+                legend: {
+                    orient: 'vertical',
+                    x:'left',
+                    data:['University',]
+                },
+                dataRange: {
+                    min: {{ echart_data_min }},
+                    max: {{ echart_data_max }},
+                    //text:['高','低'],    // 文本，默认为数值文本
+                    orient: 'vertical', // 'vertical'
+                    formatter : function(v,v2){
+                        var step = 25;
+                        var v_1 = step * Math.ceil(v/step);
+                        var v_2 = step * Math.ceil(v2/step);
+                        return v_1+' - '+v_2
+                    }
+                },
+                toolbox: {
+                    show: true,
+                    orient : 'horizontal',
+                    x: 'right',
+                    y: 'top',
+                    feature : {
+                        mark : {show: true},
+                        dataView : {show: true, readOnly: false},
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                roamController: {
+                    show: false,
+                    x: 'right',
+                    mapTypeControl: {
+                        'china': true
+                    }
+                },
+                series : [
+                    {
+                        name: 'University',
+                        type: 'map',
+                        mapType: 'china',
+                        roam: false,
+                        itemStyle:{
+                            normal:{
+                                label:{show:true},
+                            },
+                            emphasis:{
+                                label:{show:true},                            }
+                        },
+                        data:[
+                            {% for p_id, province,count in echart_data %}
+                                {name:'{{ province }}', value:{{ count }}, 'p_id':{{ p_id }}},
+                            {% endfor %}
+                        ]
+                    }
+                ] // end of data series
+            }// end of options
+
+            var myChart = echarts.init(document.getElementById('echart-canvas'),'default');
+            myChart.setOption(options);
+
+            myChart.on('click', function(param){
+                var province_id = param.data.p_id;
+                // ajax to server to get a list of markers that are within the viewport
+                j$.post("{% url 'school_echart_map_filter' %}", // passed in from view
+                    { 
+                        'p_id':province_id
+                    }, 
+                    function(resp) { // success callback
+                        j$('#map-detail').html(resp['html']);
+                    },'json'
+                );                  
+            });
+        } // end of func        
+
+        j$(document).ready(function(){
+            echart_map();
+        })
+    </script>
+{% endblock %}
+
+{% block page-header %}
+全国高校一览
+{% endblock %}
+
+{% block content %}
+    <div id="echart-canvas" class="" style="height:450px"></div>
+    <div class="row" id="target">    
+        <div id="map-detail" class="col-md-12"></div>
+    </div>
+{% endblock %}
