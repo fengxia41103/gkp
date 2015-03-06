@@ -478,3 +478,13 @@ class MySchool (MyBaseModel):
 	def _has_pre_admission(self):
 		return (MyAdmissionBySchool.objects.filter(school = self.id, batch__startswith=u'提前').count() > 0)
 	has_pre_admission = property(_has_pre_admission)
+
+	def _batch_1st(self):
+		return (MyAdmissionBySchool.objects.filter(school = self.id, batch__startswith=u'一批').count() > 0)
+	is_1st_batch = property(_batch_1st)
+	def _batch_2nd(self):
+		return (MyAdmissionBySchool.objects.filter(school = self.id, batch__startswith=u'二批').count() > 0)
+	is_2nd_batch = property(_batch_2nd)
+	def _batch_3rd(self):
+		return (MyAdmissionBySchool.objects.filter(school = self.id, batch__startswith=u'三批').count() > 0)
+	is_3rd_batch = property(_batch_3rd)			
