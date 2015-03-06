@@ -1,0 +1,174 @@
+<section id="{{subject}}">
+	<h2 class="">
+		{{ subject }}
+	</h2>
+	<div class="row">
+		<div class="col-md-6">
+			<dl class="dl-horizontal my-dl-horizontal">
+				<dt>高校个数</dt><dd>{{ objs|length }}</dd>
+				<dt>历史最高分数线</dt>
+				<dd>
+					<a href="{% url 'school_detail' max_score.school.id %}">{{ max_score.school }}</a>
+					于{{ max_score.year }}在
+					<a href="{% url 'school_emap_list' max_score.province.id %}">{{ max_score.province }}</a>
+					的{{ max_score.batch }}录取的招生分数{{max_score.max_score}}分
+				</dd>
+				<dt>历史最低分数线</dt>
+				<dd>
+					<a href="{% url 'school_detail' min_score.school.id %}">{{ min_score.school }}</a>
+					于{{ min_score.year }}在
+					<a href="{% url 'school_emap_list' min_score.province.id %}">{{ min_score.province }}</a>		的{{min_score.batch}}录取的招生分数{{min_score.min_score}}					
+				</dd>
+			</dl>
+			<div id="{{subject}}-by-batch-canvas" style="min-height:300px;width:100%;"></div>
+		</div>
+		<div class="col-md-6">
+			<div id="{{subject}}-by-type-canvas" style="min-height:300px;width:100%;"></div>
+			<div class="" style="border-top:2px solid #55c4b8;">
+				<h4>相关学校:</h4>
+				<ul class="list-inline">
+					{% regroup objs|dictsort:"name" by name as obj_list %}
+					{% for name in obj_list|slice:":10" %}
+					<li class="">
+						<a href="{% url 'school_detail' name.list.0.id %}">{{ name.grouper }}</a>
+					</li>
+					{% endfor %}
+				</ul>
+			</div><!-- end of related list -->				
+		</div>
+	</div>
+</section>
+
+<script type="text/javascript">
+	function drawGraph_1(){
+		var options = {
+		    title : {
+		        text: '学校类型分布',
+		        subtext: '{{subject}}'
+		    },
+		    tooltip : {
+		        trigger: 'item',
+		        formatter: "{b}"
+		    },
+		    legend: {
+		    	show: false,
+		        data:[
+		        {% regroup objs|dictsort:'school_type' by school_type as obj_list %}
+		        {% for type in obj_list %}
+		        	'{{ type.grouper }}',
+		        {% endfor %}
+		        ],
+		        x:'right',
+		        y:'bottom',
+		        orient:'vertical'
+		    },
+		    toolbox: {
+		        show : true,
+		        feature : {
+		            mark : {show: false},
+		            dataView : {show: false, readOnly: false},
+		            magicType : {show: false, type: ['line', 'bar']},
+		            restore : {show: true},
+		            saveAsImage : {show: true}
+		        },
+		        x:'right',
+		        y:'top'
+		    },		    	    
+		    series : [
+		        {
+		            name:'school_type',
+		            type:'pie',
+		            radius : '55%',
+		            center: ['50%', '50%'],
+		            data:[
+				        {% regroup objs|dictsort:'school_type' by school_type as obj_list %}
+				        {% for type in obj_list %}
+				        	{name: '{{ type.grouper }}',
+				        	value:'{{type.list|length}}'},
+				        {% endfor %}		            
+		            ],
+			    	itemStyle:{
+			    		normal:{
+			    			label:{
+			    				show: true,
+			    				formatter:'{b}: {c}个'
+			    			},
+			      		}
+			    	} // end of itemStyle			            
+		        }
+		    ]
+		};
+		var myChart = echarts.init(document.getElementById('{{subject}}-by-type-canvas'),'gray');
+	    myChart.setOption(options);
+	}
+
+	function drawGraph_2(){
+		var options = {
+		    title : {
+		        text: '学校招生批次',
+		        subtext: '{{ subject }}'
+		    },
+		    tooltip : {
+		        trigger: 'axis'
+		    },
+		    legend: {
+		    	show:false,
+		        data:['count']
+		    },
+		    toolbox: {
+		        show : true,
+		        feature : {
+		            mark : {show: false},
+		            dataView : {show: false, readOnly: false},
+		            magicType : {show: false, type: ['line', 'bar']},
+		            restore : {show: true},
+		            saveAsImage : {show: true}
+		        },
+		        x:'right',
+		        y:'top'		        
+		    },
+		    calculable : true,
+		    xAxis : [
+		        {
+		            type : 'value'
+		        }
+		    ],
+		    yAxis : [
+		        {
+		            type : 'category',
+		            data : [
+		            	{% for label, val in by_batch reversed %}
+		            	'{{label}}',
+		            	{% endfor %}
+		            ]
+		        }		    
+		    ],
+		    series : [
+		        {
+		            name:'count',
+		            type:'bar',
+		            data:[
+		            	{% for label,val in by_batch reversed %}
+		            		{{val}},
+		            	{% endfor %}
+		            ],
+			    	itemStyle:{
+			    		normal:{
+			    			label:{
+			    				show: true,
+			    				formatter:'{b}: {c}个'
+			    			},
+			      		}
+			    	} // end of itemStyle	
+		        }
+		    ]
+		};
+		var myChart = echarts.init(document.getElementById('{{subject}}-by-batch-canvas'),'gray');
+	    myChart.setOption(options);
+	}
+
+	j$(document).ready(function(){
+		drawGraph_1();
+		drawGraph_2();
+	})
+</script>
