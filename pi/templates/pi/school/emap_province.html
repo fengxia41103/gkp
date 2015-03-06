@@ -10,10 +10,10 @@
 <div class="container">
 	{# some aggregated data as a teaser so user will click to see more details #}
 	<blockquote>
-	{{ schools.0.province}}共查到{{ schools|length }}个大、专院校。其中，
-	{{b_count}}个院校招收本科，{{ a_count }}个院校招收专科。这其中，
-	{{ a_b_count }}个院校既有本科也有专科招生，并且有{{ p_count }}个院校
-	提前招生。
+	<h3>Quick Facts:</h3>
+	{{ schools.0.province}}共查到<span class="my-huge-font">{{ schools|length }}</span>个大、专院校。其中，
+	<span class="my-huge-font">{{b_count}}</span>个院校招收本科，<span class="my-huge-font">{{ a_count }}</span>个院校招收专科，
+	<span class="my-huge-font">{{ a_b_count }}</span>个院校既有本科也有专科，并且有<span class="my-huge-font">{{ p_count }}</span>个院校提前招生。
 	</blockquote>
 	<ul class="nav nav-tabs">
 		{% for s in section_index %}

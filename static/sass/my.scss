@@ -1,4 +1,5 @@
 @import url(http://fonts.googleapis.com/css?family=Gudea:400,700,400italic&subset=latin,latin-ext);
+@import url(http://fonts.googleapis.com/css?family=Francois+One);
 
 body {
   //color: #333;
@@ -313,4 +314,10 @@ footer {
   border-left: 3px solid #89e;
   padding: 5px 0 5px 10px;
   border-radius: 2px 0px 0px 2px;
+}
+
+.my-huge-font {
+  font-family: 'Francois One', sans-serif;
+  font-size: 2.0em;
+  color: #819FF7;
 }
