@@ -1,4 +1,5 @@
 
+{% load staticfiles %}
 {# login modal #}
 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -29,7 +30,7 @@
                     <a href="{% url 'user_register' %}">新用户注册</a>
                     </span>
                     <input class="btn btn-primary default pull-right" type="submit" value="登录" />
-                    <input type="hidden" name="next" value="/gaokao/school/" />
+                    <input type="hidden" name="next" value="{% url 'school_echart_map_filter' %}" />
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>              
                 </div>
             </div>
