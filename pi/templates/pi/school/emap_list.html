@@ -7,11 +7,43 @@
 
 {% block content %}
 <div class="container">
-	<ul class="list-unstyled">
-		{% for obj in object_list %}
-		<li><a href="{% url 'school_detail' obj.id %}">{{ obj.name }}</a></li>
+	<section>
+		<h3>本科招生</h3>
+		{% regroup bachelors by city as obj_list %}
+		{% for city in obj_list %}
+			<h4>{{ city.grouper }}</h4>
+				<ul class="list-inline">
+					{% for obj in city.list %}
+						<li><a href="{% url 'school_detail' obj.id %}">{{ obj.name }}</a></li>
+					{% endfor %}
+				</ul>
 		{% endfor %}
-	</ul>
+	</section>
+	<section>
+		<h3>专科招生</h3>
+		<ul class="list-inline">
+			{% for obj in associates %}
+				<li><a href="{% url 'school_detail' obj.id %}">{{ obj.name }}</a></li>
+			{% endfor %}
+		</ul>
+	</section>
+	<section>
+		<h3>本科+专科招生</h3>
+		<ul class="list-inline">
+			{% for obj in bachelors_and_associates %}
+				<li><a href="{% url 'school_detail' obj.id %}">{{ obj.name }}</a></li>
+			{% endfor %}
+		</ul>
+	</section>			
+	<section>
+		<h3>提前录取</h3>
+		<ul class="list-inline">
+			{% for obj in pre %}
+				<li><a href="{% url 'school_detail' obj.id %}">{{ obj.name }}</a></li>
+			{% endfor %}
+		</ul>
+	</section>			
+
 
 	{# aggregated analysis of a particular group of school #}
 </div>

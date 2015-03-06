@@ -9,45 +9,17 @@
 </h2>
 <div class="container">
 	{# some aggregated data as a teaser so user will click to see more details #}
-	根据我们的统计，{{ schools.0.province}}共有{{ schools|length }}个大、专院校招生。其中，
-	{{ bachelors|length}}个院校招收本科，{{ associates|length }}个院校招收专科。这其中，
-	{{ bachelor_and_associate|length }}个院校既有本科也有专科招生，并且有{{ pre|length }}个院校
+	<blockquote>
+	{{ schools.0.province}}共查到{{ schools|length }}个大、专院校。其中，
+	{{b_count}}个院校招收本科，{{ a_count }}个院校招收专科。这其中，
+	{{ a_b_count }}个院校既有本科也有专科招生，并且有{{ p_count }}个院校
 	提前招生。
-	
-	<section>
-		<h3>本科招生</h3>
-		{% regroup bachelors by city as obj_list %}
-		{% for city in obj_list %}
-			<h4>{{ city.grouper }}</h4>
-				<ul class="list-inline">
-					{% for obj in city.list %}
-						<li><a href="{% url 'school_detail' obj.id %}">{{ obj.name }}</a></li>
-					{% endfor %}
-				</ul>
+	</blockquote>
+	<ul class="nav nav-tabs">
+		{% for s in section_index %}
+		<li class="">
+			<a href="#{{s}}">{{ s }}</a>
+		</li>
 		{% endfor %}
-	</section>
-	<section>
-		<h3>专科招生</h3>
-		<ul class="list-inline">
-			{% for obj in associates %}
-				<li><a href="{% url 'school_detail' obj.id %}">{{ obj.name }}</a></li>
-			{% endfor %}
-		</ul>
-	</section>
-	<section>
-		<h3>本科+专科招生</h3>
-		<ul class="list-inline">
-			{% for obj in bachelors_and_associates %}
-				<li><a href="{% url 'school_detail' obj.id %}">{{ obj.name }}</a></li>
-			{% endfor %}
-		</ul>
-	</section>			
-	<section>
-		<h3>提前录取</h3>
-		<ul class="list-inline">
-			{% for obj in pre %}
-				<li><a href="{% url 'school_detail' obj.id %}">{{ obj.name }}</a></li>
-			{% endfor %}
-		</ul>
-	</section>			
+	</ul>
 </div>

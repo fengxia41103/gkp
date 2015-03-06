@@ -17,7 +17,7 @@ from django.shortcuts import render, render_to_response
 from django.http import HttpResponseRedirect, JsonResponse
 from django.utils.encoding import smart_text
 from django.views.decorators.csrf import csrf_exempt
-from django.db.models import Count
+from django.db.models import Count,Max,Min,Avg
 
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -516,9 +516,12 @@ class MySchoolMapDetail(TemplateView):
 			content_type='application/javascript')	
 
 @class_view_decorator(login_required)
+
 class MySchoolEchartMapFilter(TemplateView):
 	template_name = 'pi/school/emap.html'
 	by_province_template_name = 'pi/school/emap_province.html'
+	school_summary_template_name = 'pi/analysis/schools_summary.html'
+	section_index = {u'本科':None,u'专科':None,u'本科+专科':None,u'提前招生':None}
 
 	def get_context_data(self, **kwargs):
 		context = super(TemplateView, self).get_context_data(**kwargs)
@@ -537,20 +540,36 @@ class MySchoolEchartMapFilter(TemplateView):
 		schools = MySchool.objects.filter(province = int(request.POST['p_id']))
 
 		# categorized by admissions
-
-		bachelors = sorted([s for s in schools if s.has_bachelor_admission],lambda x,y:cmp(x.city,y.city))
-		associates = sorted([s for s in schools if s.has_associate_admission],lambda x,y:cmp(x.city,y.city))
-		bachelor_and_associate = sorted(list(set(bachelors).intersection(associates)),lambda x,y:cmp(x.city,y.city))
-		pre = sorted([s for s in schools if s.has_pre_admission],lambda x,y:cmp(x.city,y.city))
+		bachelors = [s for s in schools if s.has_bachelor_admission]
+		associates = [s for s in schools if s.has_associate_admission]
+		bachelor_and_associate = list(set(bachelors).intersection(associates))
+		pre = [s for s in schools if s.has_pre_admission]
 
 		content = loader.get_template(self.by_province_template_name)
-		html= content.render(Context({
+		my_context = Context({
 			'schools':schools,
-			'bachelors':bachelors,
-			'associates':associates,
-			'bachelor_and_associate': bachelor_and_associate,
-			'pre':pre
-			}))
+			'b_count':len(bachelors),
+			'a_count':len(associates),
+			'a_b_count': len(bachelor_and_associate),
+			'p_count':len(pre),
+			'section_index':self.section_index.keys()
+			})
+		html= content.render(my_context)
+
+		self.section_index={u'本科':bachelors,u'专科':associates,u'本科+专科':bachelor_and_associate,u'提前招生':pre}
+		summary = loader.get_template(self.school_summary_template_name)
+		for subject,objs in self.section_index.iteritems():
+			max_score = MyAdmissionBySchool.objects.filter(school__in=objs).aggregate(Max('max_score'))['max_score__max']
+			min_score = MyAdmissionBySchool.objects.filter(school__in=objs).aggregate(Min('min_score'))['min_score__min']
+			max_score = MyAdmissionBySchool.objects.filter(school__in=objs).filter(max_score = max_score)[0]
+			min_score = MyAdmissionBySchool.objects.filter(school__in=objs).filter(min_score = min_score)[0]
+			my_context['subject']=subject
+			#my_context['no_major']=sum([x.no_major for x in MyAdmissionByMajor.objects.filter(school__in=objs).annotate(no_major=Count('major'))])
+			my_context['objs']=objs
+			my_context['max_score']=max_score
+			my_context['min_score']=min_score
+
+			html+= summary.render(my_context)
 
 		return HttpResponse(json.dumps({'html':html}), 
 			content_type='application/javascript')	
@@ -560,7 +579,17 @@ class MySchoolEchartMapList(ListView):
 	template_name = 'pi/school/emap_list.html'
 	def get_context_data(self, **kwargs):
 		context = super(ListView, self).get_context_data(**kwargs)
+
+		schools = self.get_queryset()
 		context['province'] = MyAddress.objects.get(id = int(self.kwargs['pk'])).province
+		bachelors = sorted([s for s in schools if s.has_bachelor_admission],lambda x,y:cmp(x.city,y.city))
+		associates = sorted([s for s in schools if s.has_associate_admission],lambda x,y:cmp(x.city,y.city))
+		bachelor_and_associate = sorted(list(set(bachelors).intersection(associates)),lambda x,y:cmp(x.city,y.city))
+		pre = sorted([s for s in schools if s.has_pre_admission],lambda x,y:cmp(x.city,y.city))
+		context['bachelors']=bachelors
+		context['associates']=associates
+		context['bachelor_and_associate']=bachelor_and_associate
+		context['pre']=pre
 		return context
 
 	def get_queryset(self):

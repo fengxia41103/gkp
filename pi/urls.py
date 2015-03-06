@@ -51,8 +51,8 @@ urlpatterns = patterns(
 		url(r'^school/map/filter/', ensure_csrf_cookie(views.MySchoolMapFilter.as_view()),name='school_map_filter'),
 		url(r'^school/map/detail/', ensure_csrf_cookie(views.MySchoolMapDetail.as_view()),name='school_map_detail'),
 		url(r'^school/map/info/', ensure_csrf_cookie(views.MySchoolMapInfo.as_view()),name='school_map_info'),
-		url(r'^school/e/map/filter/', views.MySchoolEchartMapFilter.as_view(),name='school_echart_map_filter'),
-		url(r'^school/e/map/(?P<pk>\d+)/', views.MySchoolEchartMapList.as_view(),name='school_emap_list'),		
+		url(r'^school/e/map/filter/$', views.MySchoolEchartMapFilter.as_view(),name='school_echart_map_filter'),
+		url(r'^school/e/map/(?P<pk>\d+)/$', views.MySchoolEchartMapList.as_view(),name='school_emap_list'),		
 
 		# analysis
 	)

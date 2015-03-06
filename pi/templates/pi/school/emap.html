@@ -64,10 +64,16 @@
                         roam: false,
                         itemStyle:{
                             normal:{
-                                label:{show:true},
+                                label:{
+                                    show:true,
+                                    formatter:'{a}'
+                                },
                             },
                             emphasis:{
-                                label:{show:true},                            }
+                                label:{
+                                    show:true
+                                },                            
+                            }
                         },
                         data:[
                             {% for p_id, province,count in echart_data %}
