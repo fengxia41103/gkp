@@ -234,12 +234,16 @@ def admission_school_crawler_view (request):
 #	MyAdmissionByMajor views
 #
 ###################################################
+from django_filters import CharFilter
 class MyAdmissionByMajorListFilter (FilterSet):
+	major=CharFilter(name='major__name',label="Majors")
 	class Meta:
 		model = MyAdmissionByMajor
-		fields = {'school':['exact'],
+		fields = {'school__name':['contains'],
 				'province':['exact'],
 				'category':['contains'],
+				'year':['exact'],
+				#'major__name':['contains'],
 				}
 
 @class_view_decorator(login_required)
