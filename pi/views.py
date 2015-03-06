@@ -547,6 +547,7 @@ class MySchoolEchartMapFilter(TemplateView):
 
 		content = loader.get_template(self.by_province_template_name)
 		my_context = Context({
+			'p_id':request.POST['p_id'],
 			'schools':schools,
 			'b_count':len(bachelors),
 			'a_count':len(associates),
@@ -556,7 +557,7 @@ class MySchoolEchartMapFilter(TemplateView):
 			})
 		html= content.render(my_context)
 
-		self.section_index={u'本科':bachelors,u'专科':associates,u'本科+专科':bachelor_and_associate,u'提前招生':pre}
+		self.section_index={u'本科':bachelors}
 		summary = loader.get_template(self.school_summary_template_name)
 		for subject,objs in self.section_index.iteritems():
 			max_score = MyAdmissionBySchool.objects.filter(school__in=objs).aggregate(Max('max_score'))['max_score__max']
@@ -568,6 +569,12 @@ class MySchoolEchartMapFilter(TemplateView):
 			my_context['objs']=objs
 			my_context['max_score']=max_score
 			my_context['min_score']=min_score
+
+			my_context['by_batch']=(
+				(u'一批',len([o for o in objs if o.is_1st_batch])),
+				(u'二批',len([o for o in objs if o.is_2nd_batch])),
+				(u'三批',len([o for o in objs if o.is_3rd_batch]))
+			)
 
 			html+= summary.render(my_context)
 
