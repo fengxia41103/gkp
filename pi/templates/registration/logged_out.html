@@ -1,10 +1,5 @@
-{% extends "pi/common/home.html" %}
-{% load i18n %}
+{% extends 'pi/common/home.html' %}
 
 {% block content %}
-
-<p>{% trans "Thanks for spending some quality time with the Web site today." %}</p>
-
-<p><a href="{% url 'login' %}">{% trans 'Log in again' %}</a></p>
-
-{% endblock %}
+Thank you for using our service. Hope we will see you soon!
+[% endblock %}

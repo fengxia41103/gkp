@@ -3,15 +3,15 @@ from django.conf.urls import url
 from pi import views
 from django.views.generic.edit import CreateView
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.views import login
+import django.contrib.auth.views as AuthViews
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 urlpatterns = patterns(
 		'',
-		url(r'^home/', views.home_view, name='home'),
-		url(r'login/$', login, name='login'),
-		url(r'logout/$', views.logout_view, name='logout'),
-		url(r'^register/$', views.user_register_view, name='user_register'),
+		url(r'^$', views.HomeView.as_view(), name='home'),
+		url(r'login/$', views.LoginView.as_view(),name='login'),
+		url(r'logout/$', views.LogoutView.as_view(), name='logout'),
+		url(r'^register/$', views.UserRegisterView.as_view(), name='user_register'),
 
 		# google maps
 

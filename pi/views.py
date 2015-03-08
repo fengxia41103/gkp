@@ -8,10 +8,10 @@ from django.contrib.contenttypes.generic import generic_inlineformset_factory
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth import logout, login
+from django.contrib.auth import authenticate, logout, login
 from django.template import RequestContext
-from django.views.generic import ListView, DetailView
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic import TemplateView, ListView, DetailView
+from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView
 from django.core.urlresolvers import reverse_lazy, resolve, reverse
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponseRedirect, JsonResponse
@@ -24,7 +24,7 @@ from django.shortcuts import render
 from django.views.decorators.vary import vary_on_headers
 # protect the view with require_POST decorator
 from django.views.decorators.http import require_POST
-from django.views.generic import TemplateView
+from django.contrib import messages
 
 # map geometry lib
 from shapely.geometry import box as Box
@@ -74,16 +74,60 @@ def class_view_decorator(function_decorator):
 #	Static views
 #
 ###################################################
-def home_view (request):
-	user_auth_form = AuthenticationForm()
-	user_registration_form = UserCreationForm()
+class HomeView (TemplateView):
+	template_name = 'pi/common/home_with_login_modal.html'
 
-	forms = {'registration_form':user_registration_form,
-			'auth_form':user_auth_form
-			}
+	def get_context_data(self, **kwargs):
+		context = super(TemplateView, self).get_context_data(**kwargs)
 
-	csrfContext = RequestContext(request,forms)
-	return render_to_response('pi/common/home.html', csrfContext)
+		user_auth_form = AuthenticationForm()
+		user_registration_form = UserCreationForm()
+
+		context['registration_form']=user_registration_form
+		context['auth_form']=user_auth_form
+		return context
+
+###################################################
+#
+#	User views
+#
+###################################################
+class LoginView(FormView):
+	template_name = 'registration/login.html'
+	success_url = reverse_lazy('school_echart_map_filter')
+	form_class = AuthenticationForm
+	def form_valid(self,form):
+		username = form.cleaned_data['username']
+		password = form.cleaned_data['password']
+		user = authenticate(username=username, password=password)
+
+		if user is not None and user.is_active:
+		    login(self.request, user)
+		    return super(LoginView, self).form_valid(form)
+		else:
+		    return self.form_invalid(form)
+
+class LogoutView(TemplateView):
+	template_name = 'registration/logged_out.html'
+	def get(self,request):
+		logout(request)
+    	# Redirect to a success page.
+		messages.add_message(request, messages.INFO, 'Thank you for using our service. Hope to see you soon!')
+		return HttpResponseRedirect (reverse_lazy('home'))
+
+class UserRegisterView(FormView):
+	template_name = 'registration/register_form.html'
+	form_class = UserCreationForm
+	success_url = reverse_lazy('login')
+	def form_valid(self,form):
+		user_name = form.cleaned_data['username']
+		password = form.cleaned_data['password2']
+		if len(User.objects.filter(username = user_name))>0:
+			return self.form_invalid(form)
+		else:
+			user = User.objects.create_user(user_name, '', password)			
+			user.save()
+			return super(UserRegisterView,self).form_valid(form)
 
 ###################################################
 #
@@ -131,33 +175,6 @@ def import_admission_by_major (request):
 		form = ImportGeneralUploadForm()
 		content = ''
 		return render(request, 'pi/import/upload.html', {'form': form})			
-
-###################################################
-#
-#	User views
-#
-###################################################
-def user_register_view (request):
-	# if this is a POST request we need to process the form data
-	if request.method == 'POST':
-		# create a form instance and populate it with data from the request:
-		form = UserCreationForm(request.POST)
-		# check whether it's valid:
-		if form.is_valid():
-			user_name = form.cleaned_data['username']
-			password = form.cleaned_data['password2']
-			user = User.objects.create_user(user_name, '', password)			
-			user.save()
-			return HttpResponseRedirect (reverse_lazy('login'))
-	# if a GET (or any other method) we'll create a blank form
-	else: 
-		form = UserCreationForm()
-	return render(request, 'registration/register_form.html', {'registration_form': form})	
-
-@login_required
-def logout_view(request):
-	logout(request)
-	return HttpResponseRedirect(reverse_lazy('home'))
 
 ###################################################
 #
@@ -520,7 +537,6 @@ class MySchoolMapDetail(TemplateView):
 			content_type='application/javascript')	
 
 @class_view_decorator(login_required)
-
 class MySchoolEchartMapFilter(TemplateView):
 	template_name = 'pi/school/emap.html'
 	by_province_template_name = 'pi/school/emap_province.html'
