@@ -50,7 +50,6 @@
     {% compress css %}	
 	<!-- application specific css -->
 	<!--link rel="stylesheet" type="text/x-scss" href="{% static 'sass/my.scss' %}"-->	
-	<link rel="stylesheet" type="text/css" href="{% static 'css/sticky-footer-navbar.css' %}">
 	{% endcompress %}
 	<link rel="stylesheet" type="text/css" href="{% static 'sass/my.css' %}">	
 	
@@ -170,6 +169,7 @@
 {% block main %}
 	{% block custom_tags %}
 	{% endblock %}
+	<div id="wrap">
 	<div class="container">
 			{% block page-info %}
 			{% endblock %}
@@ -186,6 +186,8 @@
 		{% block content %}
 		{% endblock %}
 	</div><!-- /.container -->
+	<div id="push"></div>
+	</div>
 {% endblock %}<!-- end of block main -->
 
 {# sandbox for testing client libs/css/js #}
@@ -193,7 +195,7 @@
 {% endblock %}
 
 {% block footer %}
-<footer>
+<footer class="" id="footer">
 	<i class="fa fa-copyright"></i>
 	2015 MySAT Company Compile
 </footer>
