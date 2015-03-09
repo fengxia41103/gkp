@@ -1,0 +1,42 @@
+{% load staticfiles %}
+
+<h2 class="page-header">
+	{{ schools.0.province }}高校信息
+	<a href="{% url 'analysis_school_by_province' schools.0.province.id %}" class="btn btn-xs addlink">
+		更多信息 ....
+		<i class="fa fa-angle-double-right"></i>
+	</a>
+</h2>
+<div class="container">
+	{# some aggregated data as a teaser so user will click to see more details #}
+	<blockquote>
+	<h3>Quick Facts</h3>
+	{{ schools.0.province}}共查到<span class="my-huge-font">{{ schools|length }}</span>个大、专院校。其中，
+	<span class="my-huge-font">{{b_count}}</span>个院校招收本科，<span class="my-huge-font">{{ a_count }}</span>个院校招收专科，
+	<span class="my-huge-font">{{ a_b_count }}</span>个院校既有本科也有专科，并且有<span class="my-huge-font">{{ p_count }}</span>个院校提前招生。
+	</blockquote>
+	<ul class="nav nav-tabs">
+		{% for s in available_sections %}
+		<li class="">
+			{% if s in active_sections %}
+				<a href="#{{ s }}">
+					<i class="fa fa-check"></i>
+					{{ s }}
+				</a>
+			{% else %}
+				<a href="{% url 'analysis_school_by_province' p_id %}#{{ s }}" 
+					data-toggle="tooltip" 
+					data-placement="bottom"
+					title="Learn more about {{schools.0.province}}/{{ s }} here">
+					{{ s }}
+				</a>			
+			{% endif %}
+		</li>
+		{% endfor %}				
+	</ul>
+</div>
+
+<script type="text/javascript">
+	// initialize all tooltips
+ 	j$('[data-toggle="tooltip"]').tooltip();
+</script>
