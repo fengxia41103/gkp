@@ -16,7 +16,7 @@
 			<dd>
 				<a href="{% url 'school_detail' min_score.school.id %}">{{ min_score.school }}</a>
 				于{{ min_score.year }}在
-				<a href="{% url 'analysis_school_by_province' min_score.province.id %}">{{ min_score.province }}</a>		的{{min_score.batch}}录取的招生分数{{min_score.min_score}}					
+				<a href="{% url 'analysis_school_by_province' min_score.province.id %}">{{ min_score.province }}</a>的{{min_score.batch}}录取的招生分数{{min_score.min_score}}					
 			</dd>
 		</dl>
 		<div id="{{subject}}-by-batch-canvas" style="min-height:300px;width:100%;"></div>

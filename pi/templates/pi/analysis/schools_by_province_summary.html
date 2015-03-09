@@ -12,10 +12,8 @@
 	<blockquote>
 	<h3>Quick Facts</h3>
 	{{ schools.0.province}}共查到<span class="my-huge-font">{{ schools|length }}</span>个大、专院校。其中，
-	{% for level_1_c, category in categories.items %}
-		{% for cat, objs in category.items %}
-			<span class="my-huge-font">{{ objs|length }}</span>个院校招收{{ cat }},
-		{% endfor %}
+	{% for cat, objs in categories.items %}
+		<span class="my-huge-font">{{ objs|length }}</span>个院校招收{{ cat }},
 	{% endfor %}
 	</blockquote>
 </div>
@@ -73,11 +71,10 @@
 
     	j$.post("{% url 'analysis_school_detail_ajax' %}", // passed in from view
             {
-                'province':1,
+                'province':{{ p_id }},
                 'cats':JSON.stringify([activeTab])
             },
             function(resp) { // success callback
-            	console.log(tab_id);
                 j$(tab_id).html(resp['html']);            
             },'json'
     	).always(function(){

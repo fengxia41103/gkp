@@ -658,14 +658,16 @@ class AnalysisSchoolSummaryAJAX(TemplateView):
 		school_type = custom_filters.get('school_type')
 		batch = custom_filters.get('batch')
 		
-		# get objects
+		# filter by province
 		if province: schools = MySchool.objects.filter(province = int(province))
 		else: schools = MySchool.objects.all()
 
+		# filter by city
 		if city: schools = schools.filter(city=city)
 
-		if school_type: 
-			schools=schools.filter(school_type = school_type)
+		# filter by school_type
+		if school_type: schools=schools.filter(school_type = school_type)
+
 		return schools
 
 	def categorize_schools(self,schools):
@@ -679,10 +681,10 @@ class AnalysisSchoolSummaryAJAX(TemplateView):
 		pre = [s for s in schools if s.has_pre_admission]
 
 		return {
-				u'招生-本科':bachelors,
-				u'招生-专科':associates,
-				u'招生-既有本科也有专科':bachelor_and_associate,
-				u'招生-提前招生':pre			
+				u'本科':bachelors,
+				u'专科':associates,
+				u'既有本科也有专科':bachelor_and_associate,
+				u'提前招生':pre			
 			}
 
 	def post(self,request):
