@@ -64,6 +64,7 @@
     	var tab_id = j$(this).attr('href');
     	var activeTab = j$(e.target).text();
 		
+		// loading spinner
 		var l = Ladda.create(this);
 	 	l.start();
 
@@ -76,6 +77,7 @@
                 j$(tab_id).html(resp['html']);             
             },'json'
     	).always(function(){
+    		// remove spinner
     		l.stop();
     	});    	
     });
