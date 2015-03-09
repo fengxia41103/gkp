@@ -700,7 +700,6 @@ class AnalysisSchoolByProvince(TemplateView):
 	template_name = 'pi/analysis/schools_by_province.html'
 	def get_context_data(self, **kwargs):
 		context = super(TemplateView, self).get_context_data(**kwargs)
-
-		# TODO: center is now WuHan. Should be based on User's location
 		context['province'] = MyAddress.objects.get(id=int(kwargs['pk']))
+		context['schools'] = MySchool.objects.filter(province=int(kwargs['pk']))
 		return context	

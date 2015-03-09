@@ -317,7 +317,7 @@ class MySchoolMapManager(models.Manager):
 	def has_province(self):
 		return self.get_queryset().filter(province__isnull=False)
 
-	def has_admission_set(self):
+	def has_admission(self):
 		return [x for x in self.get_queryset().order_by('province') if x.has_admission]
 
 class MySchool (MyBaseModel):

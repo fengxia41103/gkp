@@ -5,7 +5,7 @@
 	<div class="row">
 		<div class="col-md-6">
 			<dl class="dl-horizontal my-dl-horizontal">
-				<dt>高校个数</dt><dd>{{ objs|length }}</dd>
+				<dt>此类高校个数</dt><dd>{{ objs|length }}</dd>
 				<dt>历史最高分数线</dt>
 				<dd>
 					<a href="{% url 'school_detail' max_score.school.id %}">{{ max_score.school }}</a>

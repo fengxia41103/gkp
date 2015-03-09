@@ -11,7 +11,7 @@
 {% block custom_js %}
 <script type="text/javascript">
 	j$(document).ready(function(){
-        // ajax to server to get a list of markers that are within the viewport
+        // ajax to server to get a list of columns:4"markers that are within the viewport
         j$.post("{% url 'analysis_school_by_province_ajax' %}", // passed in from view
             { 
                 'p_id':{{ pk }},
