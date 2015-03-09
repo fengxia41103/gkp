@@ -9,7 +9,7 @@
       </div>
 
         {% load crispy_forms_tags %}
-        <form action="{% url 'login' %}" method="post">      
+        <form action="{% url 'user_register' %}" method="post">      
             <div class="modal-body">
                 {% csrf_token %}
                 <div class="row">
