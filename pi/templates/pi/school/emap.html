@@ -89,13 +89,14 @@
 
             myChart.on('click', function(param){
                 var province_id = param.data.p_id;
-                var analysis = ['本科'];
 
                 // ajax to server to get a list of markers that are within the viewport
-                j$.post("{{ analysis_url }}", // passed in from view
+                j$.post("{{ analysis_url }}", // passed in from view                    
                     { 
-                        'p_id':province_id,
-                        'analysis_request':analysis
+                        'province':province_id,
+                        'cats':JSON.stringify([
+                            '招生-本科',
+                        ]),
                     }, 
                     function(resp) { // success callback
                         j$('#analysis-detail').html(resp['html']);
