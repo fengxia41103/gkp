@@ -15,29 +15,63 @@
 	<span class="my-huge-font">{{b_count}}</span>个院校招收本科，<span class="my-huge-font">{{ a_count }}</span>个院校招收专科，
 	<span class="my-huge-font">{{ a_b_count }}</span>个院校既有本科也有专科，并且有<span class="my-huge-font">{{ p_count }}</span>个院校提前招生。
 	</blockquote>
-	<ul class="nav nav-tabs">
-		{% for s in available_sections %}
-		<li class="">
-			{% if s in active_sections %}
-				<a href="#{{ s }}">
-					<i class="fa fa-check"></i>
-					{{ s }}
-				</a>
-			{% else %}
-				<a href="{% url 'analysis_school_by_province' p_id %}#{{ s }}" 
-					data-toggle="tooltip" 
-					data-placement="bottom"
-					title="Learn more about {{schools.0.province}}/{{ s }} here">
-					{{ s }}
-					<i class="fa fa-mail-forward"></i>
-				</a>			
-			{% endif %}
-		</li>
-		{% endfor %}				
-	</ul>
+</div>
+
+{# tabs #}
+<ul id="myTab" class="nav nav-tabs">
+	{% for s in available_sections %}
+	<li class="">
+		{% if s in active_sections %}
+			<a href="#{{ s }}" data-toggle="tab">
+				<i class="fa fa-check"></i>
+				{{ s }}
+			</a>
+		{% else %}
+			<a href="{% url 'analysis_school_by_province' p_id %}#{{ s }}" 
+				data-toggle="tooltip" 
+				data-placement="bottom"
+				title="Learn more about {{schools.0.province}}/{{ s }} here">
+				{{ s }}
+			</a>			
+		{% endif %}
+	</li>
+	{% endfor %}				
+</ul>
+<div id="myTabContent" class="tab-content">
+	{% for s in active_sections %}
+	<div class="tab-pane" id="{{s}}">
+		{{ s }}
+	</div>
+	{% endfor %}
+</div>
 </div>
 
 <script type="text/javascript">
 	// initialize all tooltips
- 	j$('[data-toggle="tooltip"]').tooltip();
+ 	j$('[data-toggle="tooltip"]').tooltip();	
+
+    j$('a[data-toggle="tab"]').click(function ( e ) {
+        e.preventDefault ();
+        j$(this).tab('show');
+    });  
+
+    j$('a[data-toggle="tab"]').on('shown.bs.tab',function(e){
+    	e.preventDefault();
+    	var tab_id = j$(this).attr('href');
+    	var activeTab = j$(e.target).text();
+
+    	j$.post("{% url 'analysis_school_detail_ajax' %}", // passed in from view
+            {
+                'p_id':1,
+                'subject':activeTab
+            },
+            function(resp) { // success callback
+                j$(tab_id).html(resp['html']);             
+            },'json'
+    	);    	
+    });
+
+    j$(document).ready(function(){
+    	j$('a[data-toggle="tab"]:first').tab('show');
+    });
 </script>

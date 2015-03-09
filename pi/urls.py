@@ -54,7 +54,8 @@ urlpatterns = patterns(
 		url(r'^school/e/map/filter/$', views.MySchoolEchartMapFilter.as_view(),name='school_echart_map_filter'),
 
 		# analysis
-		url(r'^analysis/school/ajax/$', views.AnalysisSchoolByProvinceAJAX.as_view(), name='analysis_school_by_province_ajax'),
+		url(r'^analysis/school/summary/ajax/$', views.AnalysisSchoolSummaryAJAX.as_view(), name='analysis_school_summary_ajax'),
+		url(r'^analysis/school/detail/ajax/$', views.AnalysisSchoolDetailAJAX.as_view(), name='analysis_school_detail_ajax'),		
 		url(r'^analysis/school/province/(?P<pk>\d+)/$', views.AnalysisSchoolByProvince.as_view(), name='analysis_school_by_province'),
 
 	)

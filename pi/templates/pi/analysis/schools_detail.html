@@ -1,43 +1,41 @@
-<section id="{{subject}}">
-	<h2 class="">
-		{{ subject }}
-	</h2>
-	<div class="row">
-		<div class="col-md-6">
-			<dl class="dl-horizontal my-dl-horizontal">
-				<dt>此类高校个数</dt><dd>{{ objs|length }}</dd>
-				<dt>历史最高分数线</dt>
-				<dd>
-					<a href="{% url 'school_detail' max_score.school.id %}">{{ max_score.school }}</a>
-					于{{ max_score.year }}在
-					<a href="{% url 'analysis_school_by_province' max_score.province.id %}">{{ max_score.province }}</a>
-					的{{ max_score.batch }}录取的招生分数{{max_score.max_score}}分
-				</dd>
-				<dt>历史最低分数线</dt>
-				<dd>
-					<a href="{% url 'school_detail' min_score.school.id %}">{{ min_score.school }}</a>
-					于{{ min_score.year }}在
-					<a href="{% url 'analysis_school_by_province' min_score.province.id %}">{{ min_score.province }}</a>		的{{min_score.batch}}录取的招生分数{{min_score.min_score}}					
-				</dd>
-			</dl>
-			<div id="{{subject}}-by-batch-canvas" style="min-height:300px;width:100%;"></div>
-		</div>
-		<div class="col-md-6">
-			<div id="{{subject}}-by-type-canvas" style="min-height:300px;width:100%;"></div>
-			<div class="" style="border-top:2px solid #55c4b8;">
-				<h4>相关学校:</h4>
-				<ul class="list-inline">
-					{% regroup objs|dictsort:"name" by name as obj_list %}
-					{% for name in obj_list|slice:":10" %}
-					<li class="">
-						<a href="{% url 'school_detail' name.list.0.id %}">{{ name.grouper }}</a>
-					</li>
-					{% endfor %}
-				</ul>
-			</div><!-- end of related list -->				
-		</div>
+<h2 class="">
+	{{ subject }}
+</h2>
+<div class="row">
+	<div class="col-md-6">
+		<dl class="dl-horizontal my-dl-horizontal">
+			<dt>此类高校个数</dt><dd>{{ objs|length }}</dd>
+			<dt>历史最高分数线</dt>
+			<dd>
+				<a href="{% url 'school_detail' max_score.school.id %}">{{ max_score.school }}</a>
+				于{{ max_score.year }}在
+				<a href="{% url 'analysis_school_by_province' max_score.province.id %}">{{ max_score.province }}</a>
+				的{{ max_score.batch }}录取的招生分数{{max_score.max_score}}分
+			</dd>
+			<dt>历史最低分数线</dt>
+			<dd>
+				<a href="{% url 'school_detail' min_score.school.id %}">{{ min_score.school }}</a>
+				于{{ min_score.year }}在
+				<a href="{% url 'analysis_school_by_province' min_score.province.id %}">{{ min_score.province }}</a>		的{{min_score.batch}}录取的招生分数{{min_score.min_score}}					
+			</dd>
+		</dl>
+		<div id="{{subject}}-by-batch-canvas" style="min-height:300px;width:100%;"></div>
 	</div>
-</section>
+	<div class="col-md-6">
+		<div id="{{subject}}-by-type-canvas" style="min-height:300px;width:100%;"></div>
+		<div class="" style="border-top:2px solid #55c4b8;">
+			<h4>相关学校:</h4>
+			<ul class="list-inline">
+				{% regroup objs|dictsort:"name" by name as obj_list %}
+				{% for name in obj_list|slice:":10" %}
+				<li class="">
+					<a href="{% url 'school_detail' name.list.0.id %}">{{ name.grouper }}</a>
+				</li>
+				{% endfor %}
+			</ul>
+		</div><!-- end of related list -->				
+	</div>
+</div>
 
 <script type="text/javascript">
 	function drawGraph_1(){

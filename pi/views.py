@@ -552,7 +552,7 @@ class MySchoolEchartMapFilter(TemplateView):
 		context['echart_data_max'] = max([a[2] for a in echart_data])
 
 		# this url will be AJAX post to get a detail analysis HTML added to this page
-		context['analysis_url'] = reverse_lazy('analysis_school_by_province_ajax')
+		context['analysis_url'] = reverse_lazy('analysis_school_summary_ajax')
 		return context
 
 def school_crawler_view (request):
@@ -634,9 +634,8 @@ class MySchoolMapFilter (TemplateView):
 #	Analysis views
 #
 ###################################################
-class AnalysisSchoolByProvinceAJAX(TemplateView):
+class AnalysisSchoolSummaryAJAX(TemplateView):
 	summary_template_name = 'pi/analysis/schools_by_province_summary.html'
-	detail_template_name = 'pi/analysis/schools_detail.html'
 
 	def post(self,request):
 		schools = MySchool.objects.filter(province = int(request.POST['p_id']))
@@ -648,7 +647,7 @@ class AnalysisSchoolByProvinceAJAX(TemplateView):
 		pre = [s for s in schools if s.has_pre_admission]
 		available_sections = {u'本科':bachelors,
 						u'专科':associates,
-						u'本科+专科':bachelor_and_associate,
+						u'既有本科也有专科':bachelor_and_associate,
 						u'提前招生':pre
 						}
 
@@ -670,31 +669,56 @@ class AnalysisSchoolByProvinceAJAX(TemplateView):
 			'active_sections':active_sections
 			})
 		html= summary.render(my_context)
+		return HttpResponse(json.dumps({'html':html}), 
+			content_type='application/javascript')	
+
+class AnalysisSchoolDetailAJAX(TemplateView):
+	detail_template_name = 'pi/analysis/schools_detail.html'
+	def post(self,request):
+		schools = MySchool.objects.filter(province = int(request.POST['p_id']))
+
+		# categorized by admissions type
+		bachelors = [s for s in schools if s.has_bachelor_admission]
+		associates = [s for s in schools if s.has_associate_admission]
+		bachelor_and_associate = list(set(bachelors).intersection(associates))
+		pre = [s for s in schools if s.has_pre_admission]
+		available_sections = {u'本科':bachelors,
+						u'专科':associates,
+						u'既有本科也有专科':bachelor_and_associate,
+						u'提前招生':pre
+						}
+
+		if request.POST.has_key('analysis_request[]'):
+			# client specify which section it wants
+			active_sections = [k for k in available_sections.keys() if k in request.POST['analysis_request[]']]
+		else: # assume all available ones
+			active_sections = available_sections.keys()
 
 		# details per section
 		detail = loader.get_template(self.detail_template_name)
-		for subject in active_sections:
-			objs = available_sections[subject]
-			max_score = MyAdmissionBySchool.objects.filter(school__in=objs).aggregate(Max('max_score'))['max_score__max']
-			min_score = MyAdmissionBySchool.objects.filter(school__in=objs).aggregate(Min('min_score'))['min_score__min']
-			max_score = MyAdmissionBySchool.objects.filter(school__in=objs).filter(max_score = max_score)[0]
-			min_score = MyAdmissionBySchool.objects.filter(school__in=objs).filter(min_score = min_score)[0]
-			my_context['subject']=subject
-			#my_context['no_major']=sum([x.no_major for x in MyAdmissionByMajor.objects.filter(school__in=objs).annotate(no_major=Count('major'))])
-			my_context['objs']=objs
-			my_context['max_score']=max_score
-			my_context['min_score']=min_score
+		subject =  request.POST['subject'].strip()
+		objs = available_sections[subject]
+		max_score = MyAdmissionBySchool.objects.filter(school__in=objs).aggregate(Max('max_score'))['max_score__max']
+		min_score = MyAdmissionBySchool.objects.filter(school__in=objs).aggregate(Min('min_score'))['min_score__min']
+		max_score = MyAdmissionBySchool.objects.filter(school__in=objs).filter(max_score = max_score)[0]
+		min_score = MyAdmissionBySchool.objects.filter(school__in=objs).filter(min_score = min_score)[0]
+		my_context=Context({
+			'subject':subject,
+			'objs':objs,
+			'max_score':max_score,
+			'min_score':min_score,
+			})
 
-			my_context['by_batch']=(
-				(u'一批',len([o for o in objs if o.is_1st_batch])),
-				(u'二批',len([o for o in objs if o.is_2nd_batch])),
-				(u'三批',len([o for o in objs if o.is_3rd_batch]))
-			)
+		my_context['by_batch']=(
+			(u'一批',len([o for o in objs if o.is_1st_batch])),
+			(u'二批',len([o for o in objs if o.is_2nd_batch])),
+			(u'三批',len([o for o in objs if o.is_3rd_batch]))
+		)
 
-			html+= detail.render(my_context)
-
+		html= detail.render(my_context)
 		return HttpResponse(json.dumps({'html':html}), 
 			content_type='application/javascript')	
+
 
 class AnalysisSchoolByProvince(TemplateView):		
 	template_name = 'pi/analysis/schools_by_province.html'
