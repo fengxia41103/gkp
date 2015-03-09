@@ -52,7 +52,9 @@ urlpatterns = patterns(
 		url(r'^school/map/detail/', ensure_csrf_cookie(views.MySchoolMapDetail.as_view()),name='school_map_detail'),
 		url(r'^school/map/info/', ensure_csrf_cookie(views.MySchoolMapInfo.as_view()),name='school_map_info'),
 		url(r'^school/e/map/filter/$', views.MySchoolEchartMapFilter.as_view(),name='school_echart_map_filter'),
-		url(r'^school/e/map/(?P<pk>\d+)/$', views.MySchoolEchartMapList.as_view(),name='school_emap_list'),		
 
 		# analysis
+		url(r'^analysis/school/ajax/$', views.AnalysisSchoolByProvinceAJAX.as_view(), name='analysis_school_by_province_ajax'),
+		url(r'^analysis/school/province/(?P<pk>\d+)/$', views.AnalysisSchoolByProvince.as_view(), name='analysis_school_by_province'),
+
 	)

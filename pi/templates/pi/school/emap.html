@@ -89,13 +89,16 @@
 
             myChart.on('click', function(param){
                 var province_id = param.data.p_id;
+                var analysis = ['本科'];
+
                 // ajax to server to get a list of markers that are within the viewport
-                j$.post("{% url 'school_echart_map_filter' %}", // passed in from view
+                j$.post("{{ analysis_url }}", // passed in from view
                     { 
-                        'p_id':province_id
+                        'p_id':province_id,
+                        'analysis_request':analysis
                     }, 
                     function(resp) { // success callback
-                        j$('#map-detail').html(resp['html']);
+                        j$('#analysis-detail').html(resp['html']);
                     },'json'
                 );                  
             });
@@ -114,6 +117,6 @@
 {% block content %}
     <div id="echart-canvas" class="" style="height:450px"></div>
     <div class="row" id="target">    
-        <div id="map-detail" class="col-md-12"></div>
+        <div id="analysis-detail" class="col-md-12"></div>
     </div>
 {% endblock %}

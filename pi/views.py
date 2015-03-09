@@ -539,10 +539,6 @@ class MySchoolMapDetail(TemplateView):
 @class_view_decorator(login_required)
 class MySchoolEchartMapFilter(TemplateView):
 	template_name = 'pi/school/emap.html'
-	by_province_template_name = 'pi/school/emap_province.html'
-	school_summary_template_name = 'pi/analysis/schools_summary.html'
-	section_index = {u'本科':None,u'专科':None,u'本科+专科':None,u'提前招生':None}
-
 	def get_context_data(self, **kwargs):
 		context = super(TemplateView, self).get_context_data(**kwargs)
 
@@ -554,73 +550,10 @@ class MySchoolEchartMapFilter(TemplateView):
 		context['echart_data'] = echart_data
 		context['echart_data_min'] = min([a[2] for a in echart_data])
 		context['echart_data_max'] = max([a[2] for a in echart_data])
+
+		# this url will be AJAX post to get a detail analysis HTML added to this page
+		context['analysis_url'] = reverse_lazy('analysis_school_by_province_ajax')
 		return context
-
-	def post(self,request):
-		schools = MySchool.objects.filter(province = int(request.POST['p_id']))
-
-		# categorized by admissions
-		bachelors = [s for s in schools if s.has_bachelor_admission]
-		associates = [s for s in schools if s.has_associate_admission]
-		bachelor_and_associate = list(set(bachelors).intersection(associates))
-		pre = [s for s in schools if s.has_pre_admission]
-
-		content = loader.get_template(self.by_province_template_name)
-		my_context = Context({
-			'p_id':request.POST['p_id'],
-			'schools':schools,
-			'b_count':len(bachelors),
-			'a_count':len(associates),
-			'a_b_count': len(bachelor_and_associate),
-			'p_count':len(pre),
-			'section_index':self.section_index.keys()
-			})
-		html= content.render(my_context)
-
-		self.section_index={u'本科':bachelors}
-		summary = loader.get_template(self.school_summary_template_name)
-		for subject,objs in self.section_index.iteritems():
-			max_score = MyAdmissionBySchool.objects.filter(school__in=objs).aggregate(Max('max_score'))['max_score__max']
-			min_score = MyAdmissionBySchool.objects.filter(school__in=objs).aggregate(Min('min_score'))['min_score__min']
-			max_score = MyAdmissionBySchool.objects.filter(school__in=objs).filter(max_score = max_score)[0]
-			min_score = MyAdmissionBySchool.objects.filter(school__in=objs).filter(min_score = min_score)[0]
-			my_context['subject']=subject
-			#my_context['no_major']=sum([x.no_major for x in MyAdmissionByMajor.objects.filter(school__in=objs).annotate(no_major=Count('major'))])
-			my_context['objs']=objs
-			my_context['max_score']=max_score
-			my_context['min_score']=min_score
-
-			my_context['by_batch']=(
-				(u'一批',len([o for o in objs if o.is_1st_batch])),
-				(u'二批',len([o for o in objs if o.is_2nd_batch])),
-				(u'三批',len([o for o in objs if o.is_3rd_batch]))
-			)
-
-			html+= summary.render(my_context)
-
-		return HttpResponse(json.dumps({'html':html}), 
-			content_type='application/javascript')	
-
-@class_view_decorator(login_required)
-class MySchoolEchartMapList(ListView):
-	template_name = 'pi/school/emap_list.html'
-	def get_context_data(self, **kwargs):
-		context = super(ListView, self).get_context_data(**kwargs)
-
-		schools = self.get_queryset()
-		context['province'] = MyAddress.objects.get(id = int(self.kwargs['pk'])).province
-		bachelors = sorted([s for s in schools if s.has_bachelor_admission],lambda x,y:cmp(x.city,y.city))
-		associates = sorted([s for s in schools if s.has_associate_admission],lambda x,y:cmp(x.city,y.city))
-		bachelor_and_associate = sorted(list(set(bachelors).intersection(associates)),lambda x,y:cmp(x.city,y.city))
-		pre = sorted([s for s in schools if s.has_pre_admission],lambda x,y:cmp(x.city,y.city))
-		context['bachelors']=bachelors
-		context['associates']=associates
-		context['bachelor_and_associate']=bachelor_and_associate
-		context['pre']=pre
-		return context
-
-	def get_queryset(self):
-		return MySchool.objects.filter(province = int(self.kwargs['pk']))
 
 def school_crawler_view (request):
 	base_url = 'http://www.gaokaopai.com/daxue-jianjie'
@@ -701,3 +634,73 @@ class MySchoolMapFilter (TemplateView):
 #	Analysis views
 #
 ###################################################
+class AnalysisSchoolByProvinceAJAX(TemplateView):
+	summary_template_name = 'pi/analysis/schools_by_province_summary.html'
+	detail_template_name = 'pi/analysis/schools_detail.html'
+
+	def post(self,request):
+		schools = MySchool.objects.filter(province = int(request.POST['p_id']))
+
+		# categorized by admissions type
+		bachelors = [s for s in schools if s.has_bachelor_admission]
+		associates = [s for s in schools if s.has_associate_admission]
+		bachelor_and_associate = list(set(bachelors).intersection(associates))
+		pre = [s for s in schools if s.has_pre_admission]
+		available_sections = {u'本科':bachelors,
+						u'专科':associates,
+						u'本科+专科':bachelor_and_associate,
+						u'提前招生':pre
+						}
+
+		if request.POST.has_key('analysis_request[]'):
+			# client specify which section it wants
+			active_sections = [k for k in available_sections.keys() if k in request.POST['analysis_request[]']]
+		else: # assume all available ones
+			active_sections = available_sections.keys()
+
+		summary = loader.get_template(self.summary_template_name)
+		my_context = Context({
+			'p_id':request.POST['p_id'],
+			'schools':schools,
+			'b_count':len(bachelors),
+			'a_count':len(associates),
+			'a_b_count': len(bachelor_and_associate),
+			'p_count':len(pre),
+			'available_sections':available_sections.keys(),
+			'active_sections':active_sections
+			})
+		html= summary.render(my_context)
+
+		# details per section
+		detail = loader.get_template(self.detail_template_name)
+		for subject in active_sections:
+			objs = available_sections[subject]
+			max_score = MyAdmissionBySchool.objects.filter(school__in=objs).aggregate(Max('max_score'))['max_score__max']
+			min_score = MyAdmissionBySchool.objects.filter(school__in=objs).aggregate(Min('min_score'))['min_score__min']
+			max_score = MyAdmissionBySchool.objects.filter(school__in=objs).filter(max_score = max_score)[0]
+			min_score = MyAdmissionBySchool.objects.filter(school__in=objs).filter(min_score = min_score)[0]
+			my_context['subject']=subject
+			#my_context['no_major']=sum([x.no_major for x in MyAdmissionByMajor.objects.filter(school__in=objs).annotate(no_major=Count('major'))])
+			my_context['objs']=objs
+			my_context['max_score']=max_score
+			my_context['min_score']=min_score
+
+			my_context['by_batch']=(
+				(u'一批',len([o for o in objs if o.is_1st_batch])),
+				(u'二批',len([o for o in objs if o.is_2nd_batch])),
+				(u'三批',len([o for o in objs if o.is_3rd_batch]))
+			)
+
+			html+= detail.render(my_context)
+
+		return HttpResponse(json.dumps({'html':html}), 
+			content_type='application/javascript')	
+
+class AnalysisSchoolByProvince(TemplateView):		
+	template_name = 'pi/analysis/schools_by_province.html'
+	def get_context_data(self, **kwargs):
+		context = super(TemplateView, self).get_context_data(**kwargs)
+
+		# TODO: center is now WuHan. Should be based on User's location
+		context['province'] = MyAddress.objects.get(id=int(kwargs['pk']))
+		return context	
