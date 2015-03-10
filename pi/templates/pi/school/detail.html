@@ -18,15 +18,49 @@
 
 {% block content %}
 <div class="row">
-	<div class="col-md-2">
+	<div class="col-sm-2">
 		{# in page navigator #}
-		<ul class="list-unstyled">
-			<li><a href="#school-intro">学校简介</a></li>
-			<li><a href="#school-admission">录取分数线</a></li>
-		</ul>
-	</div>
 
-	<div class="col-md-7">
+<div class="sidebar-nav">
+      <div class="navbar navbar-default" role="navigation">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <span class="visible-xs navbar-brand">Sidebar menu</span>
+        </div>
+        <div class="navbar-collapse collapse sidebar-navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active">
+            	<a href="#school-intro">学校简介</a>
+            </li>
+
+            <li class="dropdown">
+            	<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            		录取分数线
+              		<b class="caret"></b>
+              	</a>
+				<ul class="dropdown-menu">
+					{% regroup school_admission by year as obj_list %}
+					{% for year in obj_list %}
+					<li><a href="#school-admission-{{ year.grouper }}">{{year.grouper}}年</a></li>
+					{% endfor %}
+				<li class="divider"></li>
+				<li class="dropdown-header">Nav header</li>
+				<li><a href="#">Separated link</a></li>
+				<li><a href="#">One more separated link</a></li>
+				</ul>
+            </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div><!-- end of navbar -->
+    </div><!-- end of sidebar-nav -->
+	</div><!-- end of div col- -->
+
+	<div class="col-sm-7">
 		{# page content #}
 
 		<section>
@@ -40,14 +74,14 @@
 		</section>
 		<section id="school-intro">
 			<h2>学校简介</h2>
-			{{ object.description|default_if_none:""|truncatechars:1000 }}
+			{{ object.description|default:"暂无信息"|safe|truncatechars:1000 }}
 		</section>
 
 		<section id="school-admission">
 			<h2>录取分数线</h2>
-			{% regroup school_admission by year as obj_list %}
+			{% regroup school_admission|dictsort:"year" by year as obj_list %}
 			{% for year in obj_list %}
-				<h3>{{ year.grouper }}年</h3>
+				<h3 id="school-admission-{{year.grouper}}">{{ year.grouper }}年</h3>
 				<table class="table table-condensed table-striped table-hover">
 					<thead><tr>
 						<th>招生地区</th>
@@ -58,7 +92,7 @@
 						<th>Avg</th>
 					</tr></thead>
 					<tbody>
-						{% for s in year.list %}
+						{% for s in year.list|dictsort:"province" %}
 						<tr>
 							<td>{{ s.province|default_if_none:"暂无信息" }}</td>
 							<td>{{ s.category|default_if_none:"暂无信息" }}</td>
@@ -74,7 +108,7 @@
 		</section>
 	</div>
 
-	<div class="col-md-3" style="border: 1px solid #ccc;">
+	<div class="col-sm-3" style="border: 1px solid #ccc;">
 		{# float to right, attributes #}
 		<h4>
 			<i class="fa fa-university"></i>

@@ -26,10 +26,9 @@
 		<div class="" style="border-top:2px solid #55c4b8;">
 			<h4>相关学校:</h4>
 			<ul class="list-inline">
-				{% regroup objs|dictsort:"name" by name as obj_list %}
-				{% for name in obj_list|slice:":10" %}
+				{% for obj in objs|dictsort:"name"|slice:":10" %}
 				<li class="">
-					<a href="{% url 'school_detail' name.list.0.id %}">{{ name.grouper }}</a>
+					<a href="{% url 'school_detail' obj.id %}">{{ obj.name }}</a>
 				</li>
 				{% endfor %}
 			</ul>

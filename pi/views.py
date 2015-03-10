@@ -635,8 +635,12 @@ class MySchoolMapFilter (TemplateView):
 #	Analysis views
 #
 ###################################################
-class AnalysisSchoolSummaryAJAX(TemplateView):
-	summary_template_name = 'pi/analysis/schools_by_province_summary.html'
+class CategorizeSchoolHelper:
+	'''
+		This is a helper class.
+	'''
+	def __init__(self):
+		pass
 
 	def condition_filter(self,post_data):
 		'''
@@ -687,10 +691,14 @@ class AnalysisSchoolSummaryAJAX(TemplateView):
 				u'提前招生':pre			
 			}
 
+
+class AnalysisSchoolSummaryAJAX(TemplateView):
+	summary_template_name = 'pi/analysis/schools_by_province_summary.html'
+
 	def post(self,request):
-		filters = self.condition_filter(request.POST)
-		schools = self.get_objects(filters)
-		categories = self.categorize_schools(schools)
+		filters = CategorizeSchoolHelper().condition_filter(request.POST)
+		schools = CategorizeSchoolHelper().get_objects(filters)
+		categories = CategorizeSchoolHelper().categorize_schools(schools)
 
 		# available vs. active
 		available_cats = categories.keys()		
@@ -709,12 +717,12 @@ class AnalysisSchoolSummaryAJAX(TemplateView):
 		return HttpResponse(json.dumps({'html':html}), 
 			content_type='application/javascript')	
 
-class AnalysisSchoolDetailAJAX(AnalysisSchoolSummaryAJAX):
+class AnalysisSchoolDetailAJAX(TemplateView):
 	detail_template_name = 'pi/analysis/schools_detail.html'
 	def post(self,request):
-		filters = self.condition_filter(request.POST)
-		schools = self.get_objects(filters)
-		categories = self.categorize_schools(schools)
+		filters = CategorizeSchoolHelper().condition_filter(request.POST)
+		schools = CategorizeSchoolHelper().get_objects(filters)
+		categories = CategorizeSchoolHelper().categorize_schools(schools)
 
 		# details per section
 		detail = loader.get_template(self.detail_template_name)

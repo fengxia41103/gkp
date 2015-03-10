@@ -5,6 +5,46 @@
 {% endblock %}
 
 {% block content %}
+    <dl class="dl-horizontal">
+        {# filter by city #}
+        <dt>
+            <i class="fa fa-hand-o-right"></i>        
+            <span class="label label-primary">按城市</span>
+        </dt><dd>
+        {% regroup schools|dictsort:"city" by city as city_list %}  
+            <ul class="list-inline">
+            {% for city in city_list %} 
+                {% if city.grouper %}
+                <li><a data-type="city" val="{{city.grouper}}">{{ city.grouper }}</a></li>
+                {% endif %}
+            {% endfor%}
+            </ul>
+        </dd>
+    </dl>
+
+    <dl class="dl-horizontal">
+        {# filter by city #}
+        {% regroup schools|dictsort:"city" by city as city_list %} 
+        {% for city in city_list %}
+        <dt>
+            <i class="fa fa-hand-o-right"></i>        
+            <span class="label label-primary">
+                {% if city.grouper %}
+                    {{ city.grouper }}
+                {% endif %}
+            </span>
+        </dt><dd>
+            <ul class="list-inline">
+            {% for obj in city.list %} 
+                <li>
+                <a href="{% url 'school_detail' obj.id %}">{{ obj.name }}</a>
+                </li>
+            {% endfor%}
+            </ul>
+        </dd>
+        {% endfor %}
+    </dl>
+
 	<div id="analysis-detail"></div>
 {% endblock %}
 

@@ -381,7 +381,25 @@ def cleanupSchoolAdmission():
 		elif s.batch == u'本科3批':
 			s.batch = u'三批'
 		s.save()
-			
+
+def cleanupProvince():
+	provinces = MyAddress.objects.all()
+	for s in MySchool.objects.all():
+		for p in provinces:
+			if p.province in s.city:
+				print 'updating:',s.name,p.province
+				s.province=p
+				s.save()
+				break
+
+def cleanupSchoolDescription():
+	for s in MySchool.objects.all():
+		if s.description is None: continue
+		if s.description.strip()=='<p></p>':
+			s.description = None
+			print 'updating ', s.name
+			s.save()
+
 import googlemaps
 def main():
 	django.setup()
@@ -393,7 +411,9 @@ def main():
 	#populate_school_province()
 	#populate_hash()
 	#cleanup_school_name()
-	cleanupSchoolAdmission()
+	#cleanupSchoolAdmission()
+	#cleanupProvince()
+	cleanupSchoolDescription()
 
 if __name__ == '__main__':
 	main()
