@@ -94,12 +94,12 @@
 					<tbody>
 						{% for s in year.list|dictsort:"province" %}
 						<tr>
-							<td>{{ s.province|default_if_none:"暂无信息" }}</td>
-							<td>{{ s.category|default_if_none:"暂无信息" }}</td>
-							<td>{{ s.batch|default_if_none:"暂无信息" }}</td>
-							<td>{{ s.min_score|default_if_none:"" }}</td>
-							<td>{{ s.max_score|default_if_none:"" }}</td>
-							<td>{{ s.avg_score|default_if_none:"" }}</td>
+							<td>{{ s.province|default:"暂无信息" }}</td>
+							<td>{{ s.category|default:"暂无信息" }}</td>
+							<td>{{ s.batch|default:"暂无信息" }}</td>
+							<td>{{ s.min_score|default:"&mdash;" }}</td>
+							<td>{{ s.max_score|default:"&mdash;" }}</td>
+							<td>{{ s.avg_score|default:"&mdash;" }}</td>
 						</tr>
 						{% endfor %}
 					</tbody>
@@ -168,5 +168,14 @@
 		</ul>
 	</div>
 </div>
+{% endblock %}
 
+{% block custom_js %}
+<script type="text/javascript">
+	j$(document).ready(function(){
+		j$('table.table').dataTable({
+			"pagingType": "simple"
+		});
+	});
+</script>
 {% endblock %}
