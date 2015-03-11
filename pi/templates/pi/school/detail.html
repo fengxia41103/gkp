@@ -21,67 +21,95 @@
 	<div class="col-sm-2">
 		{# in page navigator #}
 
-<div class="sidebar-nav">
-      <div class="navbar navbar-default" role="navigation">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <span class="visible-xs navbar-brand">Sidebar menu</span>
-        </div>
-        <div class="navbar-collapse collapse sidebar-navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li class="active">
-            	<a href="#school-intro">学校简介</a>
-            </li>
-
-            <li class="dropdown">
-            	<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            		录取分数线
-              		<b class="caret"></b>
-              	</a>
-				<ul class="dropdown-menu">
-					{% regroup school_admission by year as obj_list %}
-					{% for year in obj_list %}
-					<li><a href="#school-admission-{{ year.grouper }}">{{year.grouper}}年</a></li>
-					{% endfor %}
-				<li class="divider"></li>
-				<li class="dropdown-header">Nav header</li>
-				<li><a href="#">Separated link</a></li>
-				<li><a href="#">One more separated link</a></li>
-				</ul>
-            </li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div><!-- end of navbar -->
-    </div><!-- end of sidebar-nav -->
+		<div class="sidebar-nav">
+			<div class="navbar navbar-default" role="navigation">
+			    <div class="navbar-header">
+			        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-navbar-collapse">
+			            <span class="sr-only">Toggle navigation</span>
+			            <span class="icon-bar"></span>
+			            <span class="icon-bar"></span>
+			            <span class="icon-bar"></span>
+			        </button>
+			        <span class="visible-xs navbar-brand">Sidebar menu</span>
+			    </div>
+			    <div class="navbar-collapse collapse sidebar-navbar-collapse">
+			        <ul class="nav navbar-nav">
+			            <li class="">
+			                <a href="#school-intro">学校简介</a>
+			            </li>
+			            <li class="dropdown">
+			                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+				    		录取分数线
+				      		
+			                    <b class="caret"></b>
+			                </a>
+			                <ul class="dropdown-menu">
+								{% regroup school_admission|dictsortreversed:"year" by year as obj_list %}
+								{% for year in obj_list %}
+			                    <li>
+			                        <a href="#school-admission-{{ year.grouper }}">{{year.grouper}}年</a>
+			                    </li>
+								{% endfor %}
+			                </ul>
+			            </li>
+			        </ul>
+			    </div><!--/.nav-collapse -->
+			</div><!-- end of navbar -->
+		</div><!-- end of sidebar-nav -->
 	</div><!-- end of div col- -->
 
 	<div class="col-sm-7">
 		{# page content #}
 
+		{# google map of this school #}
 		<section>
-<iframe
-  width="100%"
-  height="250"
-  frameborder="0" style="border:0"
-  src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBs9Lh9SBeGg8azzB5h50y8DDjxFO4SLwA&q={{ object.name }}&language=zh-cn">
-</iframe>
-
+			<iframe
+			  width="100%"
+			  height="250"
+			  frameborder="0" style="border:0"
+			  src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBs9Lh9SBeGg8azzB5h50y8DDjxFO4SLwA&q={{ object.name }}&language=zh-cn">
+			</iframe>
 		</section>
+
+		{# school introduction #}
 		<section id="school-intro">
-			<h2>学校简介</h2>
+			<h2 class="my-h2-border">学校简介</h2>
 			{{ object.description|default:"暂无信息"|safe|truncatechars:1000 }}
 		</section>
 
+		{# school admission score tables #}
 		<section id="school-admission">
-			<h2>录取分数线</h2>
-			{% regroup school_admission|dictsort:"year" by year as obj_list %}
+			<h2 class="my-h2-border">录取分数线</h2>
+
+			<ul id="myTab" class="nav nav-tabs">
+			{% regroup school_admission|dictsortreversed:"year" by year as obj_list %}
 			{% for year in obj_list %}
-				<h3 id="school-admission-{{year.grouper}}">{{ year.grouper }}年</h3>
+				<li><a href="#school-admission-{{year.grouper}}" data-toggle="tab">
+					{{year.grouper}}年
+				</a></li>
+			{% endfor %}
+			</ul>
+
+			<div id="myTabContent" class="tab-content">
+			{% regroup school_admission|dictsortreversed:"year" by year as obj_list %}
+			{% for year in obj_list %}
+				<div class="tab-pane" id="school-admission-{{year.grouper}}">
+				<h3>{{year.grouper}}年</h3>
+				<p>
+				据不完全统计，{{ obj.name }}于{{year.grouper}}年的招生范围覆盖xyz个省，
+				共招收学员超过xyz个。其中，
+
+				{# 理科 #}
+				<ul class="list-unstyled">
+					<li>
+						<i class="fa fa-hand-o-right"></i>
+					<span class="label label-primary">理科</span>的招生人数为xyz个，覆盖xyz个省，招生分数最高为
+				xyz的省的123分，最低分为xyz省的123分，分差最大的为xyz省(456-123=123分)，分差最小的
+				为xyz省（456-123=123分)。
+					</li>					
+				</ul>
+				</p>
+				
 				<table class="table table-condensed table-striped table-hover">
 					<thead><tr>
 						<th>招生地区</th>
@@ -93,18 +121,56 @@
 					</tr></thead>
 					<tbody>
 						{% for s in year.list|dictsort:"province" %}
-						<tr>
-							<td>{{ s.province|default:"暂无信息" }}</td>
-							<td>{{ s.category|default:"暂无信息" }}</td>
-							<td>{{ s.batch|default:"暂无信息" }}</td>
-							<td>{{ s.min_score|default:"&mdash;" }}</td>
-							<td>{{ s.max_score|default:"&mdash;" }}</td>
-							<td>{{ s.avg_score|default:"&mdash;" }}</td>
-						</tr>
+							{% if s.category == "理科" %}
+							<tr>
+								<td>{{ s.province|default:"暂无信息" }}</td>
+								<td>{{ s.category|default:"暂无信息" }}</td>
+								<td>{{ s.batch|default:"暂无信息" }}</td>
+								<td>{{ s.min_score|default:"&mdash;" }}</td>
+								<td>{{ s.max_score|default:"&mdash;" }}</td>
+								<td>{{ s.avg_score|default:"&mdash;" }}</td>
+							</tr>
+							{% endif %}
 						{% endfor %}
 					</tbody>
 				</table>
+
+				{# 文科 #}
+				<ul class="list-unstyled">
+					<li>
+						<i class="fa fa-hand-o-right"></i>
+					<span class="label label-primary">文科</span>的招生人数为xyz个，覆盖xyz个省，招生分数最高为
+				xyz的省的123分，最低分为xyz省的123分，分差最大的为xyz省(456-123=123分)，分差最小的
+				为xyz省（456-123=123分)。
+					</li>				
+				</ul>
+				<table class="table table-condensed table-striped table-hover">
+					<thead><tr>
+						<th>招生地区</th>
+						<th>Category</th>
+						<th>batch</th>
+						<th>Min</th>
+						<th>Max</th>
+						<th>Avg</th>
+					</tr></thead>
+					<tbody>
+						{% for s in year.list|dictsort:"province" %}
+							{% if s.category == "文科" %}
+							<tr>
+								<td>{{ s.province|default:"暂无信息" }}</td>
+								<td>{{ s.category|default:"暂无信息" }}</td>
+								<td>{{ s.batch|default:"暂无信息" }}</td>
+								<td>{{ s.min_score|default:"&mdash;" }}</td>
+								<td>{{ s.max_score|default:"&mdash;" }}</td>
+								<td>{{ s.avg_score|default:"&mdash;" }}</td>
+							</tr>
+							{% endif %}
+						{% endfor %}
+					</tbody>
+				</table>								
+				</div><!-- end of each tab pane -->
 			{% endfor %}
+			</div><!-- end of tab content -->
 		</section>
 	</div>
 
@@ -176,6 +242,15 @@
 		j$('table.table').dataTable({
 			"pagingType": "simple"
 		});
+
+		// register tab events
+	   j$('a[data-toggle="tab"]').click(function ( e ) {
+	        e.preventDefault ();
+	        j$(this).tab('show');
+	    });  
+
+	   // show first tab after page loading
+		j$('a[data-toggle="tab"]:first').tab('show');	   
 	});
 </script>
 {% endblock %}
