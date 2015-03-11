@@ -94,30 +94,27 @@
 			{% regroup school_admission|dictsortreversed:"year" by year as obj_list %}
 			{% for year in obj_list %}
 				<div class="tab-pane" id="school-admission-{{year.grouper}}">
-				<h3>{{year.grouper}}年</h3>
-				<p>
-				据不完全统计，{{ obj.name }}于{{year.grouper}}年的招生范围覆盖xyz个省，
-				共招收学员超过xyz个。其中，
-
 				{# 理科 #}
-				<ul class="list-unstyled">
-					<li>
-						<i class="fa fa-hand-o-right"></i>
-					<span class="label label-primary">理科</span>的招生人数为xyz个，覆盖xyz个省，招生分数最高为
+				<h3>
+				<i class="fa fa-hand-o-right"></i>
+				<span class="label label-primary">理科</span>
+				</h3>
+
+				<p>
+				招生人数为xyz个，覆盖xyz个省，招生分数最高为
 				xyz的省的123分，最低分为xyz省的123分，分差最大的为xyz省(456-123=123分)，分差最小的
 				为xyz省（456-123=123分)。
-					</li>					
-				</ul>
-				</p>
+				</p>					
 				
 				<table class="table table-condensed table-striped table-hover">
 					<thead><tr>
 						<th>招生地区</th>
-						<th>Category</th>
-						<th>batch</th>
-						<th>Min</th>
-						<th>Max</th>
-						<th>Avg</th>
+						<th>考生类别</th>
+						<th>录取批次</th>
+						<th>最低分</th>
+						<th>最高分</th>
+						<th>平均分</th>
+						<th>省控线</th>
 					</tr></thead>
 					<tbody>
 						{% for s in year.list|dictsort:"province" %}
@@ -129,6 +126,7 @@
 								<td>{{ s.min_score|default:"&mdash;" }}</td>
 								<td>{{ s.max_score|default:"&mdash;" }}</td>
 								<td>{{ s.avg_score|default:"&mdash;" }}</td>
+								<td>{{ s.province_score|default:"&mdash;"}}</td>
 							</tr>
 							{% endif %}
 						{% endfor %}
@@ -136,22 +134,25 @@
 				</table>
 
 				{# 文科 #}
-				<ul class="list-unstyled">
-					<li>
-						<i class="fa fa-hand-o-right"></i>
-					<span class="label label-primary">文科</span>的招生人数为xyz个，覆盖xyz个省，招生分数最高为
+				<h3>
+				<i class="fa fa-hand-o-right"></i>
+				<span class="label label-primary">文科</span>
+				</h3>
+
+				<p>
+				招生人数为xyz个，覆盖xyz个省，招生分数最高为
 				xyz的省的123分，最低分为xyz省的123分，分差最大的为xyz省(456-123=123分)，分差最小的
 				为xyz省（456-123=123分)。
-					</li>				
-				</ul>
+				</p>	
 				<table class="table table-condensed table-striped table-hover">
 					<thead><tr>
 						<th>招生地区</th>
-						<th>Category</th>
-						<th>batch</th>
-						<th>Min</th>
-						<th>Max</th>
-						<th>Avg</th>
+						<th>考生类别</th>
+						<th>录取批次</th>
+						<th>最低分</th>
+						<th>最高分</th>
+						<th>平均分</th>
+						<th>省控线</th>
 					</tr></thead>
 					<tbody>
 						{% for s in year.list|dictsort:"province" %}
@@ -163,12 +164,12 @@
 								<td>{{ s.min_score|default:"&mdash;" }}</td>
 								<td>{{ s.max_score|default:"&mdash;" }}</td>
 								<td>{{ s.avg_score|default:"&mdash;" }}</td>
+								<td>{{ s.province_score|default:"&mdash;"}}</td>
 							</tr>
 							{% endif %}
 						{% endfor %}
 					</tbody>
-				</table>								
-				</div><!-- end of each tab pane -->
+				</table>				</div><!-- end of each tab pane -->
 			{% endfor %}
 			</div><!-- end of tab content -->
 		</section>
@@ -182,7 +183,15 @@
 		</h4>
 		<dl class="dl-horizontal my-dl-horizontal">
 			<dt>City</dt><dd>{{ object.city|default:"暂无信息"}}</dd>
-			<dt>Province</dt><dd>{{ object.province|default:"暂无信息" }}</dd>
+			
+			<dt>Province</dt><dd>
+				{% if object.province %}
+					<a href="{% url 'analysis_school_by_province' object.province.id %}">{{ object.province }}</a>
+				{% else %}
+					暂无信息
+				{% endif %}
+			</dd>
+			
 			<dt>地址</dt><dd>{{ obj.address|default:"暂无信息"}}</dd>
 			<dt>创建时间</dt><dd>{{ object.founded|default:"暂无信息" }}</dd>
 			<dt>学校类型</dt><dd>{{ object.school_type|default:"暂无信息"}}</dd>
@@ -240,6 +249,8 @@
 <script type="text/javascript">
 	j$(document).ready(function(){
 		j$('table.table').dataTable({
+			paging: false,
+			info:false,
 			"pagingType": "simple"
 		});
 

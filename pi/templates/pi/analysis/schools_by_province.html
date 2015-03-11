@@ -9,7 +9,7 @@
         {# filter by city #}
         <dt>
             <i class="fa fa-hand-o-right"></i>        
-            <span class="label label-primary">按城市</span>
+            <span class="label label-default">按城市</span>
         </dt><dd>
         {% regroup schools|dictsort:"city" by city as city_list %}  
             <ul class="list-inline">
@@ -28,7 +28,7 @@
         {% for city in city_list %}
         <dt>
             <i class="fa fa-hand-o-right"></i>        
-            <span class="label label-primary">
+            <span class="label label-default">
                 {% if city.grouper %}
                     {{ city.grouper }}
                 {% endif %}

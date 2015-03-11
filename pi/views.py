@@ -516,9 +516,12 @@ class MySchoolDetail(DetailView):
 		related_list = []
 		for s in related_schools:
 			related_list.append(MyAdmissionBySchool.objects.filter(school = s)[:1][0])
-
 		related_list=sorted(related_list,lambda x,y: cmp(x.batch,y.batch))
 		context['related_schools']=related_list
+
+		# admission cats
+		# this is used in template to regroup by these admission categories
+		context['admission_categories']=[u'理科',u'文科']
 		return context
 
 @class_view_decorator(login_required)
