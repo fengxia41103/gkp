@@ -45,11 +45,13 @@ import re,os,os.path,shutil,subprocess, testtools
 import random,codecs,unittest,time, tempfile, csv, hashlib
 from datetime import datetime as dt
 from multiprocessing import Process, Queue
-from pi.models import *
 import simplejson as json
 import googlemaps
+from itertools import groupby
 from utility import MyUtility
 from crawler import MyCrawler
+
+from pi.models import *
 
 ###################################################
 #
@@ -388,6 +390,16 @@ class MyMajorDelete (DeleteView):
 		context['list_url'] = reverse_lazy('major_list')
 		return context
 
+@class_view_decorator(login_required)
+class MyMajorDetail(DetailView):
+	model = MyMajor
+	template_name = 'pi/major/detail.html'
+
+	def get_context_data(self, **kwargs):
+		context = super(MyMajorDetail, self).get_context_data(**kwargs)
+		context['list_url'] = reverse_lazy('major_list')
+		return context
+
 def import_major (request):
 	code_pat=re.compile('\d+[TK]*')
 	degree_pat = re.compile('(?P<name>[^(]+)[(](?P<degree>[^)]+)[)]')
@@ -498,7 +510,6 @@ class MySchoolDelete (DeleteView):
 		context['list_url'] = reverse_lazy('school_list')
 		return context
 
-from itertools import groupby
 @class_view_decorator(login_required)
 class MySchoolDetail(DetailView):
 	model = MySchool

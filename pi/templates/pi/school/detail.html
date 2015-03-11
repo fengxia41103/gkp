@@ -1,14 +1,10 @@
-{% extends 'pi/common/base.html' %}
+{% extends 'pi/common/detail.html' %}
 
 {% load staticfiles %}
-{% block custom_css %}
-	<link rel="stylesheet" type="text/css" href="{% static 'css/school.css' %}">
-{% endblock %}
-
 {% block page-header %}
 	{{ object.name }}
 	<a href="{% url 'school_edit' object.id %}" class="btn btn-xs addlink">
-		<span class="glyphicon glyphicon-plus"></span>
+		<i class="fa fa-plus"></i>
 		edit
 	</a>
 
@@ -16,55 +12,34 @@
     <img src="http://www.gaokaopai.com/Public/Images/ico1.png" alt="211" title="211">    <img src="http://www.gaokaopai.com/Public/Images/ico2.png" alt="985" title="985">    <img src="http://www.gaokaopai.com/Public/Images/ico3.png" alt="研究生院" title="研究生院">    <img src="http://www.gaokaopai.com/Public/Images/ico4.png" alt="自主招生" title="自主招生">    <img src="http://www.gaokaopai.com/Public/Images/ico5.png" alt="国防生" title="国防生">      </div>	
 {% endblock %}
 
-{% block content %}
-<div class="row">
-	<div class="col-sm-2">
-		{# in page navigator #}
+{% block detail-navbar %}
+<ul class="nav navbar-nav">
+    <li class="">
+        <a href="#school-intro">学校简介</a>
+    </li>
 
-		<div class="sidebar-nav">
-			<div class="navbar navbar-default" role="navigation">
-			    <div class="navbar-header">
-			        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-navbar-collapse">
-			            <span class="sr-only">Toggle navigation</span>
-			            <span class="icon-bar"></span>
-			            <span class="icon-bar"></span>
-			            <span class="icon-bar"></span>
-			        </button>
-			        <span class="visible-xs navbar-brand">Sidebar menu</span>
-			    </div>
-			    <div class="navbar-collapse collapse sidebar-navbar-collapse">
-			        <ul class="nav navbar-nav">
-			            <li class="">
-			                <a href="#school-intro">学校简介</a>
-			            </li>
+    <li class="">
+    	<a href="#school-major">学校专业</a>
+    </li>
 
-			            <li class="">
-			            	<a href="#school-major">学校专业</a>
-			            </li>
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+		录取分数线
+  		
+            <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+			{% for year in school_admission_by_year %}
+            <li>
+                <a href="#school-admission-{{ year }}">{{year}}年</a>
+            </li>
+			{% endfor %}
+        </ul>
+    </li>
+</ul>
+{% endblock %}
 
-			            <li class="dropdown">
-			                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-				    		录取分数线
-				      		
-			                    <b class="caret"></b>
-			                </a>
-			                <ul class="dropdown-menu">
-								{% for year in school_admission_by_year %}
-			                    <li>
-			                        <a href="#school-admission-{{ year }}">{{year}}年</a>
-			                    </li>
-								{% endfor %}
-			                </ul>
-			            </li>
-			        </ul>
-			    </div><!--/.nav-collapse -->
-			</div><!-- end of navbar -->
-		</div><!-- end of sidebar-nav -->
-	</div><!-- end of div col- -->
-
-	<div class="col-sm-7">
-		{# page content #}
-
+{% block detail-content %}
 		{# google map of this school #}
 		<section>
 			<iframe
@@ -88,7 +63,7 @@
 			{% for m in majors %}
 				<li data-toggle="tooltip" data-placement="top" 
 				title="Code: {{m.code}}<br />Category: {{ m.subcategory.category }}<br />Sub: {{ m.subcategory }}">
-					<a href="{%url 'major_edit' m.id %}">{{ m }}</a>
+					<a href="{%url 'major_detail' m.id %}">{{ m }}</a>
 				</li>
 			{% empty %}
 				暂无信息
@@ -153,98 +128,72 @@
 				暂无信息
 			{% endif %}					
 		</section>
-	</div>
-
-	<div class="col-sm-3" style="border: 1px solid #ccc;">
-		{# float to right, attributes #}
-		<h4>
-			<i class="fa fa-university"></i>
-			 学校快照
-		</h4>
-		<dl class="dl-horizontal my-dl-horizontal">
-			<dt>City</dt><dd>{{ object.city|default:"暂无信息"}}</dd>
-			
-			<dt>Province</dt><dd>
-				{% if object.province %}
-					<a href="{% url 'analysis_school_by_province' object.province.id %}">{{ object.province }}</a>
-				{% else %}
-					暂无信息
-				{% endif %}
-			</dd>
-			
-			<dt>地址</dt><dd>{{ obj.address|default:"暂无信息"}}</dd>
-			<dt>创建时间</dt><dd>{{ object.founded|default:"暂无信息" }}</dd>
-			<dt>学校类型</dt><dd>{{ object.school_type|default:"暂无信息"}}</dd>
-			<dt>学生人数</dt><dd>{{ object.no_student|default:"暂无信息" }}
-				{% if object.no_student %}
-					人
-				{% endif %}
-			</dd>
-			<dt>院士人数</dt><dd>{{ object.no_fellow|default:"暂无信息" }}
-				{% if object.no_fellow %}
-					人
-				{% endif %}
-			</dd>
-			<dt>博士点个数</dt><dd>{{ object.no_phd_program|default:"暂无信息" }}
-				{% if object.no_phd_program %}
-					个
-				{% endif %}
-			</dd>
-			<dt>硕士点个数</dt><dd>{{ object.no_master_program|default:"暂无信息" }}
-				{% if object.no_master_program %}
-					个
-				{% endif %}			
-			</dd>
-			<dt>重点学科</dt><dd>{{ obj.no_key_major|default:"暂无信息" }}
-				{% if object.no_key_major %}
-					个
-				{% endif %}					
-			</dd>
-			<dt>隶属于</dt><dd>教育部</dd>
-		</dl>
-
-		{# float to right, related #}
-		<h4>
-			<i class="fa fa-university"></i>
-			院校推荐
-		</h4>
-		<ul class="list-inline">
-			{% regroup related_schools by batch as obj_list %}
-			{% for batch in obj_list %}
-				<h5 class="my-section-header">{{ batch.grouper }}</h5>
-				<ul class="list-inline">
-					{% for o in batch.list %}
-						<li>
-							<a href="{% url 'school_detail' o.school.id %}">{{ o.school }}</a>
-						</li>						
-					{% endfor %}
-				</ul>
-			{% endfor %}
-		</ul>
-	</div>
-</div>
 {% endblock %}
 
-{% block custom_js %}
-<script type="text/javascript">
-	j$(document).ready(function(){
-		j$('table.table').dataTable({
-			paging: false,
-			info:false,
-			"pagingType": "simple"
-		});
+{% block detail-sidebar %}
+	{# float to right, attributes #}
+	<h4>
+		<i class="fa fa-university"></i>
+		 学校快照
+	</h4>
+	<dl class="dl-horizontal my-dl-horizontal">
+		<dt>City</dt><dd>{{ object.city|default:"暂无信息"}}</dd>
+		
+		<dt>Province</dt><dd>
+			{% if object.province %}
+				<a href="{% url 'analysis_school_by_province' object.province.id %}">{{ object.province }}</a>
+			{% else %}
+				暂无信息
+			{% endif %}
+		</dd>
+		
+		<dt>地址</dt><dd>{{ obj.address|default:"暂无信息"}}</dd>
+		<dt>创建时间</dt><dd>{{ object.founded|default:"暂无信息" }}</dd>
+		<dt>学校类型</dt><dd>{{ object.school_type|default:"暂无信息"}}</dd>
+		<dt>学生人数</dt><dd>{{ object.no_student|default:"暂无信息" }}
+			{% if object.no_student %}
+				人
+			{% endif %}
+		</dd>
+		<dt>院士人数</dt><dd>{{ object.no_fellow|default:"暂无信息" }}
+			{% if object.no_fellow %}
+				人
+			{% endif %}
+		</dd>
+		<dt>博士点个数</dt><dd>{{ object.no_phd_program|default:"暂无信息" }}
+			{% if object.no_phd_program %}
+				个
+			{% endif %}
+		</dd>
+		<dt>硕士点个数</dt><dd>{{ object.no_master_program|default:"暂无信息" }}
+			{% if object.no_master_program %}
+				个
+			{% endif %}			
+		</dd>
+		<dt>重点学科</dt><dd>{{ obj.no_key_major|default:"暂无信息" }}
+			{% if object.no_key_major %}
+				个
+			{% endif %}					
+		</dd>
+		<dt>隶属于</dt><dd>教育部</dd>
+	</dl>
 
-		// register tab events
-	   j$('a[data-toggle="tab"]').click(function ( e ) {
-	        e.preventDefault ();
-	        j$(this).tab('show');
-	    });  
-
-	   // show first tab after page loading
-		j$('a[data-toggle="tab"]:first').tab('show');	
-
-		// initialize all tooltips
-		j$('[data-toggle="tooltip"]').tooltip();		   
-	});
-</script>
+	{# float to right, related #}
+	<h4>
+		<i class="fa fa-university"></i>
+		院校推荐
+	</h4>
+	<ul class="list-inline">
+		{% regroup related_schools by batch as obj_list %}
+		{% for batch in obj_list %}
+			<h5 class="my-section-header">{{ batch.grouper }}</h5>
+			<ul class="list-inline">
+				{% for o in batch.list %}
+					<li>
+						<a href="{% url 'school_detail' o.school.id %}">{{ o.school }}</a>
+					</li>						
+				{% endfor %}
+			</ul>
+		{% endfor %}
+	</ul>
 {% endblock %}

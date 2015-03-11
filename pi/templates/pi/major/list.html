@@ -21,7 +21,7 @@
      	<th>大类</th>
      	<th>授予学位</th>
      	<th>注释</th>
-     	<th>相关schools</th>
+     	<th>相关majors</th>
      	<th>简介</th>
      </thead>
      <tbody>
@@ -53,7 +53,7 @@
      			{% endif %}
      		</td><td>
      			<ul>
-     			{% for r in obj.schools.all %}
+     			{% for r in obj.related_majors.all %}
      				<li>{{ r }}</li>
      			{% endfor %}
      			</ul>

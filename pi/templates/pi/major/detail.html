@@ -1,0 +1,73 @@
+{% extends 'pi/common/detail.html' %}
+
+{% load staticfiles %}
+{% block page-header %}
+	{{ object.name }}	
+	<a href="{% url 'major_edit' object.id %}" class="btn btn-xs addlink">
+		<i class="fa fa-plus"></i>
+		edit
+	</a>
+{% endblock %}
+
+{% block detail-navbar %}
+<ul class="nav navbar-nav">
+    <li class="">
+        <a href="#major-intro">专业简介</a>
+    </li>
+
+    <li class="">
+        <a href="#course">专业课程</a>
+    </li>
+
+    <li class="">
+        <a href="#related-schools">相关学校</a>
+    </li>
+
+    <li class="">
+        <a href="#related-majors">类似的专业</a>
+    </li>   
+</ul>
+{% endblock %}
+
+{% block detail-content %}
+	<section id="major-intro">
+		<h2 class="my-h2-border">专业简介</h2>
+		{{ object.description }}
+	</section>
+
+	<section id="course">
+		<h2 class="my-h2-border">专业课程</h2>
+		{{ object.course|default:"暂无信息" }}
+	</section>
+
+	<section id="related-schools">
+		<h2 class="my-h2-border">相关学校</h2>
+		{% for s in object.schools.all %}
+			{{ s }}
+		{% endfor %}
+	</section>
+
+	<section id="related-majors">
+		<h2 class="my-h2-border">类似的专业</h2>
+		<ul class="list-unstyled my-multicol-5">
+		{% for s in object.related_majors.all %}
+			<li><a href="{% url 'major_detail' s.id %}">{{ s }}</a></li>
+		{% empty %}
+		暂无信息
+		{% endfor %}
+		</ul>
+	</section>
+{% endblock %}
+
+{% block detail-sidebar %}
+	{# float to right, attributes #}
+	<h4>
+		<i class="fa fa-university"></i>
+		 专业快照
+	</h4>
+	<dl class="dl-horizontal my-dl-horizontal">
+		<dt>专业代码</dt><dd>{{ object.code|default:"暂无信息"}}</dd>
+		<dt>学科门类</dt><dd>{{ object.subcategory.category|default:"暂无信息"}}</dd>
+		<dt>专业类</dt><dd>{{ object.subcategory|default:"暂无信息"}}</dd>
+	</dl>
+{% endblock %}
