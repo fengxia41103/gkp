@@ -498,6 +498,7 @@ class MySchoolDelete (DeleteView):
 		context['list_url'] = reverse_lazy('school_list')
 		return context
 
+from itertools import groupby
 @class_view_decorator(login_required)
 class MySchoolDetail(DetailView):
 	model = MySchool
@@ -509,7 +510,10 @@ class MySchoolDetail(DetailView):
 
 		# school admission data by year
 		school_admission = MyAdmissionBySchool.objects.filter(school = self.get_object().id).order_by('year').reverse()
-		context['school_admission'] = school_admission
+		sorted_school_admission = {}		
+		for year,admission_by_year_list in groupby(school_admission,lambda x:x.year):
+			sorted_school_admission[year]=sorted(list(admission_by_year_list),lambda x,y:cmp(x.category,y.category))
+		context['sorted_school_admission']=sorted_school_admission
 
 		# related list
 		related_schools = [x for x in MySchool.objects.filter(province = self.get_object().province) if x.has_admission]
@@ -519,9 +523,6 @@ class MySchoolDetail(DetailView):
 		related_list=sorted(related_list,lambda x,y: cmp(x.batch,y.batch))
 		context['related_schools']=related_list
 
-		# admission cats
-		# this is used in template to regroup by these admission categories
-		context['admission_categories']=[u'理科',u'文科']
 		return context
 
 @class_view_decorator(login_required)

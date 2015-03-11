@@ -44,10 +44,9 @@
 			                    <b class="caret"></b>
 			                </a>
 			                <ul class="dropdown-menu">
-								{% regroup school_admission|dictsortreversed:"year" by year as obj_list %}
-								{% for year in obj_list %}
+								{% for year in sorted_school_admission %}
 			                    <li>
-			                        <a href="#school-admission-{{ year.grouper }}">{{year.grouper}}年</a>
+			                        <a href="#school-admission-{{ year }}">{{year}}年</a>
 			                    </li>
 								{% endfor %}
 			                </ul>
@@ -82,26 +81,26 @@
 			<h2 class="my-h2-border">录取分数线</h2>
 
 			<ul id="myTab" class="nav nav-tabs">
-			{% regroup school_admission|dictsortreversed:"year" by year as obj_list %}
-			{% for year in obj_list %}
-				<li><a href="#school-admission-{{year.grouper}}" data-toggle="tab">
-					{{year.grouper}}年
+			{% for year in sorted_school_admission %}
+				<li><a href="#school-admission-{{year}}" data-toggle="tab">
+					{{year}}年
 				</a></li>
 			{% endfor %}
 			</ul>
 
 			<div id="myTabContent" class="tab-content">
-			{% regroup school_admission|dictsortreversed:"year" by year as obj_list %}
-			{% for year in obj_list %}
-				<div class="tab-pane" id="school-admission-{{year.grouper}}">
+			{% for year,school_list in sorted_school_admission.items %}
+				<div class="tab-pane" id="school-admission-{{year}}">
+				{% regroup school_list|dictsort:"category" by category as admission_by_cat %}
+				{% for category in admission_by_cat %}
 				{# 理科 #}
 				<h3>
 				<i class="fa fa-hand-o-right"></i>
-				<span class="label label-primary">理科</span>
+				<span class="label label-primary">{{ category.grouper }}</span>
 				</h3>
 
 				<p>
-				招生人数为xyz个，覆盖xyz个省，招生分数最高为
+				招生人数为xyz个，覆盖{{category.list|length}}个省，招生分数最高为
 				xyz的省的123分，最低分为xyz省的123分，分差最大的为xyz省(456-123=123分)，分差最小的
 				为xyz省（456-123=123分)。
 				</p>					
@@ -117,8 +116,7 @@
 						<th>省控线</th>
 					</tr></thead>
 					<tbody>
-						{% for s in year.list|dictsort:"province" %}
-							{% if s.category == "理科" %}
+						{% for s in category.list %}
 							<tr>
 								<td>{{ s.province|default:"暂无信息" }}</td>
 								<td>{{ s.category|default:"暂无信息" }}</td>
@@ -128,50 +126,13 @@
 								<td>{{ s.avg_score|default:"&mdash;" }}</td>
 								<td>{{ s.province_score|default:"&mdash;"}}</td>
 							</tr>
-							{% endif %}
 						{% endfor %}
 					</tbody>
 				</table>
-
-				{# 文科 #}
-				<h3>
-				<i class="fa fa-hand-o-right"></i>
-				<span class="label label-primary">文科</span>
-				</h3>
-
-				<p>
-				招生人数为xyz个，覆盖xyz个省，招生分数最高为
-				xyz的省的123分，最低分为xyz省的123分，分差最大的为xyz省(456-123=123分)，分差最小的
-				为xyz省（456-123=123分)。
-				</p>	
-				<table class="table table-condensed table-striped table-hover">
-					<thead><tr>
-						<th>招生地区</th>
-						<th>考生类别</th>
-						<th>录取批次</th>
-						<th>最低分</th>
-						<th>最高分</th>
-						<th>平均分</th>
-						<th>省控线</th>
-					</tr></thead>
-					<tbody>
-						{% for s in year.list|dictsort:"province" %}
-							{% if s.category == "文科" %}
-							<tr>
-								<td>{{ s.province|default:"暂无信息" }}</td>
-								<td>{{ s.category|default:"暂无信息" }}</td>
-								<td>{{ s.batch|default:"暂无信息" }}</td>
-								<td>{{ s.min_score|default:"&mdash;" }}</td>
-								<td>{{ s.max_score|default:"&mdash;" }}</td>
-								<td>{{ s.avg_score|default:"&mdash;" }}</td>
-								<td>{{ s.province_score|default:"&mdash;"}}</td>
-							</tr>
-							{% endif %}
-						{% endfor %}
-					</tbody>
-				</table>				</div><!-- end of each tab pane -->
-			{% endfor %}
-			</div><!-- end of tab content -->
+				{% endfor %}<!-- end cat loop -->
+				</div>
+			{%endfor%}<!-- end year loop-->
+			</div><!-- end of tab content -->			
 		</section>
 	</div>
 
