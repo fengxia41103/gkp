@@ -1,0 +1,309 @@
+@import url(http://fonts.googleapis.com/css?family=Gudea:400,700,400italic&subset=latin,latin-ext);
+@import url(http://fonts.googleapis.com/css?family=Francois+One);
+body {
+  font-family: Gudea, Calibri, Charcoal, "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif; }
+
+.goto-next {
+  border: 0;
+  bottom: 0;
+  display: block;
+  height: 5em;
+  left: 50%;
+  margin: 0 0 0 -5em;
+  overflow: hidden;
+  position: absolute;
+  text-indent: 10em;
+  white-space: nowrap;
+  width: 10em;
+  z-index: 1; }
+  .goto-next :before {
+    background-image: url("images/arrow.svg");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    content: '';
+    display: block;
+    height: 1.5em;
+    left: 50%;
+    margin: -0.75em 0 0 -1em;
+    position: absolute;
+    top: 50%;
+    width: 2em;
+    z-index: 1; }
+
+.my-content {
+  color: #eee; }
+
+.my-image-center {
+  margin-top: 30px;
+  padding: 20px;
+  height: 300px; }
+
+.my-logo {
+  font-size: 1.3em; }
+
+.my-header {
+  height: 100px;
+  padding: 40px;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #eee; }
+
+.my-banner {
+  font-size: 4em;
+  font-weight: bold;
+  padding-top: 40px;
+  color: #fff; }
+
+.my-subbanner {
+  margin-top: 30px;
+  font-family: Copperplate/Copperplate Gothic Light, sans-serif; }
+
+.my-footer-banner {
+  margin-top: 3%;
+  font-family: Copperplate/Copperplate Gothic Light, sans-serif; }
+
+.my-button-md {
+  background-color: #eee;
+  color: #444;
+  padding: 8px 40px;
+  -webkit-border-radius: 100px;
+  -moz-border-radius: 100px;
+  border-radius: 100px; }
+
+.my-button-sm {
+  background-color: #eee;
+  color: #444;
+  padding: 5px 20px;
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+  border-radius: 50px; }
+
+.my-button-md:hover, .my-button-sm:hover {
+  background-color: #fff; }
+
+.my-footer {
+  height: 10%;
+  background-color: #777;
+  color: #fff;
+  opacity: 0.5; }
+
+.my-multicol-3 {
+  -moz-column-count: 3;
+  -webkit-column-count: 3;
+  column-count: 3; }
+
+.my-multicol-4 {
+  -moz-column-count: 4;
+  -webkit-column-count: 4;
+  column-count: 4; }
+
+.my-multicol-5 {
+  -moz-column-count: 5;
+  -webkit-column-count: 5;
+  column-count: 5; }
+
+/* CUSTOMIZE THE NAVBAR
+-------------------------------------------------- */
+/* Special class on .container surrounding .navbar, used for positioning it into place. */
+.my-login-box {
+  /* used in login and register */
+  background-color: #fff;
+  color: #333;
+  padding: 20px;
+  opacity: 0.8;
+  border-radius: 10px; }
+
+.navbar-default .navbar-nav > .open > a {
+  color: #fff !important;
+  background: #fed136 !important;
+  border-radius: 3px; }
+
+/* Downsize the brand/project name a bit */
+/* Navbar links: increase padding for taller navbar */
+/* Offset the responsive button for proper vertical alignment */
+/* CUSTOMIZE THE CAROUSEL
+-------------------------------------------------- */
+/* Carousel base class */
+.carousel {
+  margin-bottom: 60px; }
+  .carousel .container {
+    position: relative;
+    z-index: 9; }
+
+.carousel-control {
+  margin-top: 0;
+  font-size: 240px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+  background-color: transparent;
+  border: 0;
+  z-index: 10; }
+
+.carousel .item {
+  height: 500px; }
+.carousel img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  height: 500px; }
+
+.carousel-caption {
+  background-color: transparent;
+  position: static;
+  max-width: 550px;
+  padding: 0 20px;
+  margin-top: 200px; }
+  .carousel-caption h1, .carousel-caption .lead {
+    margin: 0;
+    line-height: 1.25;
+    color: #fff;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4); }
+  .carousel-caption .btn {
+    margin-top: 10px; }
+
+/* FILTER CSS
+-------------------------------------------------- */
+.my-btn {
+  background: #ccc;
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42857;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  vertical-align: bottom; }
+  .my-btn:hover {
+    background: #ADADAD;
+    color: #eee; }
+
+.my-filter-form {
+  padding: 10px 10px 5px 15px; }
+  .my-filter-form .form-group {
+    margin-left: 5px; }
+
+.my-filter-value-close {
+  margin-left: 8px;
+  color: #d7d7d7; }
+
+.flabel {
+  display: inline-block;
+  float: left;
+  padding: 0 10px;
+  margin-right: 6px;
+  margin-bottom: 6px;
+  border: 1px solid #d7d7d7;
+  font: 13px/28px Universcom57Condensed, Arial, Helvetica, sans-serif;
+  font-family: Universcom57Condensed, Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  line-height: 28px;
+  color: #222;
+  text-decoration: none;
+  transition: border-color 0.3s ease-out;
+  transition-property: border-color;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-out;
+  transition-delay: initial; }
+  .flabel:hover {
+    border: 1px solid red; }
+    .flabel:hover .glyphicon-remove {
+      -webkit-transition: all 0.6s ease-in-out;
+      -moz-transition: all 0.6s ease-in-out;
+      -o-transition: all 0.6s ease-in-out;
+      -ms-transition: all 0.6s ease-in-out;
+      -webkit-transform: rotate(360deg);
+      -moz-transform: rotate(360deg);
+      -o-transform: rotate(360deg);
+      -ms-transform: rotate(360deg); }
+
+/* Customize Bootstrap default CSS
+-------------------------------------------------- */
+.dropdown-menu {
+  color: #333; }
+
+.my-dl-horizontal dt, .my-dl-horizontal dd {
+  border-bottom: 1px dashed #ddd; }
+.my-dl-horizontal dt {
+  font-weight: normal;
+  text-align: left;
+  width: 30%; }
+.my-dl-horizontal dd {
+  margin-left: 40%; }
+
+.my-section-header {
+  background-color: #EFEFEf;
+  border-left: 3px solid #89e;
+  padding: 5px 0 5px 10px;
+  border-radius: 2px 0px 0px 2px; }
+
+.my-huge-font {
+  font-family: 'Francois One', sans-serif;
+  font-size: 2em;
+  color: #819FF7; }
+
+/* Wrapper for page content to push down footer */
+#wrap {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  /* Negative indent footer by it's height */
+  margin: 0 auto -120px; }
+
+/* Set the fixed height of the footer here */
+#push {
+  height: 150px; }
+
+#footer {
+  height: 120px;
+  text-align: center;
+  border-top: 2px solid #eeeeee;
+  padding: 50px 0;
+  height: 120px;
+  background-color: #f5f5f5;
+  margin-top: 30px; }
+
+/* Lastly, apply responsive CSS fixes as necessary */
+@media (max-width: 767px) {
+  #footer {
+    margin-left: -20px;
+    margin-right: -20px;
+    padding-left: 20px;
+    padding-right: 20px; }
+ }
+
+/* make sidebar nav vertical */
+/* http://www.jonathanbriehl.com/2014/01/17/vertical-menu-for-bootstrap-3/ */
+@media (min-width: 768px) {
+  .sidebar-nav .navbar .navbar-collapse {
+    padding: 0;
+    max-height: none; }
+
+  .sidebar-nav .navbar ul {
+    float: none; }
+
+  .sidebar-nav .navbar ul:not {
+    display: block; }
+
+  .sidebar-nav .navbar li {
+    float: none;
+    display: block; }
+
+  .sidebar-nav .navbar li a {
+    padding-top: 12px;
+    padding-bottom: 12px; }
+ }
+
+.my-h2-border {
+  border-bottom: 5px solid #d9230f;
+  padding-bottom: 7px; }
+
