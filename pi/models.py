@@ -189,15 +189,15 @@ class MyMajor (MyBaseModel):
 			null = True,
 			blank = True,
 			max_length = 8,
-			verbose_name = u'修学年限'
+			verbose_name = u'专业课程'
 		)
 	is_specialized = models.BooleanField (
 			default = False,
-			verbose_name = u''
+			verbose_name = u'特设专业'
 		)
 	is_gov_controlled = models.BooleanField (
 			default = False,
-			verbose_name = u''
+			verbose_name = u'国家控制布点专业'
 		)
 
 	# related models
