@@ -415,9 +415,6 @@ def main():
 	major_base_url = 'http://www.gaokaopai.com/fenshuxian-sct-2-p'
 	crawler = MyCrawler()
 	crawler.thread_fenshu_crawler(school_base_url,'school')
-	#p = Process(target=crawler.thread_fenshu_crawler, args=(school_base_url,'school'))
-	#p.start()
-	#p.join()
 	
 if __name__ == '__main__':
 	main()

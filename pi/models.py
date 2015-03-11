@@ -152,7 +152,6 @@ class MyMajor (MyBaseModel):
 		('',''),
 		(u'本科', u'本科'),
 		(u'专科', u'专科'),
-		(u'职业教育', u'职业教育'),
 	)
 
 	code = models.CharField (
@@ -205,7 +204,7 @@ class MyMajor (MyBaseModel):
 	related_majors = models.ManyToManyField('MyMajor')
 
 	def __unicode__(self):
-		return '%s (%s)' % (self.name, self.code)
+		return self.name
 
 class MyAdmissionBySchool (models.Model):
 	CATEGORY_CHOICES = (

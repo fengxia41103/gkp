@@ -400,6 +400,25 @@ def cleanupSchoolDescription():
 			print 'updating ', s.name
 			s.save()
 
+def populateMajorSchoolRelationship():
+	for s in MyMajor.objects.all():
+		print 'Processing ',s.name
+
+		if MyAdmissionByMajor.objects.filter(major=s).count()>0:
+			school_list = list(set([a['school'] for a in MyAdmissionByMajor.objects.filter(major=s).values('school')]))
+
+			print 'Updating ',s.name, len(school_list)
+			s.schools.add(*school_list)
+			s.save()
+
+def cleanupMajor():
+	missed=[]
+	for s in MyMajor.objects.all():
+		if s.code in [None,''] and len(s.schools.all()):
+			missed.append(s)
+			print 'Processing ',s.name
+	print len(missed),'/',MyMajor.objects.all().count()
+
 import googlemaps
 def main():
 	django.setup()
@@ -413,7 +432,9 @@ def main():
 	#cleanup_school_name()
 	#cleanupSchoolAdmission()
 	#cleanupProvince()
-	cleanupSchoolDescription()
+	#cleanupSchoolDescription()
+	#populateMajorSchoolRelationship()
+	cleanupMajor()
 
 if __name__ == '__main__':
 	main()

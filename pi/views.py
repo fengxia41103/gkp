@@ -510,10 +510,13 @@ class MySchoolDetail(DetailView):
 
 		# school admission data by year
 		school_admission = MyAdmissionBySchool.objects.filter(school = self.get_object().id).order_by('year').reverse()
-		sorted_school_admission = {}		
+		school_admission_by_year = {}		
 		for year,admission_by_year_list in groupby(school_admission,lambda x:x.year):
-			sorted_school_admission[year]=sorted(list(admission_by_year_list),lambda x,y:cmp(x.category,y.category))
-		context['sorted_school_admission']=sorted_school_admission
+			school_admission_by_year[year]=sorted(list(admission_by_year_list),lambda x,y:cmp(x.category,y.category))
+		context['school_admission_by_year']=school_admission_by_year
+
+		# school majors
+		context['majors'] = self.get_object().mymajor_set.all()
 
 		# related list
 		related_schools = [x for x in MySchool.objects.filter(province = self.get_object().province) if x.has_admission]
