@@ -400,6 +400,28 @@ class MyMajorDetail(DetailView):
 		context['list_url'] = reverse_lazy('major_list')
 		return context
 
+	def post(self,request,pk):
+		# all related schools
+		related_schools = self.get_object().schools.all()
+
+		# client request
+		draw = int(request.POST['draw'])
+		start = int(request.POST['start'])
+		length = int(request.POST['length'])
+		search_value = request.POST['search[value]']
+		#
+		print request.POST
+
+		# 
+		result = {
+		"draw": draw,
+		"recordsTotal": len(related_schools),
+		"recordsFiltered": len(related_schools),
+		"data":	[[s.city, s.name] for s in related_schools[start:start+length]]
+		}
+		# return to client
+		return HttpResponse(json.dumps(result), content_type='application/javascript')			
+
 def import_major (request):
 	code_pat=re.compile('\d+[TK]*')
 	degree_pat = re.compile('(?P<name>[^(]+)[(](?P<degree>[^)]+)[)]')

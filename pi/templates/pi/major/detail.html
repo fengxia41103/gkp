@@ -20,19 +20,15 @@
     </li>
 
     <li class="">
-        <a href="#related-schools">相关学校</a>
-    </li>
-
-    <li class="">
-        <a href="#related-majors">类似的专业</a>
-    </li>   
+        <a href="#related-schools">开设院校</a>
+    </li> 
 </ul>
 {% endblock %}
 
 {% block detail-content %}
 	<section id="major-intro">
 		<h2 class="my-h2-border">专业简介</h2>
-		{{ object.description }}
+		{{ object.description|default:"暂无信息" }}
 	</section>
 
 	<section id="course">
@@ -41,33 +37,96 @@
 	</section>
 
 	<section id="related-schools">
-		<h2 class="my-h2-border">相关学校</h2>
-		{% for s in object.schools.all %}
-			{{ s }}
-		{% endfor %}
+		<h2 class="my-h2-border">开设院校</h2>
+		<table class="" id="related-school-table">
+			<thead>
+				<th>City</th>
+				<th>Name</th>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+
+		{% if object.schools.all %}
+			{% regroup object.schools.all|dictsort:"province" by province as by_province_list %}
+			<ul>
+			{% for province in by_province_list %}
+				<li>{{ province.grouper }}</li>
+				<ul>
+				{% for s in province.list %}
+					<li>
+						<a href="{% url 'school_detail' s.id %}">{{ s.name }}</a>
+					</li>
+				{% endfor %}
+				</ul>
+			{% endfor %}
+			</ul>
+		{% else %}
+		暂无信息
+		{% endif %}
+
+	</section>
+
+<script type="text/javascript">
+	console.log('here');
+	var j$ = jQuery.noConflict();
+	j$(document).ready(function(){
+		j$('#related-school-table').dataTable({
+			    serverSide: true,
+			    ajax: {
+			        url: "{% url 'major_detail' object.id %}",
+			        type: 'POST'
+			    },
+			    "pagingType": "simple"
+			});
+	});
+	
+</script>
+{% endblock %}
+
+{% block detail-sidebar %}
+	{# float to right, attributes #}
+	<section>
+		<h4>
+			<i class="fa fa-graduation-cap"></i>
+			 专业快照
+		</h4>
+		<dl class="dl-horizontal my-dl-horizontal">
+			<dt>国家专业代码</dt><dd>{{ object.code|default:"暂无信息"}}</dd>
+			<dt>学科门类</dt><dd>{{ object.subcategory.category.name|default:"暂无信息"}}</dd>
+			<dt>专业类</dt><dd>{{ object.subcategory.name|default:"暂无信息"}}</dd>
+			<dt>教育类别</dt><dd>{{ object.degree_type|default:"暂无信息"}}</dd>
+			<dt>授予学位</dt><dd>{{ object.degree|default:"暂无信息"}}</dd>
+			<dt>修学年限</dt><dd>{{ object.how_long|default:"暂无信息"}}</dd>
+			<dt>专业特色</dt><dd>
+					{% if object.is_specialized %}
+						特设专业
+					{% else %}
+						非特设专业
+						<br />
+					{% endif %}
+					{% if object.is_gov_controlled %}
+						国家控制布点专业
+					{% else %}
+					非国家控制布点专业
+					{% endif %}
+			</dd>				
+		</dl>
 	</section>
 
 	<section id="related-majors">
-		<h2 class="my-h2-border">类似的专业</h2>
-		<ul class="list-unstyled my-multicol-5">
+		<h4>
+			<i class="fa fa-graduation-cap"></i>
+			类似专业
+		</h4>
+		<ul class="list-inline">
 		{% for s in object.related_majors.all %}
+			{% if s.schools.all %}
 			<li><a href="{% url 'major_detail' s.id %}">{{ s }}</a></li>
+			{% endif %}
 		{% empty %}
 		暂无信息
 		{% endfor %}
 		</ul>
 	</section>
-{% endblock %}
-
-{% block detail-sidebar %}
-	{# float to right, attributes #}
-	<h4>
-		<i class="fa fa-university"></i>
-		 专业快照
-	</h4>
-	<dl class="dl-horizontal my-dl-horizontal">
-		<dt>专业代码</dt><dd>{{ object.code|default:"暂无信息"}}</dd>
-		<dt>学科门类</dt><dd>{{ object.subcategory.category|default:"暂无信息"}}</dd>
-		<dt>专业类</dt><dd>{{ object.subcategory|default:"暂无信息"}}</dd>
-	</dl>
 {% endblock %}

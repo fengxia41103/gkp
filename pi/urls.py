@@ -39,7 +39,7 @@ urlpatterns = patterns(
 		url(r'^major/add/$', views.MyMajorAdd.as_view(), name='major_add'),
 		url(r'^major/(?P<pk>\d+)/edit/$', views.MyMajorEdit.as_view(), name='major_edit'),
 		url(r'^major/(?P<pk>\d+)/delete/$', views.MyMajorDelete.as_view(), name='major_delete'),
-		url(r'^major/(?P<pk>\d+)/detail/$', views.MyMajorDetail.as_view(), name='major_detail'),		
+		url(r'^major/(?P<pk>\d+)/detail/$', views.MyMajorDetail.as_view(), name='major_detail'),			
 		url(r'^major/crawler/$', views.major_crawler_view, name='major_crawler'),
 
 		# school
