@@ -27,6 +27,9 @@
      <tbody>
      	{% for obj in object_list %}
      	<tr><td>
+                    <a href="{% url 'major_detail' obj.id %}" class="">
+                         Detail
+                    </a>          
      			<a href="{% url 'major_edit' obj.id %}" class="">
      				Edit
      			</a>

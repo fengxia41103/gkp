@@ -38,50 +38,33 @@
 
 	<section id="related-schools">
 		<h2 class="my-h2-border">开设院校</h2>
-		<table class="" id="related-school-table">
-			<thead>
-				<th>City</th>
-				<th>Name</th>
-			</thead>
-			<tbody>
-			</tbody>
-		</table>
-
-		{% if object.schools.all %}
-			{% regroup object.schools.all|dictsort:"province" by province as by_province_list %}
-			<ul>
-			{% for province in by_province_list %}
-				<li>{{ province.grouper }}</li>
-				<ul>
-				{% for s in province.list %}
-					<li>
-						<a href="{% url 'school_detail' s.id %}">{{ s.name }}</a>
-					</li>
-				{% endfor %}
-				</ul>
-			{% endfor %}
-			</ul>
+		{% if object.schools.all %}		
+			<table class="" id="related-school-table">
+				<thead>
+					<th>City</th>
+					<th>Name</th>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
 		{% else %}
 		暂无信息
 		{% endif %}
 
-	</section>
-
-<script type="text/javascript">
-	console.log('here');
-	var j$ = jQuery.noConflict();
-	j$(document).ready(function(){
-		j$('#related-school-table').dataTable({
-			    serverSide: true,
-			    ajax: {
-			        url: "{% url 'major_detail' object.id %}",
-			        type: 'POST'
-			    },
-			    "pagingType": "simple"
+		<script type="text/javascript">
+			var j$ = jQuery.noConflict();
+			j$(document).ready(function(){
+				j$('#related-school-table').dataTable({
+					    serverSide: true,
+					    ajax: {
+					        url: "{% url 'major_detail' object.id %}",
+					        type: 'POST'
+					    },
+					    "pagingType": "simple"
+					});
 			});
-	});
-	
-</script>
+		</script>
+	</section>
 {% endblock %}
 
 {% block detail-sidebar %}

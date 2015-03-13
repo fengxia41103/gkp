@@ -25,6 +25,7 @@ from django.views.decorators.vary import vary_on_headers
 # protect the view with require_POST decorator
 from django.views.decorators.http import require_POST
 from django.contrib import messages
+from django.db.models import Q
 
 # map geometry lib
 from shapely.geometry import box as Box
@@ -409,10 +410,10 @@ class MyMajorDetail(DetailView):
 		start = int(request.POST['start'])
 		length = int(request.POST['length'])
 		search_value = request.POST['search[value]']
-		#
-		print request.POST
 
-		# 
+		for val in search_value.split(','):
+			related_schools = related_schools.filter(Q(city__icontains=val) | Q(name__icontains=val))
+
 		result = {
 		"draw": draw,
 		"recordsTotal": len(related_schools),
@@ -542,7 +543,7 @@ class MySchoolDetail(DetailView):
 		context['list_url'] = reverse_lazy('school_list')
 
 		# school admission data by year
-		school_admission = MyAdmissionBySchool.objects.filter(school = self.get_object().id).order_by('year').reverse()
+		school_admission = MyAdmissionBySchool.objects.filter(school = self.get_object()).order_by('year').reverse()
 		school_admission_by_year = {}		
 		for year,admission_by_year_list in groupby(school_admission,lambda x:x.year):
 			school_admission_by_year[year]=sorted(list(admission_by_year_list),lambda x,y:cmp(x.category,y.category))

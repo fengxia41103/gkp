@@ -59,14 +59,21 @@
 		{# school related majors #}
 		<section id="school-major">
 			<h2 class="my-h2-border">学校专业</h2>
-			<ul class="list-unstyled my-multicol-5">
-			{% for m in majors %}
-				<li data-toggle="tooltip" data-placement="top" 
-				title="Code: {{m.code}}<br />Category: {{ m.subcategory.category }}<br />Sub: {{ m.subcategory }}">
-					<a href="{%url 'major_detail' m.id %}">{{ m }}</a>
+
+			<ul class="list-inline">
+			{% regroup majors|dictsort:"student_type" by student_type as by_major_category_list %}
+			{% for student_type in by_major_category_list %}
+				<li>
+					<h3>
+						<i class="fa fa-hand-o-right"></i>			
+						<span class="label label-primary">{{ student_type.grouper }}</span>
+					</h3>
 				</li>
-			{% empty %}
-				暂无信息
+				<ul class="list-inline">
+				{% for ad in student_type.list %}
+					<li><a href="{%url 'major_detail' ad.id %}">{{ ad }}</a></li>
+				{% endfor %}
+				</ul>
 			{% endfor %}
 			</ul>
 		</section>

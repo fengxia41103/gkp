@@ -153,7 +153,6 @@ class MyMajor (MyBaseModel):
 		(u'本科', u'本科'),
 		(u'专科', u'专科'),
 	)
-
 	code = models.CharField (
 			max_length = 16,
 			default = '',
@@ -198,7 +197,12 @@ class MyMajor (MyBaseModel):
 			default = False,
 			verbose_name = u'国家控制布点专业'
 		)
-
+	student_type = models.CharField (
+			max_length = 8,
+			null = True,
+			blank = True,
+			verbose_name = u'文理科',
+		)
 	# related models
 	schools = models.ManyToManyField ('MySchool')
 	related_majors = models.ManyToManyField('MyMajor')

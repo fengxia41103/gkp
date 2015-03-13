@@ -412,12 +412,12 @@ def populateMajorSchoolRelationship():
 			s.save()
 
 def cleanupMajor():
-	missed=[]
-	for s in MyMajor.objects.all():
-		if s.code in [None,''] and len(s.schools.all()):
-			missed.append(s)
-			print 'Processing ',s.name
-	print len(missed),'/',MyMajor.objects.all().count()
+	for m in MyMajor.objects.all():
+		if m.student_type and ',' in m.student_type:
+			print 'Updating', m.name
+			m.student_type = u'文理兼收'
+			m.save()
+
 
 import googlemaps
 def main():
