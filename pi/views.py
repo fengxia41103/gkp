@@ -133,6 +133,27 @@ class UserRegisterView(FormView):
 			user.save()
 			return super(UserRegisterView,self).form_valid(form)
 
+class UserPropertyView(TemplateView):
+	template_name=''
+	def post(self,request):
+		province = request.POST['province']
+		student_type = request.POST['student_type']
+		score = request.POST['score']
+
+		# get user property obj
+		user_profile,created = MyUserProfile.objects.get_or_create(owner=request.user)
+
+		p = MyAddress.objects.filter(province = province.strip())
+		if len(p) == 1: user_profile.province = p[0]
+
+		if student_type: user_profile.student_type = student_type
+		if score: user_profile.estimated_score = int(score)
+
+		user_profile.save()
+
+		# refresh current page, whatever it is.
+		return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
 ###################################################
 #
 #	Data import views
@@ -264,7 +285,7 @@ class MyAdmissionByMajorListFilter (FilterSet):
 				'province':['exact'],
 				'category':['contains'],
 				'year':['exact'],
-				#'major__name':['contains'],
+				'major__name':['contains'],
 				}
 
 @class_view_decorator(login_required)

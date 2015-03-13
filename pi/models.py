@@ -490,4 +490,46 @@ class MySchool (MyBaseModel):
 	is_2nd_batch = property(_batch_2nd)
 	def _batch_3rd(self):
 		return (MyAdmissionBySchool.objects.filter(school = self.id, batch__startswith=u'三批').count() > 0)
-	is_3rd_batch = property(_batch_3rd)			
+	is_3rd_batch = property(_batch_3rd)
+
+class MyUserProfile(models.Model):
+	DEGREE_TYPE_CHOICES = (
+		('',''),
+		(u'本科', u'本科'),
+		(u'专科', u'专科'),
+	)	
+	STUDENT_TYPE_CHOICES = (
+		('',''),
+		(u'文科', u'文科'),
+		(u'理科', u'理科'),
+	)	
+	owner = models.OneToOneField (
+			User,
+			default = None,
+			verbose_name = u'用户',
+			help_text = ''
+		)
+	province = models.ForeignKey (
+			'MyAddress',
+			null = True,
+			blank = True,
+			verbose_name = u'入考省份',
+		)
+	estimated_score = models.IntegerField(
+			default = -1, # -1 means no filter applied based on score
+			verbose_name = u'分数',		
+		)
+	student_type = models.CharField(
+			max_length = 8,
+			null = True,
+			blank = True,
+			verbose_name = u'考生类别',
+			choices = STUDENT_TYPE_CHOICES		
+		)
+	degree_type = models.CharField(
+			max_length = 8,
+			null = True,
+			blank = True,
+			verbose_name = u'学位类别',
+			choices = DEGREE_TYPE_CHOICES		
+		)	

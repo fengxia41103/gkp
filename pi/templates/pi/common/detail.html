@@ -36,27 +36,3 @@
 	</div>
 </div>
 {% endblock %}
-
-{% block custom_js %}
-<script type="text/javascript">
-	j$(document).ready(function(){
-		//j$('table.table').dataTable({
-		//	paging: false,
-		//	info:false,
-		//	"pagingType": "simple"
-		//});
-
-		// register tab events
-	   j$('a[data-toggle="tab"]').click(function ( e ) {
-	        e.preventDefault ();
-	        j$(this).tab('show');
-	    });  
-
-	   // show first tab after page loading
-		j$('a[data-toggle="tab"]:first').tab('show');	
-
-		// initialize all tooltips
-		j$('[data-toggle="tooltip"]').tooltip();		   
-	});
-</script>
-{% endblock %}

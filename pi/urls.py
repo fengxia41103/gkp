@@ -13,7 +13,8 @@ urlpatterns = patterns(
 		url(r'logout/$', views.LogoutView.as_view(), name='logout'),
 		url(r'^register/$', views.UserRegisterView.as_view(), name='user_register'),
 
-		# google maps
+		# user related
+		url(r'^user/property/$', views.UserPropertyView.as_view(), name='user_property'),
 
 		# file import/export
 		url(r'^import/admission/school/$',views.import_admission_by_school, name='import_admission_school'),
