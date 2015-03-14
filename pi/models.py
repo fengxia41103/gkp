@@ -210,6 +210,22 @@ class MyMajor (MyBaseModel):
 	def __unicode__(self):
 		return self.name
 
+class MyAdmissionBySchoolCustomManager(models.Manager):
+	def filte_by_user_profile(self,user):
+		# get user profile
+		user_profile,created = MyUserProfile.objects.get_or_create(owner = user)
+		province = user_profile.province
+		student_type = user_profile.student_type
+		estimated_score = user_profile.estimated_score
+
+		data = self.get_queryset()
+
+		# filter by user location
+		if province: data=data.filter(province=province)
+		if student_type: data = data.filter(category = student_type)
+		if estimated_score: data = data.filter(min_score__lte = estimated_score)
+		return data
+
 class MyAdmissionBySchool (models.Model):
 	CATEGORY_CHOICES = (
 		('',''),		
@@ -218,6 +234,9 @@ class MyAdmissionBySchool (models.Model):
 		(u'综合',u'综合'), 
 		(u'其他',u'其他'), 
 	)
+	# custom managers
+	# Note: the 1st one defined will be taken as the default!
+	objects = MyAdmissionBySchoolCustomManager()	
 	
 	school = models.ForeignKey (
 			'MySchool',
@@ -323,10 +342,28 @@ class MySchoolCustomManager(models.Manager):
 	def has_admission(self):
 		return [x for x in self.get_queryset().order_by('province') if x.has_admission]
 
+	def filte_by_user_profile(self,user):
+		# get user profile
+		user_profile,created = MyUserProfile.objects.get_or_create(owner = user)
+		province = user_profile.province
+		student_type = user_profile.student_type
+		estimated_score = user_profile.estimated_score
+
+		data = self.get_queryset()
+
+		# filter by user location
+		if province: data=data.filter(province=province)
+		if student_type: data = data.filter(category = student_type)
+		if estimated_score: data = data.filter(min_score__lte = estimated_score)
+		return data
+
 class MySchool (MyBaseModel):
 	# custom managers
 	# Note: the 1st one defined will be taken as the default!
 	objects = MySchoolCustomManager()
+
+	def __unicode__(self):
+		return self.name
 
 	# fields
 	hash = models.CharField (

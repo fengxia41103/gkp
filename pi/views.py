@@ -566,12 +566,8 @@ class MySchoolDetail(DetailView):
 		context['list_url'] = reverse_lazy('school_list')
 
 		# school admission data by year
-		school_admission = MyAdmissionBySchool.objects.filter(school = self.get_object())
-
-		# apply user profile filters
-		user_profile,created = MyUserProfile.objects.get_or_create(owner = self.request.user)
-		if user_profile.province: school_admission=school_admission.filter(province=user_profile.province)
-
+		school_admission = MyAdmissionBySchool.objects.filte_by_user_profile(self.request.user).filter(school = self.get_object())
+		
 		school_admission_by_year = {}		
 		for year,admission_by_year_list in groupby(school_admission,lambda x:x.year):
 			school_admission_by_year[year]=sorted(list(admission_by_year_list),lambda x,y:cmp(x.category,y.category))
@@ -581,12 +577,8 @@ class MySchoolDetail(DetailView):
 		context['majors'] = self.get_object().mymajor_set.all()
 
 		# related list
-		related_schools = [x for x in MySchool.objects.filter(province = self.get_object().province) if x.has_admission]
-		related_list = []
-		for s in related_schools:
-			related_list.append(MyAdmissionBySchool.objects.filter(school = s)[:1][0])
-		related_list=sorted(related_list,lambda x,y: cmp(x.batch,y.batch))
-		context['related_schools']=related_list
+		related_schools = MyAdmissionBySchool.objects.filte_by_user_profile(self.request.user).values('batch','school')
+		context['related_schools']=related_schools
 
 		return context
 

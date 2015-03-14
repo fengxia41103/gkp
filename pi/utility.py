@@ -99,5 +99,3 @@ class MyUtility():
 		return list(izip_longest(*[iter(iterable)]*n, fillvalue=padvalue))
 
 
-
-
