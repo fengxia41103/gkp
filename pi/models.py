@@ -300,7 +300,7 @@ class MyAdmissionByMajor (models.Model):
 
 from shapely.geometry import box as Box
 from shapely.geometry import Point
-class MySchoolMapManager(models.Manager):
+class MySchoolCustomManager(models.Manager):
 	def visible(self,bound):
 		filtered_objs = []
 
@@ -326,7 +326,7 @@ class MySchoolMapManager(models.Manager):
 class MySchool (MyBaseModel):
 	# custom managers
 	# Note: the 1st one defined will be taken as the default!
-	objects = MySchoolMapManager()
+	objects = MySchoolCustomManager()
 
 	# fields
 	hash = models.CharField (

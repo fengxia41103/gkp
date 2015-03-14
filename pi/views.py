@@ -143,8 +143,10 @@ class UserPropertyView(TemplateView):
 		# get user property obj
 		user_profile,created = MyUserProfile.objects.get_or_create(owner=request.user)
 
-		p = MyAddress.objects.filter(province = province.strip())
-		if len(p) == 1: user_profile.province = p[0]
+		if not province.strip(): user_profile.province=None
+		else:
+			p = MyAddress.objects.filter(province = province.strip())
+			if len(p) == 1: user_profile.province = p[0]
 
 		if student_type: user_profile.student_type = student_type
 		if score: user_profile.estimated_score = int(score)
@@ -564,7 +566,12 @@ class MySchoolDetail(DetailView):
 		context['list_url'] = reverse_lazy('school_list')
 
 		# school admission data by year
-		school_admission = MyAdmissionBySchool.objects.filter(school = self.get_object()).order_by('year').reverse()
+		school_admission = MyAdmissionBySchool.objects.filter(school = self.get_object())
+
+		# apply user profile filters
+		user_profile,created = MyUserProfile.objects.get_or_create(owner = self.request.user)
+		if user_profile.province: school_admission=school_admission.filter(province=user_profile.province)
+
 		school_admission_by_year = {}		
 		for year,admission_by_year_list in groupby(school_admission,lambda x:x.year):
 			school_admission_by_year[year]=sorted(list(admission_by_year_list),lambda x,y:cmp(x.category,y.category))
