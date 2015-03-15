@@ -567,22 +567,19 @@ class MySchoolDetail(DetailView):
 		context = super(MySchoolDetail, self).get_context_data(**kwargs)
 		context['list_url'] = reverse_lazy('school_list')
 
-		# school admission data by year
-		school_admission = MyAdmissionBySchool.objects.filter_by_user_profile(self.request.user).filter(school = self.get_object())
-		
-		school_admission_by_year = {}		
+		# related list
+		schools = MySchool.objects.filter_by_user_profile(self.request.user)
+		context['related_schools']=schools		
+
+		school_admission = MyAdmissionBySchool.objects.filter_by_user_profile_and_school(self.request.user, self.get_object().id)
+
+		school_admission_by_year = {}
 		for year,admission_by_year_list in groupby(school_admission,lambda x:x.year):
 			school_admission_by_year[year]=sorted(list(admission_by_year_list),lambda x,y:cmp(x.category,y.category))
 		context['school_admission_by_year']=school_admission_by_year
 
 		# school majors
 		context['majors'] = self.get_object().mymajor_set.all()
-
-		# related list
-		related_schools = MyAdmissionBySchool.objects.filter_by_user_profile(self.request.user).values('id').distinct()
-		related_schools = MyAdmissionBySchool.objects.filter(id__in=related_schools).values('school')
-		related_schools = MySchool.objects.filter(id__in=related_schools).order_by('province')
-		context['related_schools']=related_schools
 
 		return context
 
@@ -612,6 +609,7 @@ class MySchoolEchartMapFilter(TemplateView):
 		result = {}
 		for s in MySchool.objects.filter_by_user_profile(self.request.user):
 			result.setdefault(s.province, []).append(s.id)
+
 		echart_data = [(key.id, key,len(value)) for key,value in result.iteritems()]
 		context['echart_data'] = echart_data
 		context['echart_data_min'] = min([a[2] for a in echart_data])
@@ -731,8 +729,6 @@ class CategorizeSchoolHelper:
 		# filter by province
 		schools = MySchool.objects.filter_by_user_profile(self.filters.get('user'))
 
-		
-		#schools=MySchool.objects.all()
 		if province: schools=schools.filter(province = int(province))
 
 		# filter by city
@@ -785,6 +781,7 @@ class AnalysisSchoolSummaryAJAX(TemplateView):
 class AnalysisSchoolDetailAJAX(TemplateView):
 	detail_template_name = 'pi/analysis/schools_detail.html'
 	def post(self,request):
+		start = dt.now()
 		helper = CategorizeSchoolHelper(request.POST,request.user)
 		categories = helper.categorize_schools()
 
@@ -793,10 +790,15 @@ class AnalysisSchoolDetailAJAX(TemplateView):
 		html=''
 		for cat in helper.filters['cats']:
 			objs = categories[cat.strip()]
-			max_score = MyAdmissionBySchool.objects.filter(school__in=objs).aggregate(Max('max_score'))['max_score__max']
-			min_score = MyAdmissionBySchool.objects.filter(school__in=objs).aggregate(Min('min_score'))['min_score__min']
+			tmp = MyAdmissionBySchool.objects.filter(school__in=objs).values_list('max_score',flat=True)
+			max_score = max(tmp)
+
+			tmp = MyAdmissionBySchool.objects.filter(school__in=objs).values_list('min_score',flat=True)
+			min_score = min(tmp)
+			
 			max_score = MyAdmissionBySchool.objects.filter(school__in=objs).filter(max_score = max_score)[0]
 			min_score = MyAdmissionBySchool.objects.filter(school__in=objs).filter(min_score = min_score)[0]
+			
 			my_context=Context({
 				'subject':cat.strip(),
 				'objs':objs,
@@ -820,5 +822,7 @@ class AnalysisSchoolByProvince(TemplateView):
 	def get_context_data(self, **kwargs):
 		context = super(TemplateView, self).get_context_data(**kwargs)
 		context['province'] = MyAddress.objects.get(id=int(kwargs['pk']))
-		context['schools'] = MySchool.objects.filter(province=int(kwargs['pk']))
+
+		schools = MySchool.objects.filter_by_user_profile(self.request.user)
+		context['schools'] = schools.filter(province=int(kwargs['pk']))
 		return context
