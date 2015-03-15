@@ -377,8 +377,8 @@ class MySchoolCustomManager(models.Manager):
 
 		# filter by user profile location
 		if province: 
-			ids = MyAdmissionBySchool.objects.filter(province=province).values('school')
-			data=data.filter(id__in=ids)
+			data = MyAddress.objects.get(province=province).accepting_schools
+			#data=data.filter(id__in=ids)
 
 		if degree_type == u'本科':
 			data = data.filter(take_bachelor=True)
@@ -566,6 +566,11 @@ class MySchool (MyBaseModel):
 			blank=True,
 			default=False,
 			verbose_name = u'招收本科三批'		
+		)
+	accepting_province=models.ManyToManyField(
+			'MyAddress',
+			related_name='accepting_schools',
+			verbose_name=u'招生学校'
 		)
 
 class MyUserProfile(models.Model):

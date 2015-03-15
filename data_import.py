@@ -420,21 +420,12 @@ def cleanupMajor():
 
 def populateSchoolAttribute():
 	for s in MySchool.objects.all():
-		if MyAdmissionBySchool.objects.filter(school = s.id, batch__in=[u'一批',u'二批',u'三批']).count() > 0:
-			s.take_bachelor = True
-		if MyAdmissionBySchool.objects.filter(school = s.id, batch__startswith=u'专科').count() > 0:
-			s.take_associate = True
-		if MyAdmissionBySchool.objects.filter(school = s.id, batch__startswith=u'提前').count() > 0:
-			s.take_pre = True
-		if MyAdmissionBySchool.objects.filter(school = s.id, batch__startswith=u'一批').count() > 0:
-			s.take_1st_batch = True
-		if MyAdmissionBySchool.objects.filter(school = s.id, batch__startswith=u'二批').count() > 0:
-			s.take_2nd_batch = True
-		if MyAdmissionBySchool.objects.filter(school = s.id, batch__startswith=u'三批').count() > 0:
-			s.take_3rd_batch = True
-
+		admission = MyAdmissionBySchool.objects.filter(school=s).values('province')
+		s.accepting_province.clear()
+		s.accepting_province.add(*list(set([a['province'] for a in admission])))
 		s.save()
 		print 'Updating', s.name
+
 
 import googlemaps
 def main():
