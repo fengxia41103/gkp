@@ -191,7 +191,7 @@
 		{% regroup related_schools|dictsort:"province" by province as by_school_province_list %}
 		{% for province in by_school_province_list %}
 			<h5 class="my-section-header">
-				{{ province.grouper }}
+				{{ province.grouper }}的学校
 				<span class="badge pull-right">{{ province.list|length }}</span>
 			</h5>
 

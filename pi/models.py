@@ -212,27 +212,29 @@ class MyMajor (MyBaseModel):
 	def __unicode__(self):
 		return self.name
 
-class MyAdmissionBySchoolCustomManager(models.Manager):	
-	def filter_by_user_profile(self,user):
+class MyAdmissionBySchoolCustomManager(models.Manager):
+	def filter_by_user_profile_and_school(self,user,school_id):
+		data = self.get_queryset().filter(school=school_id)
+
 		# get user profile
 		user_profile,created = MyUserProfile.objects.get_or_create(owner = user)
+		if created: return data
+
+		# filter based on user profile
 		province = user_profile.province
 		student_type = user_profile.student_type
 		estimated_score = user_profile.estimated_score
 		degree_type = user_profile.degree_type
 
-		data = self.get_queryset()
-
-		# filter by user location
-		if province: data=data.filter(province=province)
-		if student_type: data = data.filter(category = student_type)
-
-		if degree_type == u'本科':data = data.filter(batch__in=[u'一批',u'二批',u'三批'])
-		elif degree_type == u'专科': data = data.filter(batch__icontains=degree_type)
+		# filter by user profile location
+		if province: data = data.filter(province=province)
+		if student_type == u'本科': data=data.filter(school__take_bachelor=true)
+		if student_type == u'专科': data=data.filter(school__take_associate=true)
 
 		# for scores, we set up a band around estimated_score
 		SCORE_BAND=10
-		if estimated_score: data = data.filter(Q(min_score__lte = estimated_score+SCORE_BAND) & Q(min_score__gte=estimated_score-SCORE_BAND))
+		if estimated_score: 
+			data = data.filter(Q(min_score__lte = estimated_score+SCORE_BAND) & Q(min_score__gte=estimated_score-SCORE_BAND))
 		return data
 
 class MyAdmissionBySchool (models.Model):
@@ -243,10 +245,7 @@ class MyAdmissionBySchool (models.Model):
 		(u'综合',u'综合'), 
 		(u'其他',u'其他'), 
 	)
-	# custom managers
-	# Note: the 1st one defined will be taken as the default!
-	objects = MyAdmissionBySchoolCustomManager()	
-	
+	objects=MyAdmissionBySchoolCustomManager()
 	school = models.ForeignKey (
 			'MySchool',
 			verbose_name = u'高校名称'
@@ -364,8 +363,6 @@ class MySchoolCustomManager(models.Manager):
 		return self.get_queryset().filter(take_pre=True)
 
 	def filter_by_user_profile(self,user):
-		start = dt.now()
-
 		data = self.get_queryset()
 
 		# get user profile
@@ -379,19 +376,40 @@ class MySchoolCustomManager(models.Manager):
 		degree_type = user_profile.degree_type
 
 		# filter by user profile location
-		if province: 
-			data = data.filter(accepting_province=province)
+		if province: data = data.filter(accepting_province=province)
 
-		if degree_type == u'本科':
-			data = data.filter(take_bachelor=True)
-		elif degree_type == u'专科': 
-			data = data.filter(take_associate=True)
+		if degree_type == u'本科': data = data.filter(take_bachelor=True)
+		elif degree_type == u'专科': data = data.filter(take_associate=True)
 
 		# for scores, we set up a band around estimated_score
 		SCORE_BAND=10
-		if estimated_score: 
-			school_ids = MyAdmissionBySchool.objects.filter(Q(school__in=data) & Q(min_score__lte = estimated_score+SCORE_BAND) & Q(min_score__gte=estimated_score-SCORE_BAND)).values_list('school',flat=True)			
-			data = data.filter(id__in=school_ids)
+		school_ids = []
+		if estimated_score and province and student_type:
+			school_ids = MyAdmissionBySchool.objects.filter(
+				Q(school__in=data) & 
+				Q(min_score__lte = estimated_score+SCORE_BAND) & 
+				Q(min_score__gte=estimated_score-SCORE_BAND) &
+				Q(province=province) &
+				Q(category=student_type)).values_list('school',flat=True)
+		elif estimated_score and province:
+			school_ids = MyAdmissionBySchool.objects.filter(
+				Q(school__in=data) & 
+				Q(min_score__lte = estimated_score+SCORE_BAND) & 
+				Q(min_score__gte=estimated_score-SCORE_BAND) &
+				Q(province=province)).values_list('school',flat=True)
+		elif estimated_score and student_type:
+			school_ids = MyAdmissionBySchool.objects.filter(
+				Q(school__in=data) & 
+				Q(min_score__lte = estimated_score+SCORE_BAND) & 
+				Q(min_score__gte=estimated_score-SCORE_BAND) &
+				Q(category=student_type)).values_list('school',flat=True)
+		elif estimated_score:
+			school_ids = MyAdmissionBySchool.objects.filter(
+				Q(school__in=data) & 
+				Q(min_score__lte = estimated_score+SCORE_BAND) & 
+				Q(min_score__gte=estimated_score-SCORE_BAND)).values_list('school',flat=True)			
+		data = data.filter(id__in=school_ids)
+
 		return data
 
 class MySchool (MyBaseModel):

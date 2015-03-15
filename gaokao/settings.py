@@ -162,4 +162,4 @@ DEVSERVER_MODULES = (
     'devserver.modules.cache.CacheSummaryModule',
     'devserver.modules.profile.LineProfilerModule',
 )
-DEVSERVER_AUTO_PROFILE = True  # profiles all views without the need of function decorator
+DEVSERVER_AUTO_PROFILE = False  # profiles all views without the need of function decorator
