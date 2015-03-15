@@ -139,6 +139,7 @@ class UserPropertyView(TemplateView):
 		province = request.POST['province']
 		student_type = request.POST['student_type']
 		score = request.POST['score']
+		degree_type = request.POST['degree_type']
 
 		# get user property obj
 		user_profile,created = MyUserProfile.objects.get_or_create(owner=request.user)
@@ -150,6 +151,7 @@ class UserPropertyView(TemplateView):
 
 		if student_type: user_profile.student_type = student_type
 		if score: user_profile.estimated_score = int(score)
+		if degree_type: user_profile.degree_type = degree_type
 
 		user_profile.save()
 
@@ -566,7 +568,7 @@ class MySchoolDetail(DetailView):
 		context['list_url'] = reverse_lazy('school_list')
 
 		# school admission data by year
-		school_admission = MyAdmissionBySchool.objects.filte_by_user_profile(self.request.user).filter(school = self.get_object())
+		school_admission = MyAdmissionBySchool.objects.filter_by_user_profile(self.request.user).filter(school = self.get_object())
 		
 		school_admission_by_year = {}		
 		for year,admission_by_year_list in groupby(school_admission,lambda x:x.year):
@@ -577,7 +579,9 @@ class MySchoolDetail(DetailView):
 		context['majors'] = self.get_object().mymajor_set.all()
 
 		# related list
-		related_schools = MyAdmissionBySchool.objects.filte_by_user_profile(self.request.user).values('batch','school')
+		related_schools = MyAdmissionBySchool.objects.filter_by_user_profile(self.request.user).values('id').distinct()
+		related_schools = MyAdmissionBySchool.objects.filter(id__in=related_schools).values('school')
+		related_schools = MySchool.objects.filter(id__in=related_schools).order_by('province')
 		context['related_schools']=related_schools
 
 		return context
@@ -606,7 +610,7 @@ class MySchoolEchartMapFilter(TemplateView):
 
 		# echart data, group by province
 		result = {}
-		for s in MySchool.objects.has_province():
+		for s in MySchool.objects.filter_by_user_profile(self.request.user):
 			result.setdefault(s.province, []).append(s.id)
 		echart_data = [(key.id, key,len(value)) for key,value in result.iteritems()]
 		context['echart_data'] = echart_data
@@ -700,32 +704,34 @@ class CategorizeSchoolHelper:
 	'''
 		This is a helper class.
 	'''
-	def __init__(self):
-		pass
-
-	def condition_filter(self,post_data):
+	def __init__(self,post_data,user):
 		'''
 			Based on request.POST to compose a filter that can be used by self.get_objects
 			param: request.POST, JSON data
 		'''
-		filters = {key:post_data[key] for key in post_data}
+		self.filters = {key:post_data[key] for key in post_data}
 
 		# reverse json loads
 		try:
-			filters['cats']=json.loads(filters['cats'])
-		except: filters['cats']=None
-		return filters
+			self.filters['cats']=json.loads(self.filters['cats'])
+		except: self.filters['cats']=None
 
-	def get_objects(self,custom_filters):
+		# request user
+		self.filters['user']=user
+
+		self.schools = None
+
+	def get_objects(self):
 		# set up filters
-		province = custom_filters.get('province')
-		city = custom_filters.get('city')
-		school_type = custom_filters.get('school_type')
-		batch = custom_filters.get('batch')
+		province = self.filters.get('province')
+		city = self.filters.get('city')
+		school_type = self.filters.get('school_type')
+		batch = self.filters.get('batch')
 		
 		# filter by province
-		if province: schools = MySchool.objects.filter(province = int(province))
-		else: schools = MySchool.objects.all()
+		schools = MySchool.objects.filter_by_user_profile(self.filters.get('user'))
+		#schools=MySchool.objects.all()
+		if province: schools=schools.filter(province = int(province))
 
 		# filter by city
 		if city: schools = schools.filter(city=city)
@@ -733,23 +739,20 @@ class CategorizeSchoolHelper:
 		# filter by school_type
 		if school_type: schools=schools.filter(school_type = school_type)
 
+		self.schools=schools
 		return schools
 
-	def categorize_schools(self,schools):
+	def categorize_schools(self):
 		'''
 			Group schools into aggregated groups for analysis.
 			param: schools
 		'''
-		bachelors = [s for s in schools if s.has_bachelor_admission]
-		associates = [s for s in schools if s.has_associate_admission]
-		bachelor_and_associate = list(set(bachelors).intersection(associates))
-		pre = [s for s in schools if s.has_pre_admission]
-
+		self.schools = self.get_objects()
 		return {
-				u'本科':bachelors,
-				u'专科':associates,
-				u'既有本科也有专科':bachelor_and_associate,
-				u'提前招生':pre			
+				u'本科':self.schools.filter(take_bachelor=True),
+				u'专科':self.schools.filter(take_associate=True),
+				u'既有本科也有专科':self.schools.filter(take_bachelor=True,take_associate=True),
+				u'提前招生':self.schools.	filter(take_pre=True)		
 			}
 
 
@@ -757,19 +760,18 @@ class AnalysisSchoolSummaryAJAX(TemplateView):
 	summary_template_name = 'pi/analysis/schools_by_province_summary.html'
 
 	def post(self,request):
-		filters = CategorizeSchoolHelper().condition_filter(request.POST)
-		schools = CategorizeSchoolHelper().get_objects(filters)
-		categories = CategorizeSchoolHelper().categorize_schools(schools)
+		helper = CategorizeSchoolHelper(request.POST,request.user)
+		categories = helper.categorize_schools()
 
 		# available vs. active
 		available_cats = categories.keys()		
-		active_cats = filters['cats'] or available_cats
+		active_cats = helper.filters['cats'] or available_cats
 
 		# render summary html
 		summary = loader.get_template(self.summary_template_name)
 		my_context = Context({
-			'p_id':filters['province'],
-			'schools':schools,
+			'p_id':helper.filters['province'],
+			'schools':helper.schools,
 			'categories': categories,
 			'available_cats':available_cats,
 			'active_cats':active_cats
@@ -781,14 +783,13 @@ class AnalysisSchoolSummaryAJAX(TemplateView):
 class AnalysisSchoolDetailAJAX(TemplateView):
 	detail_template_name = 'pi/analysis/schools_detail.html'
 	def post(self,request):
-		filters = CategorizeSchoolHelper().condition_filter(request.POST)
-		schools = CategorizeSchoolHelper().get_objects(filters)
-		categories = CategorizeSchoolHelper().categorize_schools(schools)
+		helper = CategorizeSchoolHelper(request.POST,request.user)
+		categories = helper.categorize_schools()
 
 		# details per section
 		detail = loader.get_template(self.detail_template_name)
 		html=''
-		for cat in filters['cats']:
+		for cat in helper.filters['cats']:
 			objs = categories[cat.strip()]
 			max_score = MyAdmissionBySchool.objects.filter(school__in=objs).aggregate(Max('max_score'))['max_score__max']
 			min_score = MyAdmissionBySchool.objects.filter(school__in=objs).aggregate(Min('min_score'))['min_score__min']
@@ -802,9 +803,9 @@ class AnalysisSchoolDetailAJAX(TemplateView):
 				})
 
 			my_context['by_batch']=(
-				(u'一批',len([o for o in objs if o.is_1st_batch])),
-				(u'二批',len([o for o in objs if o.is_2nd_batch])),
-				(u'三批',len([o for o in objs if o.is_3rd_batch]))
+				(u'一批',len(objs.filter(take_1st_batch=True))),
+				(u'二批',len(objs.filter(take_2nd_batch=True))),
+				(u'三批',len(objs.filter(take_3rd_batch=True)))
 			)
 
 			html+= detail.render(my_context)

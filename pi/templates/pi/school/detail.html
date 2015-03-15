@@ -188,16 +188,17 @@
 		院校推荐
 	</h4>
 	<ul class="list-inline">
-		{% regroup related_schools|dictsort:"batch" by batch as obj_list %}
-		{% for batch in obj_list %}
+		{% regroup related_schools|dictsort:"province" by province as by_school_province_list %}
+		{% for province in by_school_province_list %}
 			<h5 class="my-section-header">
-				{{ batch.grouper }}
-				<span class="badge">{{ batch.list|length }}</span>
+				{{ province.grouper }}
+				<span class="badge pull-right">{{ province.list|length }}</span>
 			</h5>
+
 			<ul class="list-inline">
-				{% for o in batch.list %}
+				{% for o in province.list %}
 					<li>
-						<a href="{% url 'school_detail' o.school %}">{{ o.school }}</a>				
+						<a href="{% url 'school_detail' o.id %}">{{ o }}</a>				
 					</li>						
 				{% endfor %}
 			</ul>

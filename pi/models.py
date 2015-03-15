@@ -13,6 +13,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 from django.utils import timezone
 from datetime import datetime
 from annoying.fields import JSONField # django-annoying
+from django.db.models import Q
 
 class MyBaseModel (models.Model):
 	# basic value fields
@@ -210,20 +211,27 @@ class MyMajor (MyBaseModel):
 	def __unicode__(self):
 		return self.name
 
-class MyAdmissionBySchoolCustomManager(models.Manager):
-	def filte_by_user_profile(self,user):
+class MyAdmissionBySchoolCustomManager(models.Manager):	
+	def filter_by_user_profile(self,user):
 		# get user profile
 		user_profile,created = MyUserProfile.objects.get_or_create(owner = user)
 		province = user_profile.province
 		student_type = user_profile.student_type
 		estimated_score = user_profile.estimated_score
+		degree_type = user_profile.degree_type
 
 		data = self.get_queryset()
 
 		# filter by user location
 		if province: data=data.filter(province=province)
 		if student_type: data = data.filter(category = student_type)
-		if estimated_score: data = data.filter(min_score__lte = estimated_score)
+
+		if degree_type == u'本科':data = data.filter(batch__in=[u'一批',u'二批',u'三批'])
+		elif degree_type == u'专科': data = data.filter(batch__icontains=degree_type)
+
+		# for scores, we set up a band around estimated_score
+		SCORE_BAND=10
+		if estimated_score: data = data.filter(Q(min_score__lte = estimated_score+SCORE_BAND) & Q(min_score__gte=estimated_score-SCORE_BAND))
 		return data
 
 class MyAdmissionBySchool (models.Model):
@@ -320,6 +328,12 @@ class MyAdmissionByMajor (models.Model):
 from shapely.geometry import box as Box
 from shapely.geometry import Point
 class MySchoolCustomManager(models.Manager):
+	def get_queryset(self):
+		'''
+			Only school with province is visible (and useful), ever!
+		'''
+		return super(MySchoolCustomManager, self).get_queryset().filter(province__isnull=False)
+
 	def visible(self,bound):
 		filtered_objs = []
 
@@ -328,7 +342,7 @@ class MySchoolCustomManager(models.Manager):
 		bound = Box(sw_lat, sw_lng,ne_lat,ne_lng)
 
 		# filter schools for the ones that are visible at current Zoom level and viewport
-		for s in [x for x in self.get_queryset().order_by('province') if x.has_admission]:
+		for s in [x for x in self.get_queryset().order_by('province')]:
 			# we are iterating all geocode in DB
 			# TODO: some geocode are not correct. We need to clean that data.
 			# for g in filter(lambda x: x.has_key('geometry'), s.google_geocode):
@@ -336,25 +350,48 @@ class MySchoolCustomManager(models.Manager):
 			if bound.contains(Point(s.lat,s.lng)) and s not in filtered_objs: filtered_objs.append(s)
 		return filtered_objs
 
-	def has_province(self):
-		return self.get_queryset().filter(province__isnull=False)
+	def bachelors(self):
+		return self.get_queryset().filter(take_bachelor=True)
 
-	def has_admission(self):
-		return [x for x in self.get_queryset().order_by('province') if x.has_admission]
+	def associates(self):
+		return self.get_queryset().filter(take_associate=True)
 
-	def filte_by_user_profile(self,user):
+	def bachelor_and_associate(self):
+		return self.get_queryset().filter(take_bachelor=True,take_associate=True)
+
+	def pres(self):
+		return self.get_queryset().filter(take_pre=True)
+
+	def filter_by_user_profile(self,user):
+		data = self.get_queryset()
+
 		# get user profile
 		user_profile,created = MyUserProfile.objects.get_or_create(owner = user)
+		if created: return data
+
+		# filter based on user profile
 		province = user_profile.province
 		student_type = user_profile.student_type
 		estimated_score = user_profile.estimated_score
+		degree_type = user_profile.degree_type
 
-		data = self.get_queryset()
+		# filter by user profile location
+		if province: 
+			ids = MyAdmissionBySchool.objects.filter(province=province).values('school')
+			data=data.filter(id__in=ids)
 
-		# filter by user location
-		if province: data=data.filter(province=province)
-		if student_type: data = data.filter(category = student_type)
-		if estimated_score: data = data.filter(min_score__lte = estimated_score)
+		if degree_type == u'本科':
+			data = data.filter(take_bachelor=True)
+		elif degree_type == u'专科': 
+			data = data.filter(take_associate=True)
+
+		# for scores, we set up a band around estimated_score
+		SCORE_BAND=10
+		ids = [d.id for d in data]
+		if estimated_score: 
+			admissions = MyAdmissionBySchool.objects.filter(Q(school__in=ids) & Q(min_score__lte = estimated_score+SCORE_BAND) & Q(min_score__gte=estimated_score-SCORE_BAND))
+			ids = [a.school.id for a in admissions]
+			data = data.filter(id__in=ids)
 		return data
 
 class MySchool (MyBaseModel):
@@ -494,40 +531,42 @@ class MySchool (MyBaseModel):
 			verbose_name = u'硕士点个数'
 		)
 
-	def _has_admission_history(self):
-		'''
-			Look up MyAdmissionBySchool to determine whether this school
-			has admission data on file
-		'''
-		return (MyAdmissionBySchool.objects.filter(school = self.id).count() > 0)
-	has_admission = property(_has_admission_history)
-
-	def _has_bachelor_admission(self):
-		'''
-			Look up MyAdmissionBySchool batch info. If it has "专科", we assume
-			this school offers Associate degree; otherwise, we assume it offers
-			"Bachelor" degree.
-		'''
-		return (MyAdmissionBySchool.objects.filter(school = self.id, batch__in=[u'一批',u'二批',u'三批']).count() > 0)
-	has_bachelor_admission = property(_has_bachelor_admission)
-	
-	def _has_associate_admission(self):
-		return (MyAdmissionBySchool.objects.filter(school = self.id, batch__startswith=u'专科').count() > 0)
-	has_associate_admission = property(_has_associate_admission)	
-
-	def _has_pre_admission(self):
-		return (MyAdmissionBySchool.objects.filter(school = self.id, batch__startswith=u'提前').count() > 0)
-	has_pre_admission = property(_has_pre_admission)
-
-	def _batch_1st(self):
-		return (MyAdmissionBySchool.objects.filter(school = self.id, batch__startswith=u'一批').count() > 0)
-	is_1st_batch = property(_batch_1st)
-	def _batch_2nd(self):
-		return (MyAdmissionBySchool.objects.filter(school = self.id, batch__startswith=u'二批').count() > 0)
-	is_2nd_batch = property(_batch_2nd)
-	def _batch_3rd(self):
-		return (MyAdmissionBySchool.objects.filter(school = self.id, batch__startswith=u'三批').count() > 0)
-	is_3rd_batch = property(_batch_3rd)
+	take_bachelor = models.NullBooleanField(
+			null=True, 
+			blank=True,
+			default=False,
+			verbose_name = u'招收本科生'		
+		)
+	take_associate = models.NullBooleanField(
+			null=True, 
+			blank=True,
+			default=False,
+			verbose_name = u'招收专科生'		
+		)
+	take_pre = models.NullBooleanField(
+			null=True, 
+			blank=True,
+			default=False,
+			verbose_name = u'提前招生'		
+		)
+	take_1st_batch = models.NullBooleanField(
+			null=True, 
+			blank=True,
+			default=False,
+			verbose_name = u'招收本科一批'		
+		)
+	take_2nd_batch = models.NullBooleanField(
+			null=True, 
+			blank=True,
+			default=False,
+			verbose_name = u'招收本科二批'		
+		)
+	take_3rd_batch = models.NullBooleanField(
+			null=True, 
+			blank=True,
+			default=False,
+			verbose_name = u'招收本科三批'		
+		)
 
 class MyUserProfile(models.Model):
 	DEGREE_TYPE_CHOICES = (
