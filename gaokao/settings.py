@@ -47,6 +47,7 @@ INSTALLED_APPS = (
     'django.contrib.sites', 
 
     # custom packages
+    'devserver', # django-devserver
     'compressor', # django_compressor
     'django_filters', # django-filters
     'tagging', # django-tagging
@@ -67,6 +68,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware', # django-debug-toolbar
     'pagination_bootstrap.middleware.PaginationMiddleware', # django-pagination-bootstrap
+    'devserver.middleware.DevServerMiddleware',        
 )
 
 ROOT_URLCONF = 'gaokao.urls'
@@ -147,3 +149,17 @@ COMPRESS_PRECOMPILERS = (
 
 # django-debug-toolbar
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
+
+# django-devserver
+DEVSERVER_MODULES = (
+    'devserver.modules.sql.SQLRealTimeModule',
+    'devserver.modules.sql.SQLSummaryModule',
+    'devserver.modules.profile.ProfileSummaryModule',
+
+    # Modules not enabled by default
+    'devserver.modules.ajax.AjaxDumpModule',
+    'devserver.modules.profile.MemoryUseModule',
+    'devserver.modules.cache.CacheSummaryModule',
+    'devserver.modules.profile.LineProfilerModule',
+)
+DEVSERVER_AUTO_PROFILE = True  # profiles all views without the need of function decorator

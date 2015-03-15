@@ -14,6 +14,7 @@ from django.utils import timezone
 from datetime import datetime
 from annoying.fields import JSONField # django-annoying
 from django.db.models import Q
+from datetime import datetime as dt
 
 class MyBaseModel (models.Model):
 	# basic value fields
@@ -363,6 +364,8 @@ class MySchoolCustomManager(models.Manager):
 		return self.get_queryset().filter(take_pre=True)
 
 	def filter_by_user_profile(self,user):
+		start = dt.now()
+
 		data = self.get_queryset()
 
 		# get user profile
@@ -377,8 +380,7 @@ class MySchoolCustomManager(models.Manager):
 
 		# filter by user profile location
 		if province: 
-			data = MyAddress.objects.get(province=province).accepting_schools
-			#data=data.filter(id__in=ids)
+			data = data.filter(accepting_province=province)
 
 		if degree_type == u'本科':
 			data = data.filter(take_bachelor=True)
@@ -387,11 +389,9 @@ class MySchoolCustomManager(models.Manager):
 
 		# for scores, we set up a band around estimated_score
 		SCORE_BAND=10
-		ids = [d.id for d in data]
 		if estimated_score: 
-			admissions = MyAdmissionBySchool.objects.filter(Q(school__in=ids) & Q(min_score__lte = estimated_score+SCORE_BAND) & Q(min_score__gte=estimated_score-SCORE_BAND))
-			ids = [a.school.id for a in admissions]
-			data = data.filter(id__in=ids)
+			school_ids = MyAdmissionBySchool.objects.filter(Q(school__in=data) & Q(min_score__lte = estimated_score+SCORE_BAND) & Q(min_score__gte=estimated_score-SCORE_BAND)).values_list('school',flat=True)			
+			data = data.filter(id__in=school_ids)
 		return data
 
 class MySchool (MyBaseModel):

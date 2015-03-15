@@ -730,6 +730,8 @@ class CategorizeSchoolHelper:
 		
 		# filter by province
 		schools = MySchool.objects.filter_by_user_profile(self.filters.get('user'))
+
+		
 		#schools=MySchool.objects.all()
 		if province: schools=schools.filter(province = int(province))
 
