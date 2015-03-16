@@ -852,34 +852,47 @@ class IntegrationBaiduTiebaAJAX(TemplateView):
 	def post(self,request):
 		obj_id = request.POST['obj_id']
 		school = MySchool.objects.get(id=int(obj_id))
+		threads = []
+
+		# weibo
+		# App Key：802677147
+		# App Secret：f75be23800d779cc9dbbf6b467b7ff61		
+		# Redirect url: https://api.weibo.com/oauth2/default.html
+		# code: 4ccb7879bf204466b80e02c106d09727
+		weibo_url = 'http://s.weibo.com/weibo/%s?topnav=1&wvr=6&b=1' % school.name.encode('utf-8')
+		req = urllib2.Request(weibo_url, headers={ 'User-Agent': 'Mozilla/5.0' })
+		data = urllib2.urlopen(req).read()	
+		html = lxml.html.document_fromstring(data)
+		print len(html.xpath('//p[contains(@class,"comment_txt")]'))
+
+		for t in html.xpath('//p[contains(@class,"comment_txt")]'):
+			this_thread = {
+				'source':'新浪微博',
+				'author': t.get('nick-name'),
+				'abstract': t.text_content().strip(),
+			}
+			threads.append(this_thread)
 
 		# read baidu
 		baidu_url = 'http://tieba.baidu.com/f?kw=%s&ie=utf-8'%school.name.encode('utf-8')
 		req = urllib2.Request(baidu_url, headers={ 'User-Agent': 'Mozilla/5.0' })
 		data = urllib2.urlopen(req).read()		
-		
-		# parse page source
 		html = lxml.html.document_fromstring(data)
 
-		threads = []
-		for t in html.xpath('//li[contains(@class, "j_thread_list")]'):
+		for t in html.xpath('//li[contains(@class, "j_thread_list")]')[:50]:
 			stats = json.loads(t.get('data-field'))
-			if stats['is_top']: continue  # sticky posts, always on top, so we skip these
+			if stats['is_top'] or not stats['reply_num']: continue  # sticky posts, always on top, so we skip these
 
 			# basic thread infos
 			this_thread = {
+				'source':'百度贴吧',
+				'author': stats['author_name'],
 				'url':'http://tieba.baidu.com/p/%d' % stats['id'],
 				'reply_num': stats['reply_num'],
 				'title': t.xpath('.//a[contains(@class,"j_th_tit")]')[0].text_content().strip(), # post title line
 				'abstract': t.xpath('.//div[contains(@class,"threadlist_abs_onlyline")]')[0].text_content().strip(), # post abstracts
 				'last_timestamp': t.xpath('.//span[contains(@class,"threadlist_reply_date")]')[0].text_content().strip()
 			}
-
-			img_urls = []
-			for img in t.xpath('.//div[contains(@class, "small_list_gallery")]//img[contains(@class,"threadlist_pic")]'):
-				print img.get('src')
-				img_urls.append(img.get('src'))
-			this_thread['imgs'] = img_urls
 
 			# add to list
 			threads.append(this_thread)
