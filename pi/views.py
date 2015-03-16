@@ -49,6 +49,7 @@ from multiprocessing import Process, Queue
 import simplejson as json
 import googlemaps
 from itertools import groupby
+import urllib, lxml.html
 from utility import MyUtility
 from crawler import MyCrawler
 
@@ -786,7 +787,6 @@ class AnalysisSchoolSummaryAJAX(TemplateView):
 class AnalysisSchoolDetailAJAX(TemplateView):
 	detail_template_name = 'pi/analysis/schools_detail.html'
 	def post(self,request):
-		start = dt.now()
 		helper = CategorizeSchoolHelper(request.POST,request.user)
 		categories = helper.categorize_schools()
 
@@ -834,3 +834,40 @@ class AnalysisSchoolByProvince(TemplateView):
 		schools = MySchool.objects.filter_by_user_profile(self.request.user)
 		context['schools'] = schools.filter(province=int(kwargs['pk']))
 		return context
+
+###################################################
+#
+#	3rd party data integration views
+#
+###################################################
+import urllib2
+
+class IntegrationBaiduTiebaAJAX(TemplateView):
+	'''
+		AJAX post view
+	'''
+	template_name = 'pi/3rd/school_baidu_tieba.html'
+
+	def post(self,request):
+		obj_id = request.POST['obj_id']
+		school = MySchool.objects.get(id=int(obj_id))
+
+		# read baidu
+		baidu_url = 'http://tieba.baidu.com/f?kw=%s&ie=utf-8'%school.name.encode('utf-8')
+		req = urllib2.Request(baidu_url, headers={ 'User-Agent': 'Mozilla/5.0' })
+		data = urllib2.urlopen(req).read()		
+		html = lxml.html.document_fromstring(data)
+
+		#html.xpath('//div[@class="majorBase"]/div[@class="course"]/p')[0].text_content().strip()
+		for t in html.xpath('//li[contains(@class, "j_thread_list")]'):
+			print t.get('data-field')
+
+		threads = []
+		content = loader.get_template(self.template_name)
+		html= content.render(Context({
+			'obj':school,
+			'threads': threads
+			}))
+
+		return HttpResponse(json.dumps({'html':html}), 
+			content_type='application/javascript')

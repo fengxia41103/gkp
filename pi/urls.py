@@ -60,4 +60,7 @@ urlpatterns = patterns(
 		url(r'^analysis/school/detail/ajax/$', views.AnalysisSchoolDetailAJAX.as_view(), name='analysis_school_detail_ajax'),		
 		url(r'^analysis/school/province/(?P<pk>\d+)/$', views.AnalysisSchoolByProvince.as_view(), name='analysis_school_by_province'),
 
+		# 3rd party data stream integration, all AJAX!
+		url(r'^baidu/tieba/ajax/$', views.IntegrationBaiduTiebaAJAX.as_view(), name='integration_baidu_tieba_ajax'),
+
 	)

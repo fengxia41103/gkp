@@ -132,6 +132,12 @@
 				暂无信息
 			{% endif %}					
 		</section>
+
+		{# school admission score tables #}
+		<section id="school-stream">
+			<h2 class="my-h2-border">实时信息</h2>
+			<div id="school-tieba"></div>
+		</section>		
 {% endblock %}
 
 {% block detail-sidebar %}
@@ -204,4 +210,21 @@
 			</ul>
 		{% endfor %}
 	</ul>
+{% endblock %}
+
+{% block custom_js %}
+<script type="text/javascript">
+	j$(document).ready(function(){
+        // ajax to server to get a list of columns:4"markers that are within the viewport
+        j$.post("{% url 'integration_baidu_tieba_ajax' %}", // passed in from view
+            { 
+                'obj_id':{{ object.id }},
+            }, 
+            function(resp) { // success callback
+            	console.log(resp);
+                j$('#school-tieba').html(resp['html']);             
+            },'json'
+        );       	
+	})
+</script>
 {% endblock %}
