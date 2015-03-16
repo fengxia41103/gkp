@@ -426,6 +426,14 @@ def populateSchoolAttribute():
 		s.save()
 		print 'Updating', s.name
 
+def fixBatch():
+	ids = MyAdmissionByMajor.objects.filter(batch__in=[u'专科第1批',u'专科第2批']).values_list('id',flat=True)
+	for idx,id in enumerate(list(set(ids))):
+		s = MyAdmissionByMajor.objects.get(id=id)
+		if s.batch == u'专科第1批': s.batch = u'专科1批'
+		elif s.batch == u'专科第2批': s.batch = u'专科2批'
+		print 'Updating', idx,'/',len(ids),':',s.school.name
+		s.save()
 
 import googlemaps
 def main():
@@ -443,7 +451,8 @@ def main():
 	#cleanupSchoolDescription()
 	#populateMajorSchoolRelationship()
 	#cleanupMajor()
-	populateSchoolAttribute()
+	#populateSchoolAttribute()
+	fixBatch()
 
 if __name__ == '__main__':
 	main()

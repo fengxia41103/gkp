@@ -574,8 +574,8 @@ class MySchoolDetail(DetailView):
 		schools = MySchool.objects.filter_by_user_profile(self.request.user)
 		context['related_schools']=schools		
 
+		# admission history
 		school_admission = MyAdmissionBySchool.objects.filter_by_user_profile_and_school(self.request.user, self.get_object().id)
-
 		school_admission_by_year = {}
 		for year,admission_by_year_list in groupby(school_admission,lambda x:x.year):
 			school_admission_by_year[year]=sorted(list(admission_by_year_list),lambda x,y:cmp(x.category,y.category))
