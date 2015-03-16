@@ -216,6 +216,8 @@ class MyAdmissionBySchoolListFilter (FilterSet):
 		fields = {'school__name':['contains'],
 				'province':['exact'],
 				'category':['contains'],
+				'year':['exact'],
+				'batch':['contains'],				
 				}
 
 @class_view_decorator(login_required)
@@ -290,6 +292,7 @@ class MyAdmissionByMajorListFilter (FilterSet):
 				'category':['contains'],
 				'year':['exact'],
 				'major__name':['contains'],
+				'batch':['contains'],								
 				}
 
 @class_view_decorator(login_required)
@@ -607,7 +610,9 @@ class MySchoolEchartMapFilter(TemplateView):
 
 		# echart data, group by province
 		result = {}
-		for s in MySchool.objects.filter_by_user_profile(self.request.user):
+		schools = MySchool.objects.filter_by_user_profile(self.request.user)
+		context['total_count']=len(schools)
+		for s in schools:
 			result.setdefault(s.province, []).append(s.id)
 
 		echart_data = [(key.id, key,len(value)) for key,value in result.iteritems()]
@@ -791,14 +796,17 @@ class AnalysisSchoolDetailAJAX(TemplateView):
 		for cat in helper.filters['cats']:
 			objs = categories[cat.strip()]
 			tmp = MyAdmissionBySchool.objects.filter(school__in=objs).values_list('max_score',flat=True)
-			max_score = max(tmp)
+			try: 
+				max_score = max(tmp)
+				max_score = MyAdmissionBySchool.objects.filter(school__in=objs).filter(max_score = max_score)[0]
+			except: max_score=None
 
 			tmp = MyAdmissionBySchool.objects.filter(school__in=objs).values_list('min_score',flat=True)
-			min_score = min(tmp)
-			
-			max_score = MyAdmissionBySchool.objects.filter(school__in=objs).filter(max_score = max_score)[0]
-			min_score = MyAdmissionBySchool.objects.filter(school__in=objs).filter(min_score = min_score)[0]
-			
+			try: 
+				min_score = min(tmp)
+				min_score = MyAdmissionBySchool.objects.filter(school__in=objs).filter(min_score = min_score)[0]
+			except: min_score = None
+						
 			my_context=Context({
 				'subject':cat.strip(),
 				'objs':objs,

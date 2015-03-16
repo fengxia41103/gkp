@@ -13,8 +13,8 @@
         function echart_map(){
             var options = {
                 title : {
-                    text: 'School Count',
-                    subtext: '纯属虚构',
+                    text: '共查到符合你条件的学校{{ total_count }}个',
+                    subtext: '使用的分数线标准为你的估分的+/-50分',
                     x:'center'
                 },
                 tooltip : {
@@ -23,7 +23,7 @@
                 legend: {
                     orient: 'vertical',
                     x:'left',
-                    data:['University',]
+                    data:['高校',]
                 },
                 dataRange: {
                     min: {{ echart_data_min }},
@@ -31,7 +31,7 @@
                     //text:['高','低'],    // 文本，默认为数值文本
                     orient: 'vertical', // 'vertical'
                     formatter : function(v,v2){
-                        var step = 25;
+                        var step = Math.ceil({{ echart_data_max }}/5);
                         var v_1 = step * Math.ceil(v/step);
                         var v_2 = step * Math.ceil(v2/step);
                         return v_1+' - '+v_2

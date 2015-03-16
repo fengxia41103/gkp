@@ -232,7 +232,7 @@ class MyAdmissionBySchoolCustomManager(models.Manager):
 		if student_type == u'专科': data=data.filter(school__take_associate=true)
 
 		# for scores, we set up a band around estimated_score
-		SCORE_BAND=10
+		SCORE_BAND=25
 		if estimated_score: 
 			data = data.filter(Q(min_score__lte = estimated_score+SCORE_BAND) & Q(min_score__gte=estimated_score-SCORE_BAND))
 		return data
@@ -382,7 +382,7 @@ class MySchoolCustomManager(models.Manager):
 		elif degree_type == u'专科': data = data.filter(take_associate=True)
 
 		# for scores, we set up a band around estimated_score
-		SCORE_BAND=10
+		SCORE_BAND=25
 		school_ids = []
 		if estimated_score and province and student_type:
 			school_ids = MyAdmissionBySchool.objects.filter(
