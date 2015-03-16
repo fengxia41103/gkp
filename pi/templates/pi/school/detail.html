@@ -219,9 +219,9 @@
 
 {% block custom_js %}
 <script type="text/javascript">
-	function get_bd_tb(obj){
+	function get_bd_tb(){
 		// loading spinner
-		var l = Ladda.create(obj);
+		var l = Ladda.create(j$('#school-stream-bd')[0]);
 	 	l.start();
 	 			
         // ajax to server to get a list of columns:4"markers that are within the viewport
@@ -230,8 +230,8 @@
                 'obj_id':{{ object.id }},
             }, 
             function(resp) { // success callback
-            	console.log(resp);
                 j$('#school-tieba').html(resp['html']);             
+                setTimeout(get_bd_tb, 10000);
             },'json'
         ).always(function(){
     		// remove spinner
@@ -240,7 +240,7 @@
 	}
 
 	j$(document).ready(function(){
-		get_bd_tb(j$('#school-stream-bd')[0]);
+		get_bd_tb();
 	});
 </script>
 {% endblock %}
