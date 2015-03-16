@@ -48,6 +48,7 @@ INSTALLED_APPS = (
 
     # custom packages
     'devserver', # django-devserver
+    'selenium',
     'compressor', # django_compressor
     'django_filters', # django-filters
     'tagging', # django-tagging

@@ -841,7 +841,8 @@ class AnalysisSchoolByProvince(TemplateView):
 #
 ###################################################
 import urllib2
-
+from pyvirtualdisplay import Display
+from selenium import webdriver
 class IntegrationBaiduTiebaAJAX(TemplateView):
 	'''
 		AJAX post view
@@ -856,13 +857,33 @@ class IntegrationBaiduTiebaAJAX(TemplateView):
 		baidu_url = 'http://tieba.baidu.com/f?kw=%s&ie=utf-8'%school.name.encode('utf-8')
 		req = urllib2.Request(baidu_url, headers={ 'User-Agent': 'Mozilla/5.0' })
 		data = urllib2.urlopen(req).read()		
+		
+		# parse page source
 		html = lxml.html.document_fromstring(data)
 
-		#html.xpath('//div[@class="majorBase"]/div[@class="course"]/p')[0].text_content().strip()
-		for t in html.xpath('//li[contains(@class, "j_thread_list")]'):
-			print t.get('data-field')
-
 		threads = []
+		for t in html.xpath('//li[contains(@class, "j_thread_list")]'):
+			stats = json.loads(t.get('data-field'))
+			if stats['is_top']: continue  # sticky posts, always on top, so we skip these
+
+			# basic thread infos
+			this_thread = {
+				'url':'http://tieba.baidu.com/p/%d' % stats['id'],
+				'reply_num': stats['reply_num'],
+				'title': t.xpath('.//a[contains(@class,"j_th_tit")]')[0].text_content().strip(), # post title line
+				'abstract': t.xpath('.//div[contains(@class,"threadlist_abs_onlyline")]')[0].text_content().strip(), # post abstracts
+				'last_timestamp': t.xpath('.//span[contains(@class,"threadlist_reply_date")]')[0].text_content().strip()
+			}
+
+			img_urls = []
+			for img in t.xpath('.//div[contains(@class, "small_list_gallery")]//img[contains(@class,"threadlist_pic")]'):
+				print img.get('src')
+				img_urls.append(img.get('src'))
+			this_thread['imgs'] = img_urls
+
+			# add to list
+			threads.append(this_thread)
+
 		content = loader.get_template(self.template_name)
 		html= content.render(Context({
 			'obj':school,
