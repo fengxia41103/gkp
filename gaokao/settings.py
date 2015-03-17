@@ -48,7 +48,6 @@ INSTALLED_APPS = (
 
     # custom packages
     'devserver', # django-devserver
-    'selenium',
     'compressor', # django_compressor
     'django_filters', # django-filters
     'tagging', # django-tagging
@@ -120,9 +119,10 @@ STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
     'compressor.finders.CompressorFinder',
 )
-
-MEDIA_ROOT = '/home/fengxia/Desktop/tt'
 STATIC_ROOT='/var/www/static'
+
+MEDIA_ROOT = '/var/www/media'
+MEDIA_URL='http://localhost/media/'
 
 # crispy forms
 CRISPY_TEMPLATE_PACK = 'bootstrap3'

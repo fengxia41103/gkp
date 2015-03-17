@@ -15,8 +15,9 @@ import django
 sys.path.append(os.path.join(os.path.dirname(__file__), 'gaokao'))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gaokao.settings")
 from django.conf import settings
-
 from django.utils import timezone
+from django.core.files import File
+
 # import models
 from pi.models import *
 from pi.crawler import MyBaiduCrawler
@@ -25,6 +26,7 @@ class TorUtility():
 	def __init__(self):
 		user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7'
 		self.headers={'User-Agent':user_agent}
+		self.ip_url = 'http://icanhazip.com/'
 
 	def renewTorIdentity(self,passAuth):
 	    try:
@@ -53,18 +55,32 @@ class TorUtility():
 	  		controller.authenticate('natalie')
 	  		controller.signal(Signal.NEWNYM)
 
-	def request(self, url):
-	    def _set_urlproxy():
-	        proxy_support = urllib2.ProxyHandler({"http" : "127.0.0.1:8118"})
-	        opener = urllib2.build_opener(proxy_support)
-	        urllib2.install_opener(opener)
-	    _set_urlproxy()
-	    request=urllib2.Request(url, None, self.headers)
-	    return urllib2.urlopen(request).read()
+		print '*'*50
+		print '\t'*6+'Renew TOR IP: ', self.request(self.ip_url)	
+		print '*'*50	  		
+	
+	def _set_urlproxy(self):
+	    proxy_support = urllib2.ProxyHandler({"http" : "127.0.0.1:8118"})
+	    opener = urllib2.build_opener(proxy_support)
+	    urllib2.install_opener(opener)
+
+	def request(self, url, retry=3):
+		go = 0
+		while go < retry:
+			try:
+				self._set_urlproxy()
+				request=urllib2.Request(url, None, self.headers)
+				return urllib2.urlopen(request).read()
+			except:
+				go += 1
+				self.renew_connection()
+
+	def current_ip(self):
+		return self.request(self.ip_url)
 
 class MyBaiduCrawler():
-	def __init__(self):
-		self.tor_util = TorUtility()
+	def __init__(self,tor):
+		self.tor_util = tor
 
 	def tieba(self,keyword):
 		baidu_url = 'http://tieba.baidu.com/f?kw=%s&ie=utf-8'%urllib.quote(keyword.encode('utf-8'))		
@@ -90,8 +106,8 @@ class MyBaiduCrawler():
 
 			imgs = []
 			for i in t.xpath('.//img[contains(@class,"threadlist_pic")]'):
-				imgs.append(i.get('original'))
-				#imgs.append(i.get('bpic')) # this is full size pic, has to save locally first. Link to Baidu won't work.
+				#imgs.append(i.get('original')) # this is thumbnail
+				imgs.append(i.get('bpic')) # this is full size pic, has to save locally first. Link to Baidu won't work.
 			this_thread['imgs']=imgs
 
 			# add to list
@@ -100,16 +116,21 @@ class MyBaiduCrawler():
 		return threads
 
 def baidu_crawler():
-	print 'Queue size', MyCrawlerRequest.objects.count()
+	tor = TorUtility()
+	baidu_crawler = MyBaiduCrawler(tor)
+	print '\t'*6+'Renew TOR IP: ', tor.current_ip()	
+	#baidu_crawler.tor_util.renew_connection()
 
+	print 'Queue size', MyCrawlerRequest.objects.count()
 	reqs = MyCrawlerRequest.objects.all().order_by('-created').values('source','params')[:10]
 	targets = list(set([(t['source'],t['params']) for t in reqs]))
+	print 'Downsized to', len(targets)
 
 	for req in targets:
 		if req[0] == 1: # baidu tieba
 			params = json.loads(req[1])
 			school = MySchool.objects.get(name=params['keyword'])
-			results = MyBaiduCrawler().tieba(params['keyword'])
+			results = baidu_crawler.tieba(params['keyword'])
 			for t in results:
 				# make django's timezone-aware timestamp
 				if ':' in t['last_timestamp']:
@@ -131,6 +152,18 @@ def baidu_crawler():
 				if post_timestamp: 
 					data.last_updated=post_timestamp
 					data.save()
+
+				# look up its attachments, if any
+				for img_url in t['imgs']:
+					if len(Attachment.objects.filter(source_url=img_url)): continue # exist
+
+					print 'retrieving images', img_url
+					img_data = urllib.urlretrieve(img_url)
+					attchment = Attachment(
+						source_url = img_url,
+						content_object=data,
+						file=File(open(img_data[0]))
+					).save()
 
 			# clear queue for all other requests since data have been updated
 			for m in MyCrawlerRequest.objects.filter(source=req[0],params=req[1]):

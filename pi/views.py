@@ -849,9 +849,11 @@ class IntegrationBaiduTiebaAJAX(TemplateView):
 	template_name = 'pi/3rd/school_baidu_tieba.html'
 
 	def post(self,request):
+		print 'Processing....'
+
 		obj_id = request.POST['obj_id']
 		school = MySchool.objects.get(id=int(obj_id))
-		threads = []
+		feeds = []
 
 		# weibo
 		# App Key：802677147
@@ -863,14 +865,11 @@ class IntegrationBaiduTiebaAJAX(TemplateView):
 		params = {'keyword':school.name}
 		MyCrawlerRequest(source=1,params=json.dumps(params)).save()
 
-		threads = MyBaiduStream.objects.filter(school=school).order_by('-last_updated')
-		if threads: threads[:50]
-		else: threads = []
-
+		feeds = MyBaiduStream.objects.filter(school=school).order_by('-last_updated')
 		content = loader.get_template(self.template_name)
 		html= content.render(Context({
 			'obj':school,
-			'threads': threads
+			'feeds': feeds
 			}))
 
 		return HttpResponse(json.dumps({'html':html}), 

@@ -5,6 +5,8 @@ from django.views.generic.edit import CreateView
 from django.contrib.auth.forms import UserCreationForm
 import django.contrib.auth.views as AuthViews
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = patterns(
 		'',
@@ -61,6 +63,6 @@ urlpatterns = patterns(
 		url(r'^analysis/school/province/(?P<pk>\d+)/$', views.AnalysisSchoolByProvince.as_view(), name='analysis_school_by_province'),
 
 		# 3rd party data stream integration, all AJAX!
-		url(r'^baidu/tieba/ajax/$', views.IntegrationBaiduTiebaAJAX.as_view(), name='integration_baidu_tieba_ajax'),
+		url(r'^baidu/tieba/ajax/$', ensure_csrf_cookie(views.IntegrationBaiduTiebaAJAX.as_view()), name='integration_baidu_tieba_ajax'),
 
-	)
+	)+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

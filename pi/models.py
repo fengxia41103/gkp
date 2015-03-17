@@ -68,6 +68,8 @@ class Attachment (models.Model):
 	# instance fields
 	created_by = models.ForeignKey (
 			User,
+			blank = True,
+			null = True,
 			default = None,
 			verbose_name = u'创建用户',
 			help_text = ''
@@ -84,9 +86,10 @@ class Attachment (models.Model):
 			default = 'default description',
 			verbose_name = u'附件描述'
 		)
-	
+	source_url = models.URLField()
+
 	file = models.FileField (
-			upload_to = 'files/%Y/%m/%d',
+			upload_to = '%Y/%m/%d',
 			verbose_name = u'附件',
 			help_text = u'附件'
 		)	

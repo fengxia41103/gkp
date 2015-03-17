@@ -1,6 +1,6 @@
-{% if threads %}
+{% if feeds %}
 	<ul class="list-unstyled">
-	{% for t in threads %}
+	{% for t in feeds %}
 		<li style="border-bottom:1px dotted #333;padding:10px 0;">
 
 			<h6>
@@ -22,28 +22,26 @@
 			</div>
 			<div class="row">
 				<div class="col-md-9">
-					{{ t.description|truncatechars:100 }}
+					{{ t.description }}
 					{# images #}
-					{% if t.attachments|length %}
+					{% if t.attachments.all|length %}
 					<div class="">
 						<a href="" class="" data-toggle="dropdown">
 							<ul class="list-inline">
-							{% for img in t.imgs %}
-								<li><img src="{{img}}" class="img-responsive" width="40px"></li>
+							{% for img in t.attachments.all %}
+								<li><img src="{{img.file.url}}" class="img-responsive img-thumbnail" width="40px"></li>
 							{% endfor %}
 								<li><i class="fa fa-caret-down"></i></li>
 							</ul>
 						</a>
-						<div class="dropdown-menu" style="min-width:250px; padding:0 20px 20px 20px;">
-							<ul class="list-inline">
-							{% for img in t.imgs %}
-								<li>
-									<a href="{{ img }}" data-toggle="lightbox" data-parent>
-										<img src="{{img}}" class="img-responsive">
+						<div class="dropdown-menu" style="padding:20px;">
+							<div class="my-multicol-3">
+							{% for img in t.attachments.all %}
+									<a href="{{ img.file.url }}" data-toggle="lightbox" data-gallery="multiimages" data-parent>
+										<img src="{{img.file.url}}" class="img-responsive img-thumbnail">
 									</a>
-								</li>
 							{% endfor %}
-							</ul>	
+							</div>	
 						</div>
 					</div>
 					{% endif %}								
