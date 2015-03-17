@@ -228,8 +228,9 @@ class MyAdmissionBySchoolCustomManager(models.Manager):
 
 		# filter by user profile location
 		if province: data = data.filter(province=province)
-		if student_type == u'本科': data=data.filter(school__take_bachelor=true)
-		if student_type == u'专科': data=data.filter(school__take_associate=true)
+		if student_type: data = data.filter(category = student_type)
+		if degree_type == u'本科': data=data.filter(school__take_bachelor=True)
+		if degree_type == u'专科': data=data.filter(school__take_associate=True)
 
 		# for scores, we set up a band around estimated_score
 		SCORE_BAND=25
