@@ -859,27 +859,22 @@ class IntegrationBaiduTiebaAJAX(TemplateView):
 		# App Secret：f75be23800d779cc9dbbf6b467b7ff61		
 		# Redirect url: https://api.weibo.com/oauth2/default.html
 		# code: 4ccb7879bf204466b80e02c106d09727
-		weibo_url = 'http://s.weibo.com/weibo/%s?topnav=1&wvr=6&b=1' % school.name.encode('utf-8')
-		req = urllib2.Request(weibo_url, headers={ 'User-Agent': 'Mozilla/5.0' })
-		data = urllib2.urlopen(req).read()	
-		html = lxml.html.document_fromstring(data)
-		print len(html.xpath('//p[contains(@class,"comment_txt")]'))
-
-		for t in html.xpath('//p[contains(@class,"comment_txt")]'):
-			this_thread = {
-				'source':'新浪微博',
-				'author': t.get('nick-name'),
-				'abstract': t.text_content().strip(),
-			}
-			threads.append(this_thread)
 
 		# read baidu
-		baidu_url = 'http://tieba.baidu.com/f?kw=%s&ie=utf-8'%school.name.encode('utf-8')
-		req = urllib2.Request(baidu_url, headers={ 'User-Agent': 'Mozilla/5.0' })
-		data = urllib2.urlopen(req).read()		
-		html = lxml.html.document_fromstring(data)
+		#baidu_url = 'http://tieba.baidu.com/f?kw=%s&ie=utf-8'%school.name.encode('utf-8')
+		baidu_url = 'http://tieba.baidu.com/f?kw=%s&ie=utf-8'%urllib.quote(school.name.encode('utf-8'))
 
-		for t in html.xpath('//li[contains(@class, "j_thread_list")]')[:50]:
+		req = urllib2.Request(baidu_url, headers={ 'User-Agent': 'Mozilla/5.0' })
+		data = urllib2.urlopen(req).read()
+		#open(os.path.join(settings.MEDIA_ROOT,'tmp.log'),'w').write(data)
+
+		#browser = webdriver.PhantomJS()
+		#browser.get(baidu_url)
+		#data=browser.page_source
+		html = lxml.html.document_fromstring(data)
+		#browser.quit()
+
+		for t in html.xpath('//li[contains(@class, "j_thread_list")]'):
 			stats = json.loads(t.get('data-field'))
 			if stats['is_top'] or not stats['reply_num']: continue  # sticky posts, always on top, so we skip these
 
@@ -894,8 +889,14 @@ class IntegrationBaiduTiebaAJAX(TemplateView):
 				'last_timestamp': t.xpath('.//span[contains(@class,"threadlist_reply_date")]')[0].text_content().strip()
 			}
 
+			imgs = []
+			for i in t.xpath('.//img[contains(@class,"threadlist_pic")]'):
+				imgs.append(i.get('original'))
+			this_thread['imgs']=imgs
+
 			# add to list
 			threads.append(this_thread)
+
 
 		content = loader.get_template(self.template_name)
 		html= content.render(Context({

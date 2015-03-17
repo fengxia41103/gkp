@@ -12,29 +12,28 @@
 {% block detail-navbar %}
 <ul class="nav navbar-nav">
     <li class="">
-        <a href="#school-intro">学校简介</a>
+        <a href="#school-intro">学校简介
+		<span class="pull-right"><i class="fa fa-angle-right"></i></span>
+		</a>
     </li>
 
     <li class="">
-    	<a href="#school-major">学校专业</a>
+    	<a href="#school-major">学校专业
+		<span class="pull-right"><i class="fa fa-angle-right"></i></span>    	
+    	</a>
     </li>
 
     <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-		录取分数线
-  		
-            <b class="caret"></b>
-        </a>
-        <ul class="dropdown-menu">
-			{% for year in school_admission_by_year %}
-            <li>
-                <a href="#school-admission-{{ year }}">{{year}}年</a>
-            </li>
-			{% endfor %}
-        </ul>
+		<a href="#school-admission">
+			录取分数线
+			<span class="pull-right"><i class="fa fa-angle-right"></i></span>
+		</a>
     </li>
     <li class="">
-    	<a href="#school-stream">同学们正在聊天</a>
+    	<a href="#school-stream">
+    	聊天啦!
+			<span class="pull-right"><i class="fa fa-angle-right"></i></span>
+    	</a>
     </li>    
 </ul>
 {% endblock %}
@@ -244,6 +243,11 @@
 
 	j$(document).ready(function(){
 		setTimeout(get_bd_tb, 3000);
+
+		j$(document).delegate('*[data-toggle="lightbox"]', 'click', function(event) {
+		    event.preventDefault();
+		    j$(this).ekkoLightbox();
+		}); 
 	});
 </script>
 {% endblock %}

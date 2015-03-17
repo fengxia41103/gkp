@@ -1,0 +1,41 @@
+
+<ul class="list-unstyled">
+{% for t in threads %}
+	<li style="border-bottom:1px dotted #333;padding:10px 0;">
+
+		<h6>
+			<i class="fa fa-user"></i>
+			<b>{{t.author}}</b>
+			<span class="text-right pull-right">	
+			Posted on {{ t.last_timestamp }}		
+			</span>		
+		</h6>
+		<div>
+			<a href="{{ t.url }}">
+				{{ t.title }}
+			</a>
+
+			<span class="text-right pull-right">			
+			<i class="fa fa-comment"></i>
+			{{ t.reply_num }}
+			</span>			
+		</div>
+		<div class="row">
+			<div class="col-md-9">
+				{{ t.abstract|truncatechars:100 }}
+				<ul class="list-inline">
+				{% for img in t.imgs %}
+					<li>
+						<a href="{{ img }}" data-toggle="lightbox" data-parent>
+							<img src="{{img}}" class="img-responsive" width="50px" height="50px">
+						</a>
+					</li>
+				{% endfor %}
+				</ul>				
+			</div>
+			<div class="col-md-3">
+			</div>
+		</div>
+	</li>
+{% endfor %}
+</ul>
