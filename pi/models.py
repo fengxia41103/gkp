@@ -632,4 +632,56 @@ class MyUserProfile(models.Model):
 			blank = True,
 			verbose_name = u'学位类别',
 			choices = DEGREE_TYPE_CHOICES		
+		)
+
+class MyCrawlerRequest(models.Model):
+	'''
+		Internal used ONLY! 
+		Should be replaced by a queue system on the background later.
+	'''
+	DATA_SOURCE_CHOICES	=(
+		(1, u'百度贴吧'),
+		(2, u'新浪微博'),
+		)
+	created = models.DateTimeField(
+		auto_now_add=True,
+		verbose_name=u'Using crawler machine timestamp'
 		)	
+	source = models.IntegerField(
+			verbose_name = u'数据源',
+			choices = DATA_SOURCE_CHOICES
+		)
+	params = JSONField (
+			verbose_name = u'数据参数'
+		)
+
+class MyBaiduStream(MyBaseModel):
+	school = models.ForeignKey(
+		MySchool,
+		verbose_name=u'所属学校'
+		)
+	created = models.DateTimeField(
+		auto_now_add=True,
+		verbose_name=u'Using crawler machine timestamp'
+		)
+	author = models.CharField(
+		max_length=64,
+		verbose_name = u'作者'
+		)
+	reply_num = models.IntegerField(
+		verbose_name = u'回复数'
+		)
+	url_original = models.URLField(
+		default = '',
+		verbose_name = u'Data source original link'
+		)
+	posted = models.DateTimeField(
+		verbose_name = u'Posted timestamp read from the source site'
+		)
+
+	def _age(self):
+		'''
+			Calculate object age based on NOW and its creation timestamp
+		'''
+		return (dt.now()-self.created).total_seconds()
+	age = property(_age)

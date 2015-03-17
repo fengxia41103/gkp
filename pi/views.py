@@ -51,7 +51,6 @@ import googlemaps
 from itertools import groupby
 import urllib, lxml.html
 from utility import MyUtility
-from crawler import MyBaiduCrawler
 
 from pi.models import *
 
@@ -861,8 +860,12 @@ class IntegrationBaiduTiebaAJAX(TemplateView):
 		# code: 4ccb7879bf204466b80e02c106d09727
 
 		# read baidu
-		threads = MyBaiduCrawler().tieba(schoo.name)
+		params = {'keyword':school.name}
+		MyCrawlerRequest(source=1,params=json.dumps(params)).save()
 
+		threads = MyBaiduStream.objects.filter(school=school).order_by('-posted')
+		if threads: threads[:50]
+		else: threads = []
 
 		content = loader.get_template(self.template_name)
 		html= content.render(Context({

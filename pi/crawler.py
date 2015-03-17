@@ -63,11 +63,9 @@ class MyBaiduCrawler():
 		self.tor_util = TorUtility()
 
 	def tieba(self,keyword):
-		start = dt.now()
 		baidu_url = 'http://tieba.baidu.com/f?kw=%s&ie=utf-8'%urllib.quote(keyword.encode('utf-8'))		
 		content = self.tor_util.request(baidu_url)
 		html = lxml.html.document_fromstring(content)
-		print (dt.now()-start).total_seconds()
 
 		threads = []
 		for t in html.xpath('//li[contains(@class, "j_thread_list")]'):
@@ -93,7 +91,6 @@ class MyBaiduCrawler():
 
 			# add to list
 			threads.append(this_thread)
-		print (dt.now()-start).total_seconds()
 
 		return threads
 
