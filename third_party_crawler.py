@@ -7,8 +7,11 @@ import simplejson as json
 import pytz
 import socks
 import socket
+import logging
 from stem import Signal
 from stem.control import Controller
+from random import randint
+import time
 
 # setup Django
 import django
@@ -27,6 +30,7 @@ class TorUtility():
 		user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7'
 		self.headers={'User-Agent':user_agent}
 		self.ip_url = 'http://icanhazip.com/'
+		self.logger = logging.getLogger('gkp')
 
 	def renewTorIdentity(self,passAuth):
 	    try:
@@ -40,24 +44,24 @@ class TorUtility():
 	            resp = s.recv(1024)
 
 	            if resp.startswith('250'):
-	                print "Identity renewed"
+	                self.logger.info("Identity renewed")
 	            else:
-	                print "response 2:", resp
+	                self.logger.info("response 2:%s"%resp)
 
 	        else:
-	            print "response 1:", resp
+	            self.logger.info("response 1:%s"%resp)
 
 	    except Exception as e:
-	        print "Can't renew identity: ", e
+	        self.logger.error("Can't renew identity: %s"%e)
 
 	def renew_connection(self):
 		with Controller.from_port(port = 9051) as controller:
 	  		controller.authenticate('natalie')
 	  		controller.signal(Signal.NEWNYM)
 
-		print '*'*50
-		print '\t'*6+'Renew TOR IP: ', self.request(self.ip_url)	
-		print '*'*50	  		
+		self.logge.info('*'*50)
+		self.logger.info('\t'*6+'Renew TOR IP: %s'%self.request(self.ip_url))
+		self.logger.info('*'*50)
 	
 	def _set_urlproxy(self):
 	    proxy_support = urllib2.ProxyHandler({"http" : "127.0.0.1:8118"})
@@ -72,6 +76,7 @@ class TorUtility():
 				request=urllib2.Request(url, None, self.headers)
 				return urllib2.urlopen(request).read()
 			except:
+				self.logger.error('Retrying #%d' % go)
 				go += 1
 				self.renew_connection()
 
@@ -81,6 +86,7 @@ class TorUtility():
 class MyBaiduCrawler():
 	def __init__(self,tor):
 		self.tor_util = tor
+		self.logger = logging.getLogger('gkp')
 
 	def tieba(self,keyword):
 		baidu_url = 'http://tieba.baidu.com/f?kw=%s&ie=utf-8'%urllib.quote(keyword.encode('utf-8'))		
@@ -115,63 +121,103 @@ class MyBaiduCrawler():
 
 		return threads
 
-def baidu_crawler():
-	tor = TorUtility()
-	baidu_crawler = MyBaiduCrawler(tor)
-	print '\t'*6+'Renew TOR IP: ', tor.current_ip()	
-	#baidu_crawler.tor_util.renew_connection()
+	def consumer(self, params):
+		self.logger.info(params)
 
-	print 'Queue size', MyCrawlerRequest.objects.count()
-	reqs = MyCrawlerRequest.objects.all().order_by('-created').values('source','params')[:10]
-	targets = list(set([(t['source'],t['params']) for t in reqs]))
-	print 'Downsized to', len(targets)
+		school = MySchool.objects.get(name=params['keyword'])
+		results = self.tieba(params['keyword'])
+		self.logger.info(len(results))
 
-	for req in targets:
-		if req[0] == 1: # baidu tieba
-			params = json.loads(req[1])
-			school = MySchool.objects.get(name=params['keyword'])
-			results = baidu_crawler.tieba(params['keyword'])
-			for t in results:
-				# make django's timezone-aware timestamp
-				if ':' in t['last_timestamp']:
-					tmp = t['last_timestamp'].split(':')
-					now = timezone.now()
-					post_timestamp = dt(now.year,now.month,now.day,int(tmp[0]),int(tmp[1]))
-					post_timestamp = pytz.timezone(timezone.get_default_timezone_name()).localize(post_timestamp)
-				else: post_timestamp = None
+		for t in results:
+			# make django's timezone-aware timestamp
+			if ':' in t['last_timestamp']:
+				tmp = t['last_timestamp'].split(':')
+				now = timezone.now()
+				post_timestamp = dt(now.year,now.month,now.day,int(tmp[0]),int(tmp[1]))
+				post_timestamp = pytz.timezone(timezone.get_default_timezone_name()).localize(post_timestamp)
+			else: post_timestamp = None
 
-				# create records in DB
-				data,created = MyBaiduStream.objects.get_or_create(
-					school = school,
-					author = t['author'],
-					url_original = t['url'],
-					reply_num = t['reply_num'],
-					name = t['title'][:64],
-					description = t['abstract'],
-				)
-				if post_timestamp: 
-					data.last_updated=post_timestamp
-					data.save()
+			# create records in DB
+			data,created = MyBaiduStream.objects.get_or_create(
+				school = school,
+				author = t['author'],
+				url_original = t['url'],
+				reply_num = t['reply_num'],
+				name = t['title'][:64],
+				description = t['abstract'],
+			)
+			if post_timestamp: 
+				data.last_updated=post_timestamp
+				data.save()
 
-				# look up its attachments, if any
-				for img_url in t['imgs']:
-					if len(Attachment.objects.filter(source_url=img_url)): continue # exist
+			# look up its attachments, if any
+			for img_url in t['imgs']:
+				if len(Attachment.objects.filter(source_url=img_url)): continue # exist
 
-					print 'retrieving images', img_url
-					img_data = urllib.urlretrieve(img_url)
-					attchment = Attachment(
-						source_url = img_url,
-						content_object=data,
-						file=File(open(img_data[0]))
-					).save()
+				self.logger.info('retrieving images [%s]' % img_url)
+				img_data = urllib.urlretrieve(img_url)
+				attchment = Attachment(
+					source_url = img_url,
+					content_object=data,
+					file=File(open(img_data[0]))
+				).save()
 
-			# clear queue for all other requests since data have been updated
-			for m in MyCrawlerRequest.objects.filter(source=req[0],params=req[1]):
-				m.delete()
+from threading import Thread
+class MyRequestConsumer(Thread):
+	def __init__(self):
+		Thread.__init__(self)
+		self.logger = logging.getLogger('gkp')
+		self.tor = TorUtility()
 
+	def run(self):
+		for i in range(5):
+			self.logger.info('\t'*6+'Renew TOR IP: %s'%self.tor.current_ip())
+
+			self.logger.info('Queue size %d'%MyCrawlerRequest.objects.count())
+
+			reqs = MyCrawlerRequest.objects.all().order_by('-created').values('source','params')[:10]
+			targets = list(set([(t['source'],t['params']) for t in reqs]))
+			
+			self.logger.info('Downsized to %d'%len(targets))
+
+			for req in targets:
+				if req[0] == 1: # baidu tieba
+					MyBaiduCrawler(self.tor).consumer(json.loads(req[1]))
+
+				# clear queue for all other requests since data have been updated
+				for m in MyCrawlerRequest.objects.filter(source=req[0],params=req[1]):
+					m.delete()
+
+			# Sleep for random time between 1 ~ 3 second
+			secondsToSleep = randint(1, 5)
+			print('%s sleeping fo %d seconds...' % (self.getName(), secondsToSleep))
+			time.sleep(secondsToSleep)
+ 
 def main():
 	django.setup()
-	baidu_crawler()
+
+	# create logger with 'spam_application'
+	logger = logging.getLogger('gkp')
+	logger.setLevel(logging.DEBUG)
+	# create file handler which logs even debug messages
+	fh = logging.FileHandler('gkp.log')
+	fh.setLevel(logging.DEBUG)
+	# create console handler with a higher log level
+	ch = logging.StreamHandler()
+	ch.setLevel(logging.ERROR)
+	# create formatter and add it to the handlers
+	formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+	fh.setFormatter(formatter)
+	ch.setFormatter(formatter)
+	# add the handlers to the logger
+	logger.addHandler(fh)
+	logger.addHandler(ch)
+
+	con_1 = MyRequestConsumer()
+	con_1.setName('Consumer 1')
+
+	print 'Starting.... thread'
+	con_1.start()
 	
 if __name__=='__main__':
 	main()
