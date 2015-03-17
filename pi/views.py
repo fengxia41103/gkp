@@ -892,6 +892,7 @@ class IntegrationBaiduTiebaAJAX(TemplateView):
 			imgs = []
 			for i in t.xpath('.//img[contains(@class,"threadlist_pic")]'):
 				imgs.append(i.get('original'))
+				#imgs.append(i.get('bpic')) # this is full size pic, has to save locally first. Link to Baidu won't work.
 			this_thread['imgs']=imgs
 
 			# add to list

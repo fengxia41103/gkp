@@ -23,17 +23,33 @@
 		<div class="row">
 			<div class="col-md-9">
 				{{ t.abstract|truncatechars:100 }}
-				<ul class="list-inline">
-				{% for img in t.imgs %}
-					<li>
-						<a href="{{ img }}" data-toggle="lightbox" data-parent>
-							<img src="{{img}}" class="img-responsive" width="50px" height="50px">
-						</a>
-					</li>
-				{% endfor %}
-				</ul>				
+				{# images #}
+				{% if t.imgs|length %}
+				<div class="">
+					<a href="" class="" data-toggle="dropdown">
+						<ul class="list-inline">
+						{% for img in t.imgs %}
+							<li><img src="{{img}}" class="img-responsive" width="40px"></li>
+						{% endfor %}
+							<li><i class="fa fa-caret-down"></i></li>
+						</ul>
+					</a>
+					<div class="dropdown-menu" style="min-width:250px; padding:0 20px 20px 20px;">
+						<ul class="list-inline">
+						{% for img in t.imgs %}
+							<li>
+								<a href="{{ img }}" data-toggle="lightbox" data-parent>
+									<img src="{{img}}" class="img-responsive">
+								</a>
+							</li>
+						{% endfor %}
+						</ul>	
+					</div>
+				</div>
+				{% endif %}								
 			</div>
-			<div class="col-md-3">
+			<div class="col-md-3 text-right">
+	
 			</div>
 		</div>
 	</li>
