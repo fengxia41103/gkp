@@ -3,6 +3,7 @@
 import sys,time,os,gc,csv
 import lxml.html
 import urllib
+import simplejson as json
 
 # setup Django
 import django
@@ -12,6 +13,7 @@ from django.conf import settings
 
 # import models
 from pi.models import *
+from pi.crawler import MyBaiduCrawler
 
 def admission_by_school_persist (r):
 	# if we choose to write to DB directly
@@ -435,6 +437,10 @@ def fixBatch():
 		print 'Updating', idx,'/',len(ids),':',s.school.name
 		s.save()
 
+def baidu_crawler():
+	crawler = MyBaiduCrawler()
+	print crawler.tieba(u'重庆电信职业学院')
+
 import googlemaps
 def main():
 	django.setup()
@@ -452,7 +458,8 @@ def main():
 	#populateMajorSchoolRelationship()
 	#cleanupMajor()
 	#populateSchoolAttribute()
-	fixBatch()
+	#fixBatch()
+	baidu_crawler()
 
 if __name__ == '__main__':
 	main()

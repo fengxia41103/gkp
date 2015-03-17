@@ -5,13 +5,15 @@ from django.conf import settings
 import socks
 import socket
 import re,sys,time,codecs,shutil,tempfile,os.path
-import urllib2, lxml.html
+import urllib,urllib2, lxml.html
 from itertools import izip_longest
 from stem import Signal
 from stem.control import Controller
 from random import shuffle
 from multiprocessing import Process
+from datetime import datetime as dt
 from utility import MyUtility
+import simplejson as json
 # import models
 from pi.models import *
 
@@ -55,6 +57,45 @@ class TorUtility():
 	    _set_urlproxy()
 	    request=urllib2.Request(url, None, self.headers)
 	    return urllib2.urlopen(request).read()
+
+class MyBaiduCrawler():
+	def __init__(self):
+		self.tor_util = TorUtility()
+
+	def tieba(self,keyword):
+		start = dt.now()
+		baidu_url = 'http://tieba.baidu.com/f?kw=%s&ie=utf-8'%urllib.quote(keyword.encode('utf-8'))		
+		content = self.tor_util.request(baidu_url)
+		html = lxml.html.document_fromstring(content)
+		print (dt.now()-start).total_seconds()
+
+		threads = []
+		for t in html.xpath('//li[contains(@class, "j_thread_list")]'):
+			stats = json.loads(t.get('data-field'))
+			if stats['is_top'] or not stats['reply_num']: continue  # sticky posts, always on top, so we skip these
+
+			# basic thread infos
+			this_thread = {
+				'source':'百度贴吧',
+				'author': stats['author_name'],
+				'url':'http://tieba.baidu.com/p/%d' % stats['id'],
+				'reply_num': stats['reply_num'],
+				'title': t.xpath('.//a[contains(@class,"j_th_tit")]')[0].text_content().strip(), # post title line
+				'abstract': t.xpath('.//div[contains(@class,"threadlist_abs_onlyline")]')[0].text_content().strip(), # post abstracts
+				'last_timestamp': t.xpath('.//span[contains(@class,"threadlist_reply_date")]')[0].text_content().strip()
+			}
+
+			imgs = []
+			for i in t.xpath('.//img[contains(@class,"threadlist_pic")]'):
+				imgs.append(i.get('original'))
+				#imgs.append(i.get('bpic')) # this is full size pic, has to save locally first. Link to Baidu won't work.
+			this_thread['imgs']=imgs
+
+			# add to list
+			threads.append(this_thread)
+		print (dt.now()-start).total_seconds()
+
+		return threads
 
 class MyCrawler():
 	def __init__(self):
@@ -409,12 +450,11 @@ class MyCrawler():
 			#finally: 
 			sys.stdout.flush()				
 
+
 def main():
 	# dump school's
 	school_base_url = 'http://www.gaokaopai.com/fenshuxian'
 	major_base_url = 'http://www.gaokaopai.com/fenshuxian-sct-2-p'
-	crawler = MyCrawler()
-	crawler.thread_fenshu_crawler(school_base_url,'school')
-	
+
 if __name__ == '__main__':
 	main()

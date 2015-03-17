@@ -51,7 +51,7 @@ import googlemaps
 from itertools import groupby
 import urllib, lxml.html
 from utility import MyUtility
-from crawler import MyCrawler
+from crawler import MyBaiduCrawler
 
 from pi.models import *
 
@@ -861,42 +861,7 @@ class IntegrationBaiduTiebaAJAX(TemplateView):
 		# code: 4ccb7879bf204466b80e02c106d09727
 
 		# read baidu
-		#baidu_url = 'http://tieba.baidu.com/f?kw=%s&ie=utf-8'%school.name.encode('utf-8')
-		baidu_url = 'http://tieba.baidu.com/f?kw=%s&ie=utf-8'%urllib.quote(school.name.encode('utf-8'))
-
-		req = urllib2.Request(baidu_url, headers={ 'User-Agent': 'Mozilla/5.0' })
-		data = urllib2.urlopen(req).read()
-		#open(os.path.join(settings.MEDIA_ROOT,'tmp.log'),'w').write(data)
-
-		#browser = webdriver.PhantomJS()
-		#browser.get(baidu_url)
-		#data=browser.page_source
-		html = lxml.html.document_fromstring(data)
-		#browser.quit()
-
-		for t in html.xpath('//li[contains(@class, "j_thread_list")]'):
-			stats = json.loads(t.get('data-field'))
-			if stats['is_top'] or not stats['reply_num']: continue  # sticky posts, always on top, so we skip these
-
-			# basic thread infos
-			this_thread = {
-				'source':'百度贴吧',
-				'author': stats['author_name'],
-				'url':'http://tieba.baidu.com/p/%d' % stats['id'],
-				'reply_num': stats['reply_num'],
-				'title': t.xpath('.//a[contains(@class,"j_th_tit")]')[0].text_content().strip(), # post title line
-				'abstract': t.xpath('.//div[contains(@class,"threadlist_abs_onlyline")]')[0].text_content().strip(), # post abstracts
-				'last_timestamp': t.xpath('.//span[contains(@class,"threadlist_reply_date")]')[0].text_content().strip()
-			}
-
-			imgs = []
-			for i in t.xpath('.//img[contains(@class,"threadlist_pic")]'):
-				imgs.append(i.get('original'))
-				#imgs.append(i.get('bpic')) # this is full size pic, has to save locally first. Link to Baidu won't work.
-			this_thread['imgs']=imgs
-
-			# add to list
-			threads.append(this_thread)
+		threads = MyBaiduCrawler().tieba(schoo.name)
 
 
 		content = loader.get_template(self.template_name)
