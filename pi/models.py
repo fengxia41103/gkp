@@ -675,7 +675,9 @@ class MyBaiduStream(MyBaseModel):
 		default = '',
 		verbose_name = u'Data source original link'
 		)
-	posted = models.DateTimeField(
+	last_updated = models.DateTimeField(
+		blank = True,
+		null = True,
 		verbose_name = u'Posted timestamp read from the source site'
 		)
 

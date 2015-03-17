@@ -863,7 +863,7 @@ class IntegrationBaiduTiebaAJAX(TemplateView):
 		params = {'keyword':school.name}
 		MyCrawlerRequest(source=1,params=json.dumps(params)).save()
 
-		threads = MyBaiduStream.objects.filter(school=school).order_by('-posted')
+		threads = MyBaiduStream.objects.filter(school=school).order_by('-last_updated')
 		if threads: threads[:50]
 		else: threads = []
 

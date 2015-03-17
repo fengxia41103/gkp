@@ -14,7 +14,6 @@ from django.conf import settings
 from django.utils import timezone
 # import models
 from pi.models import *
-from pi.crawler import MyBaiduCrawler
 
 def admission_by_school_persist (r):
 	# if we choose to write to DB directly
@@ -438,32 +437,7 @@ def fixBatch():
 		print 'Updating', idx,'/',len(ids),':',s.school.name
 		s.save()
 
-import pytz
-def baidu_crawler():
-	start = dt.now()
-	ids = MyCrawlerRequest.objects.all().values_list('id')
-	for id in ids:
-		req = MyCrawlerRequest.objects.get(id=id)
 
-		if req.source == 1: # baidu tieba
-			params = req.params
-			for t in MyBaiduCrawler().tieba(params['keyword']):
-				school = MySchool.objects.get(name = params['keyword'])
-				tmp = t['last_timestamp'].split(':')
-				now = timezone.now()
-				post_timestamp = dt(now.year,now.month,now.day,int(tmp[0]),int(tmp[1]))
-				
-				MyBaiduStream(
-					school = school,
-					author = t['author'],
-					url_original = t['url'],
-					reply_num = t['reply_num'],
-					name = t['title'][:64],
-					description = t['abstract'],
-					posted=pytz.timezone('Asia/Shanghai').localize(post_timestamp),
-				).save()
-			print (dt.now()-start).total_seconds()
-			req.delete()
 
 import googlemaps
 def main():
@@ -483,7 +457,7 @@ def main():
 	#cleanupMajor()
 	#populateSchoolAttribute()
 	#fixBatch()
-	baidu_crawler()
+	#baidu_crawler()
 
 if __name__ == '__main__':
 	main()
