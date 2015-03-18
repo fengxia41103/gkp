@@ -12,6 +12,7 @@ from stem import Signal
 from stem.control import Controller
 from random import randint
 import time
+import hashlib
 
 # setup Django
 import django
@@ -138,14 +139,19 @@ class MyBaiduCrawler():
 			else: post_timestamp = None
 
 			# create records in DB
-			data,created = MyBaiduStream.objects.get_or_create(
-				school = school,
-				author = t['author'],
-				url_original = t['url'],
-				reply_num = t['reply_num'],
-				name = t['title'][:64],
-				description = t['abstract'],
-			)
+			try:
+				data,created = MyBaiduStream.objects.get_or_create(
+					school = school,
+					author = t['author'],
+					url_original = t['url'],
+					reply_num = t['reply_num'],
+					name = t['title'][:64],
+					description = t['abstract'],
+				)
+			except: 
+				self.logger.error('DB save failed!')
+				continue # DB was not successful
+				
 			if post_timestamp: 
 				data.last_updated=post_timestamp
 				data.save()
@@ -156,7 +162,8 @@ class MyBaiduCrawler():
 
 				self.logger.info('retrieving images [%s]' % img_url)
 				img_data = urllib.urlretrieve(img_url)
-				attchment = Attachment(
+				
+				attchment = Attachment(	
 					source_url = img_url,
 					content_object=data,
 					file=File(open(img_data[0]))
@@ -170,8 +177,8 @@ class MyRequestConsumer(Thread):
 		self.tor = TorUtility()
 
 	def run(self):
-		for i in range(5):
-			self.logger.info('\t'*6+'Renew TOR IP: %s'%self.tor.current_ip())
+		for i in range(1000):
+			self.logger.info('\t'*6+'Current TOR IP: %s'%self.tor.current_ip())
 
 			self.logger.info('Queue size %d'%MyCrawlerRequest.objects.count())
 
@@ -213,11 +220,12 @@ def main():
 	logger.addHandler(fh)
 	logger.addHandler(ch)
 
-	con_1 = MyRequestConsumer()
-	con_1.setName('Consumer 1')
+	for i in range(1):
+		consumer = MyRequestConsumer()
+		consumer.setName('Consumer %d'%i)
+		print 'Starting.... thread %s'%consumer.getName()
+		consumer.start()
 
-	print 'Starting.... thread'
-	con_1.start()
 	
 if __name__=='__main__':
 	main()

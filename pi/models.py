@@ -17,6 +17,15 @@ from django.db.models import Q
 from datetime import datetime as dt
 
 class MyBaseModel (models.Model):
+	# fields
+	hash = models.CharField (
+		max_length = 256, # we don't expect using a hash more than 256-bit long!
+		null = True,
+		blank = True,
+		default = '',
+		verbose_name = u'MD5 hash'
+	)
+		
 	# basic value fields
 	name = models.CharField(
 			default = None,
@@ -86,7 +95,10 @@ class Attachment (models.Model):
 			default = 'default description',
 			verbose_name = u'附件描述'
 		)
-	source_url = models.URLField()
+	source_url = models.URLField(
+			max_length=512,
+			verbose_name = u'File origin url'
+		)
 
 	file = models.FileField (
 			upload_to = '%Y/%m/%d',
@@ -424,14 +436,6 @@ class MySchool (MyBaseModel):
 	def __unicode__(self):
 		return self.name
 
-	# fields
-	hash = models.CharField (
-		max_length = 256, # we don't expect using a hash more than 256-bit long!
-		null = True,
-		blank = True,
-		default = '',
-		verbose_name = u'MD5 hash'
-	)
 	google_placeid = models.CharField (
 		max_length = 64,
 		null = True,
