@@ -26,6 +26,25 @@ from django.core.files import File
 from pi.models import *
 from pi.crawler import MyBaiduCrawler
 
+class PlainUtility():
+	def __init__(self):
+		user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7'
+		self.headers={'User-Agent':user_agent}
+		self.ip_url = 'http://icanhazip.com/'
+
+	def current_ip(self):
+		return self.request(self.ip_url)
+
+	def request(self,url, retry=3):
+		go = 0
+		while go < retry:
+			try:
+				request=urllib2.Request(url, None, self.headers)
+				return urllib2.urlopen(request).read()
+			except:
+				self.logger.error('Retrying #%d' % go)
+				go += 1
+
 class TorUtility():
 	def __init__(self):
 		user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7'
@@ -60,7 +79,7 @@ class TorUtility():
 	  		controller.authenticate('natalie')
 	  		controller.signal(Signal.NEWNYM)
 
-		self.logge.info('*'*50)
+		self.logger.info('*'*50)
 		self.logger.info('\t'*6+'Renew TOR IP: %s'%self.request(self.ip_url))
 		self.logger.info('*'*50)
 	
@@ -85,13 +104,13 @@ class TorUtility():
 		return self.request(self.ip_url)
 
 class MyBaiduCrawler():
-	def __init__(self,tor):
-		self.tor_util = tor
+	def __init__(self,handler):
+		self.http_handler = handler
 		self.logger = logging.getLogger('gkp')
 
 	def tieba(self,keyword):
-		baidu_url = 'http://tieba.baidu.com/f?kw=%s&ie=utf-8'%urllib.quote(keyword.encode('utf-8'))		
-		content = self.tor_util.request(baidu_url)
+		baidu_url = 'http://tieba.baidu.com/f?kw=%s&ie=utf-8'%urllib.quote(keyword.encode('utf-8'))
+		content = self.http_handler.request(baidu_url)
 		html = lxml.html.document_fromstring(content)
 
 		threads = []
@@ -136,6 +155,11 @@ class MyBaiduCrawler():
 				now = timezone.now()
 				post_timestamp = dt(now.year,now.month,now.day,int(tmp[0]),int(tmp[1]))
 				post_timestamp = pytz.timezone(timezone.get_default_timezone_name()).localize(post_timestamp)
+			elif '-' in t['last_timestamp']: 
+				tmp = t['last_timestamp'].split('-')
+				now = timezone.now()
+				post_timestamp = dt(now.year,int(tmp[0]),int(tmp[1]))
+				post_timestamp = pytz.timezone(timezone.get_default_timezone_name()).localize(post_timestamp)
 			else: post_timestamp = None
 
 			# create records in DB
@@ -151,7 +175,7 @@ class MyBaiduCrawler():
 			except: 
 				self.logger.error('DB save failed!')
 				continue # DB was not successful
-				
+
 			if post_timestamp: 
 				data.last_updated=post_timestamp
 				data.save()
@@ -171,14 +195,14 @@ class MyBaiduCrawler():
 
 from threading import Thread
 class MyRequestConsumer(Thread):
-	def __init__(self):
+	def __init__(self, handler):
 		Thread.__init__(self)
 		self.logger = logging.getLogger('gkp')
-		self.tor = TorUtility()
+		self.http_handler = handler
 
 	def run(self):
 		for i in range(1000):
-			self.logger.info('\t'*6+'Current TOR IP: %s'%self.tor.current_ip())
+			self.logger.info('\t'*6+'Current TOR IP: %s'%self.http_handler.current_ip())
 
 			self.logger.info('Queue size %d'%MyCrawlerRequest.objects.count())
 
@@ -189,7 +213,7 @@ class MyRequestConsumer(Thread):
 
 			for req in targets:
 				if req[0] == 1: # baidu tieba
-					MyBaiduCrawler(self.tor).consumer(json.loads(req[1]))
+					MyBaiduCrawler(self.http_handler).consumer(json.loads(req[1]))
 
 				# clear queue for all other requests since data have been updated
 				for m in MyCrawlerRequest.objects.filter(source=req[0],params=req[1]):
@@ -221,7 +245,7 @@ def main():
 	logger.addHandler(ch)
 
 	for i in range(1):
-		consumer = MyRequestConsumer()
+		consumer = MyRequestConsumer(PlainUtility())
 		consumer.setName('Consumer %d'%i)
 		print 'Starting.... thread %s'%consumer.getName()
 		consumer.start()
