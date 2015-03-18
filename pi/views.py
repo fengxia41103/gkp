@@ -849,8 +849,6 @@ class IntegrationBaiduTiebaAJAX(TemplateView):
 	template_name = 'pi/3rd/school_baidu_tieba.html'
 
 	def post(self,request):
-		print 'Processing....'
-
 		obj_id = request.POST['obj_id']
 		school = MySchool.objects.get(id=int(obj_id))
 		feeds = []
@@ -865,7 +863,7 @@ class IntegrationBaiduTiebaAJAX(TemplateView):
 		params = {'keyword':school.name}
 		MyCrawlerRequest(source=1,params=json.dumps(params)).save()
 
-		feeds = MyBaiduStream.objects.filter(school=school).order_by('-last_updated')
+		feeds = MyBaiduStream.objects.filter(school=school).order_by('-last_updated')[:50]
 		content = loader.get_template(self.template_name)
 		html= content.render(Context({
 			'obj':school,

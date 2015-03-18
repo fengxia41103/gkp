@@ -1,19 +1,19 @@
 {% if feeds %}
 	<div class="my-multicol-3">
 	{% for t in feeds %}
-		<section class="" style="width:100%;background-color:#fefee;border-radius:3px;padding:0px 10px;border:1px solid #ccc;margin:10px 0;display: inline-block;">
+		<section class="" style="width:100%;background-color:#fefee;border-radius:5px;padding:0px 10px;border:1px solid #ccc;margin:10px 0;display: inline-block;box-shadow:0 1px 2px 0 rgba(0, 0, 0, 0.22);">
 		<div class="page-header">
 			<h5>
 				<a href="{{ t.url_original }}">
-					<b>{{t.name}}</b>
+					{{t.name}}
 				</a>
 			</h5>
 			{% if t.last_updated %}
-				{{ t.last_updated }}
+				<em>{{ t.last_updated }}</em>
 			{% endif %}
 		</div>
 		
-		<div class="" style="padding:10px 0;">
+		<div class="" style="padding:0px 0;">
 			{% if t.attachments.all|length %}
 			<img src="{{t.attachments.all.0.file.url}}" class="img-responsive">
 			{% endif %}
@@ -34,9 +34,9 @@
 			{% endif %}		
 
 
-			<strong>{{ t.author }}
+			by <span style="color:#89e;">{{ t.author }}</span>
 			<span class="text-right pull-right">			
-			<i class="fa fa-comment"></i>
+			<i class="fa fa-comments-o"></i>
 			{{ t.reply_num }}
 			</span>				
 		</div>

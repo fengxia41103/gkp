@@ -158,7 +158,13 @@ class MyBaiduCrawler():
 			elif '-' in t['last_timestamp']: 
 				tmp = t['last_timestamp'].split('-')
 				now = timezone.now()
-				post_timestamp = dt(now.year,int(tmp[0]),int(tmp[1]))
+				
+				# some quirky condition
+				tmp_mon = int(tmp[0])
+				if tmp_mon > now.month: year = now.year-1
+				else: year = now.year
+
+				post_timestamp = dt(year,tmp_mon,int(tmp[1]))
 				post_timestamp = pytz.timezone(timezone.get_default_timezone_name()).localize(post_timestamp)
 			else: post_timestamp = None
 
@@ -201,7 +207,7 @@ class MyRequestConsumer(Thread):
 		self.http_handler = handler
 
 	def run(self):
-		for i in range(1000):
+		for i in range(10):
 			self.logger.info('\t'*6+'Current TOR IP: %s'%self.http_handler.current_ip())
 
 			self.logger.info('Queue size %d'%MyCrawlerRequest.objects.count())
