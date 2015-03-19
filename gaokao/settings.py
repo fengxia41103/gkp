@@ -28,7 +28,7 @@ else: DEBUG = False
 
 TEMPLATE_DEBUG = DEBUG
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -96,21 +96,22 @@ if DEBUG :
     		'PORT': '3306',
     	}
     }
-else:
-    DATABASES = {
-        #'default': {
-        #    'ENGINE': 'django.db.backends.sqlite3',
-        #    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        #}
-            'default': {
-                    'ENGINE': 'django.db.backends.mysql', 
-                    'NAME': 'gaokaopi',
-                    'USER': 'fengxia',
-                    'PASSWORD': 'xf123456',
-                    'HOST': 'gki-db.c6nrxqagj4zh.us-east-1.rds.amazonaws.com',   # Or an IP Address that your DB is hosted on
-                    'PORT': '3306',
-            }
-    }
+#else:
+
+DATABASES = {
+    #'default': {
+    #    'ENGINE': 'django.db.backends.sqlite3',
+    #    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    #}
+        'default': {
+                'ENGINE': 'django.db.backends.mysql', 
+                'NAME': 'gaokaopi',
+                'USER': 'fengxia',
+                'PASSWORD': 'xf123456',
+                'HOST': 'gki-db.c6nrxqagj4zh.us-east-1.rds.amazonaws.com',   # Or an IP Address that your DB is hosted on
+                'PORT': '3306',
+        }
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
