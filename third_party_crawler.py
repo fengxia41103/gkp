@@ -215,12 +215,12 @@ class MyRequestConsumer(Thread):
 		self.http_handler = handler
 
 	def run(self):
-		for i in range(10):
+		reqs = MyCrawlerRequest.objects.all().order_by('-created').values('source','params')
+		for i in range(1):
 			self.logger.info('\t'*6+'Current TOR IP: %s'%self.http_handler.current_ip())
 
 			self.logger.info('Queue size %d'%MyCrawlerRequest.objects.count())
 
-			reqs = MyCrawlerRequest.objects.all().order_by('-created').values('source','params')[:10]
 			targets = list(set([(t['source'],t['params']) for t in reqs]))
 			
 			self.logger.info('Downsized to %d'%len(targets))

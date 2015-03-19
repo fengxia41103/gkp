@@ -233,7 +233,7 @@
             }, 
             function(resp) { // success callback
                 j$('#school-tieba').html(resp['html']);             
-                setTimeout(get_bd_tb, 60000); // refresh every 30 seconds
+                setTimeout(get_bd_tb, 30000); // refresh every 30 seconds
             },'json'
         ).always(function(){
     		// remove spinner
