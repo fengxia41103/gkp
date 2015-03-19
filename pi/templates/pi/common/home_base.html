@@ -95,7 +95,7 @@
     <header>
         <div class="intro-text">       
             {% if messages %}                 
-            <ul class="list-unstyled">
+            <ul class="list-unstyled pull-right" style="border:1px solid #fefefe; padding:50px;border-radius:20px;">
                 {% for message in messages %}
                 <li{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</li>
                 {% endfor %}

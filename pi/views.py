@@ -116,7 +116,7 @@ class LogoutView(TemplateView):
 	def get(self,request):
 		logout(request)
     	# Redirect to a success page.
-		messages.add_message(request, messages.INFO, 'Thank you for using our service. Hope to see you soon!')
+		# messages.add_message(request, messages.INFO, 'Thank you for using our service. Hope to see you soon!')
 		return HttpResponseRedirect (reverse_lazy('home'))
 
 class UserRegisterView(FormView):
