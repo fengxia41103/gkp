@@ -840,8 +840,6 @@ class AnalysisSchoolByProvince(TemplateView):
 #
 ###################################################
 import urllib2
-from pyvirtualdisplay import Display
-from selenium import webdriver
 class IntegrationBaiduTiebaAJAX(TemplateView):
 	'''
 		AJAX post view
