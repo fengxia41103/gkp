@@ -142,12 +142,19 @@ class MyBaiduCrawler():
 		return threads
 
 	def consumer(self, params):
+		'''
+			read 3rd party content		
+		'''
 		self.logger.info(params)
-
-		school = MySchool.objects.get(name=params['keyword'])
-		results = self.tieba(params['keyword'])
+		keyword = params['keyword']
+		if '(' in keyword: keyword=keyword[:keyword.find('(')]
+		try: # school name can be changed outside this request, so we take precaution here!
+			school = MySchool.objects.get(name=keyword)
+		except: return
+		results = self.tieba(keyword)
 		self.logger.info(len(results))
 
+		# save results to DB
 		for t in results:
 			# make django's timezone-aware timestamp
 			if ':' in t['last_timestamp']:
@@ -180,6 +187,7 @@ class MyBaiduCrawler():
 				)
 			except: 
 				self.logger.error('DB save failed!')
+				self.logger.error(t)				
 				continue # DB was not successful
 
 			if post_timestamp: 
@@ -241,7 +249,7 @@ def main():
 	fh.setLevel(logging.DEBUG)
 	# create console handler with a higher log level
 	ch = logging.StreamHandler()
-	ch.setLevel(logging.ERROR)
+	ch.setLevel(logging.DEBUG)
 	# create formatter and add it to the handlers
 	formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 	fh.setFormatter(formatter)

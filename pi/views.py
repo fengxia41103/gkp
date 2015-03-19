@@ -863,7 +863,7 @@ class IntegrationBaiduTiebaAJAX(TemplateView):
 		params = {'keyword':school.name}
 		MyCrawlerRequest(source=1,params=json.dumps(params)).save()
 
-		feeds = MyBaiduStream.objects.filter(school=school).order_by('-last_updated')[:50]
+		feeds = MyBaiduStream.objects.filter(school=school).order_by('-last_updated')[:100]
 		content = loader.get_template(self.template_name)
 		html= content.render(Context({
 			'obj':school,
