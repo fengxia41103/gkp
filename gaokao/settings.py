@@ -25,6 +25,7 @@ SECRET_KEY = 's+3msph#0v4o=fvu^*i!42hrp^w5(j6sr#kis@)=8^q3p3=+*m'
 # SECURITY WARNING: don't run with debug turned on in production!
 if os.environ['DJANGO_DEBUG'].lower() == 'true': DEBUG = True
 else: DEBUG = False
+DEPLOY_TYPE = os.environ['DEPLOY_TYPE']
 
 TEMPLATE_DEBUG = DEBUG
 
@@ -81,7 +82,7 @@ WSGI_APPLICATION = 'gaokao.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-if DEBUG :
+if DEPLOY_TYPE == 'dev' :
     DATABASES = {
         #'default': {
         #    'ENGINE': 'django.db.backends.sqlite3',
@@ -96,22 +97,21 @@ if DEBUG :
     		'PORT': '3306',
     	}
     }
-#else:
-
-DATABASES = {
-    #'default': {
-    #    'ENGINE': 'django.db.backends.sqlite3',
-    #    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    #}
-        'default': {
-                'ENGINE': 'django.db.backends.mysql', 
-                'NAME': 'gaokaopi',
-                'USER': 'fengxia',
-                'PASSWORD': 'xf123456',
-                'HOST': 'gki-db.c6nrxqagj4zh.us-east-1.rds.amazonaws.com',   # Or an IP Address that your DB is hosted on
-                'PORT': '3306',
-        }
-}
+elif DEPLOY_TYPE=='production':
+	DATABASES = {
+    	#'default': {
+    	#    'ENGINE': 'django.db.backends.sqlite3',
+    	#    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    	#}
+        	'default': {
+                	'ENGINE': 'django.db.backends.mysql', 
+                	'NAME': 'gaokaopi',
+                	'USER': 'fengxia',
+                	'PASSWORD': 'xf123456',
+                	'HOST': 'gki-db.c6nrxqagj4zh.us-east-1.rds.amazonaws.com',   # Or an IP Address that your DB is hosted on
+                	'PORT': '3306',
+        	}
+	}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
@@ -182,11 +182,11 @@ DEVSERVER_AUTO_PROFILE = False  # profiles all views without the need of functio
 
 # S3 storages
 
-if DEBUG:
+if DEPLOY_TYPE =='dev':
     STATIC_ROOT='/var/www/static'
     MEDIA_ROOT = '/var/www/media'
     MEDIA_URL='http://localhost/media/'
-else:
+elif DEPLOY_TYPE=='production':
     DEFAULT_FILE_STORAGE = 's3_folder_storage.s3.DefaultStorage'
     STATICFILES_STORAGE = 's3_folder_storage.s3.StaticStorage'
 

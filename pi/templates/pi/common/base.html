@@ -47,13 +47,11 @@
 	<link href="{% static 'syntaxhighlighter/styles/shCore.css' %}" rel="stylesheet" type="text/css" />
 	<link href="{% static 'syntaxhighlighter/styles/shThemeDefault.css' %}" rel="stylesheet" type="text/css" />
 	
-    {% compress css %}	
 	<!-- application specific css -->
 	<!--link rel="stylesheet" type="text/x-scss" href="{% static 'sass/my.scss' %}"-->	
 	{# lightbos http://ashleydw.github.io/lightbox/ #} 
 	<link rel="stylesheet" type="text/css" href="{% static 'lightbox/ekko-lightbox.css' %}">
 
-	{% endcompress %}
 	<link rel="stylesheet" type="text/css" href="{% static 'sass/my.css' %}">	
 	
 	{# loading spinner: http://msurguy.github.io/ladda-bootstrap/ #}
@@ -295,7 +293,6 @@
     	src="{% static 'echarts/echarts-all.js' %}">
     </script> 
 
-	{% compress js %}
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="{% static 'bootstrap3/js/bootstrap.min.js' %}"></script>
 		
@@ -318,7 +315,6 @@
     <script type="text/javascript"
     	src="{% static 'js/jquery.blockUI.min.js' %}">
     </script> 
-	{% endcompress %}
 	
     {# loading spinner #}
     <script type="text/javascript"
