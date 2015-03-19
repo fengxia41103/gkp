@@ -1,5 +1,6 @@
 import os,os.path
-execfile('/home/fengxia/production_envvars.py')
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'gaokao.settings'
 
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()

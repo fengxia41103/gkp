@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from production_envvars import *
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -23,10 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = 's+3msph#0v4o=fvu^*i!42hrp^w5(j6sr#kis@)=8^q3p3=+*m'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if os.environ['DJANGO_DEBUG'].lower() == 'true': DEBUG = True
-else: DEBUG = False
-DEPLOY_TYPE = os.environ['DEPLOY_TYPE']
-
+DEBUG = DJANGO_DEBUG
 TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = ['*']
@@ -189,10 +188,6 @@ if DEPLOY_TYPE =='dev':
 elif DEPLOY_TYPE=='production':
     DEFAULT_FILE_STORAGE = 's3_folder_storage.s3.DefaultStorage'
     STATICFILES_STORAGE = 's3_folder_storage.s3.StaticStorage'
-
-    AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
-    AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
-    AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
 
     DEFAULT_S3_PATH = "media"
     MEDIA_ROOT = '/%s/' % DEFAULT_S3_PATH
