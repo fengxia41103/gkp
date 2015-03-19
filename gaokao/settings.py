@@ -23,9 +23,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = 's+3msph#0v4o=fvu^*i!42hrp^w5(j6sr#kis@)=8^q3p3=+*m'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if os.environ['DJANGO_DEBUG'].lower() == 'true': DEBUG = True
+else: DEBUG = False
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = []
 
@@ -48,6 +49,8 @@ INSTALLED_APPS = (
 
     # custom packages
     'devserver', # django-devserver
+    'storages', # django-storage
+    's3_folder_storage', # django-s3-folder-storage
     'compressor', # django_compressor
     'django_filters', # django-filters
     'tagging', # django-tagging
@@ -119,10 +122,6 @@ STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
     'compressor.finders.CompressorFinder',
 )
-STATIC_ROOT='/var/www/static'
-
-MEDIA_ROOT = '/var/www/media'
-MEDIA_URL='http://localhost/media/'
 
 # crispy forms
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
@@ -164,3 +163,29 @@ DEVSERVER_MODULES = (
     'devserver.modules.profile.LineProfilerModule',
 )
 DEVSERVER_AUTO_PROFILE = False  # profiles all views without the need of function decorator
+
+# S3 storages
+
+if DEBUG:
+    STATIC_ROOT='/var/www/static'
+    MEDIA_ROOT = '/var/www/media'
+    MEDIA_URL='http://localhost/media/'
+else:
+    DEFAULT_FILE_STORAGE = 's3_folder_storage.s3.DefaultStorage'
+    STATICFILES_STORAGE = 's3_folder_storage.s3.StaticStorage'
+
+    AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
+    AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
+    AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
+
+    DEFAULT_S3_PATH = "media"
+    MEDIA_ROOT = '/%s/' % DEFAULT_S3_PATH
+    MEDIA_URL = '//s3.amazonaws.com/%s/media/' % AWS_STORAGE_BUCKET_NAME
+
+    STATIC_S3_PATH = "static"
+    STATIC_ROOT = "/%s/" % STATIC_S3_PATH
+    STATIC_URL = '//s3.amazonaws.com/%s/static/' % AWS_STORAGE_BUCKET_NAME
+    ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
+
+
+    #STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
