@@ -81,21 +81,36 @@ WSGI_APPLICATION = 'gaokao.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-
-DATABASES = {
-    #'default': {
-    #    'ENGINE': 'django.db.backends.sqlite3',
-    #    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    #}
-	'default': {
-		'ENGINE': 'django.db.backends.mysql', 
-		'NAME': 'gaokaopi',
-		'USER': 'root',
-		'PASSWORD': 'natalie',
-		'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
-		'PORT': '3306',
-	}
-}
+if DEBUG :
+    DATABASES = {
+        #'default': {
+        #    'ENGINE': 'django.db.backends.sqlite3',
+        #    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        #}
+    	'default': {
+    		'ENGINE': 'django.db.backends.mysql', 
+    		'NAME': 'gaokaopi',
+    		'USER': 'root',
+    		'PASSWORD': 'natalie',
+    		'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+    		'PORT': '3306',
+    	}
+    }
+else:
+    DATABASES = {
+        #'default': {
+        #    'ENGINE': 'django.db.backends.sqlite3',
+        #    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        #}
+            'default': {
+                    'ENGINE': 'django.db.backends.mysql', 
+                    'NAME': 'gaokaopi',
+                    'USER': 'fengxia',
+                    'PASSWORD': 'xf123456',
+                    'HOST': 'gki-db.c6nrxqagj4zh.us-east-1.rds.amazonaws.com',   # Or an IP Address that your DB is hosted on
+                    'PORT': '3306',
+            }
+    }
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
