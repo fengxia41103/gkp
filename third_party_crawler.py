@@ -213,7 +213,7 @@ class MyRequestConsumer(Thread):
 		self.http_handler = handler
 
 	def run(self):
-		for i in range(1):
+		for i in range(5):
 			reqs = MyCrawlerRequest.objects.all().order_by('-created').values('source','params')[:1]			
 			self.logger.info('\t'*6+'Current TOR IP: %s'%self.http_handler.current_ip())
 
@@ -260,7 +260,7 @@ def main():
 	retries = Retry(connect=5, read=2, redirect=5)
 	http = PoolManager(retries=retries, timeout=Timeout(total=5.0))
 
-	for i in range(5):
+	for i in range(1):
 		consumer = MyRequestConsumer(PlainUtility(http))
 		consumer.setName('Consumer %d'%i)
 		print 'Starting.... thread %s'%consumer.getName()
