@@ -437,7 +437,11 @@ def fixBatch():
 		print 'Updating', idx,'/',len(ids),':',s.school.name
 		s.save()
 
-
+def blanketRequest():
+	for s in MySchool.objects.all():
+		params = {'keyword':s.name}
+		MyCrawlerRequest(source=1,params=json.dumps(params)).save()
+		print 'Requesting', s.name		
 
 import googlemaps
 def main():
@@ -458,6 +462,7 @@ def main():
 	#populateSchoolAttribute()
 	#fixBatch()
 	#baidu_crawler()
+	blanketRequest()
 
 if __name__ == '__main__':
 	main()

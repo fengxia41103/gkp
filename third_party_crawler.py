@@ -13,6 +13,7 @@ from stem.control import Controller
 from random import randint
 import time
 import hashlib
+from urllib3 import PoolManager, Retry, Timeout
 
 # setup Django
 import django
@@ -27,23 +28,20 @@ from pi.models import *
 from pi.crawler import MyBaiduCrawler
 
 class PlainUtility():
-	def __init__(self):
+	def __init__(self, http):
 		user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7'
 		self.headers={'User-Agent':user_agent}
 		self.ip_url = 'http://icanhazip.com/'
+		self.logger = logging.getLogger('gkp')
+		self.http = http
 
 	def current_ip(self):
 		return self.request(self.ip_url)
 
-	def request(self,url, retry=3):
-		go = 0
-		while go < retry:
-			try:
-				request=urllib2.Request(url, None, self.headers)
-				return urllib2.urlopen(request).read()
-			except:
-				self.logger.error('Retrying #%d' % go)
-				go += 1
+	def request(self,url):
+		r = self.http.request('GET',url)
+		if r.status == 200: return r.data
+		else: self.logger.error('status %s'%r.status)
 
 class TorUtility():
 	def __init__(self):
@@ -215,8 +213,8 @@ class MyRequestConsumer(Thread):
 		self.http_handler = handler
 
 	def run(self):
-		reqs = MyCrawlerRequest.objects.all().order_by('-created').values('source','params')
 		for i in range(1):
+			reqs = MyCrawlerRequest.objects.all().order_by('-created').values('source','params')[:1]			
 			self.logger.info('\t'*6+'Current TOR IP: %s'%self.http_handler.current_ip())
 
 			self.logger.info('Queue size %d'%MyCrawlerRequest.objects.count())
@@ -225,12 +223,12 @@ class MyRequestConsumer(Thread):
 			
 			self.logger.info('Downsized to %d'%len(targets))
 
-			for req in targets:
-				if req[0] == 1: # baidu tieba
-					MyBaiduCrawler(self.http_handler).consumer(json.loads(req[1]))
+			for (source,params) in targets:
+				if source == 1: # baidu tieba
+					MyBaiduCrawler(self.http_handler).consumer(json.loads(params))
 
 				# clear queue for all other requests since data have been updated
-				for m in MyCrawlerRequest.objects.filter(source=req[0],params=req[1]):
+				for m in MyCrawlerRequest.objects.filter(source=source,params=params):
 					m.delete()
 
 			# Sleep for random time between 1 ~ 3 second
@@ -238,6 +236,7 @@ class MyRequestConsumer(Thread):
 			print('%s sleeping fo %d seconds...' % (self.getName(), secondsToSleep))
 			time.sleep(secondsToSleep)
  
+
 def main():
 	django.setup()
 
@@ -245,7 +244,7 @@ def main():
 	logger = logging.getLogger('gkp')
 	logger.setLevel(logging.DEBUG)
 	# create file handler which logs even debug messages
-	fh = logging.FileHandler('gkp.log')
+	fh = logging.FileHandler('/tmp/gkp.log')
 	fh.setLevel(logging.DEBUG)
 	# create console handler with a higher log level
 	ch = logging.StreamHandler()
@@ -258,8 +257,11 @@ def main():
 	logger.addHandler(fh)
 	logger.addHandler(ch)
 
-	for i in range(1):
-		consumer = MyRequestConsumer(PlainUtility())
+	retries = Retry(connect=5, read=2, redirect=5)
+	http = PoolManager(retries=retries, timeout=Timeout(total=5.0))
+
+	for i in range(5):
+		consumer = MyRequestConsumer(PlainUtility(http))
 		consumer.setName('Consumer %d'%i)
 		print 'Starting.... thread %s'%consumer.getName()
 		consumer.start()
