@@ -114,6 +114,8 @@ class MyBaiduCrawler():
 
 		threads = []
 		for t in html.xpath('//li[contains(@class, "j_thread_list")]'):
+			if t.get('data-field') is None: continue
+
 			stats = json.loads(t.get('data-field'))
 			if stats['is_top'] or not stats['reply_num']: continue  # sticky posts, always on top, so we skip these
 
@@ -218,13 +220,17 @@ class MyRequestConsumer(Thread):
 		self.http_handler = handler
 
 	def run(self):
-		for i in range(1000):
-			reqs = MyCrawlerRequest.objects.all().order_by('-created').values('source','params')[:1]			
+		for i in range(2):
+			reqs = MyCrawlerRequest.objects.filter(is_processing=False).order_by('-created')[:1]
+			for r in reqs: 
+				r.is_processing = True
+				r.save()
+
 			self.logger.info(str(i)+':\t'*6+'Current TOR IP: %s'%self.http_handler.current_ip())
 
 			self.logger.info('Queue size %d'%MyCrawlerRequest.objects.count())
 
-			targets = list(set([(t['source'],t['params']) for t in reqs]))
+			targets = list(set([(t.source,json.dumps(t.params)) for t in reqs]))
 			
 			self.logger.info('Downsized to %d'%len(targets))
 
@@ -233,7 +239,7 @@ class MyRequestConsumer(Thread):
 					MyBaiduCrawler(self.http_handler).consumer(json.loads(params))
 
 				# clear queue for all other requests since data have been updated
-				for m in MyCrawlerRequest.objects.filter(source=source,params=params):
+				for m in reqs.filter(source=source,params=params):
 					m.delete()
 
 			# Sleep for random time between 1 ~ 3 second

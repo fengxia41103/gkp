@@ -661,6 +661,7 @@ class MyCrawlerRequest(models.Model):
 	params = JSONField (
 			verbose_name = u'数据参数'
 		)
+	is_processing = models.BooleanField(default=False)
 
 class MyBaiduStream(MyBaseModel):
 	school = models.ForeignKey(
