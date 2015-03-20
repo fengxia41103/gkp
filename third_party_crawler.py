@@ -238,9 +238,8 @@ class MyRequestConsumer(Thread):
 				if source == 1: # baidu tieba
 					MyBaiduCrawler(self.http_handler).consumer(json.loads(params))
 
-				# clear queue for all other requests since data have been updated
-				for m in reqs.filter(source=source,params=params):
-					m.delete()
+			# clear queue for all other requests since data have been updated
+			for m in reqs: m.delete()
 
 			# Sleep for random time between 1 ~ 3 second
 			secondsToSleep = randint(1, 5)
