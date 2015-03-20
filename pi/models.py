@@ -249,7 +249,7 @@ class MyAdmissionBySchoolCustomManager(models.Manager):
 
 		# for scores, we set up a band around estimated_score
 		SCORE_BAND=25
-		if estimated_score: 
+		if estimated_score > 0: 
 			data = data.filter(Q(min_score__lte = estimated_score+SCORE_BAND) & Q(min_score__gte=estimated_score-SCORE_BAND))
 		return data
 
@@ -400,26 +400,26 @@ class MySchoolCustomManager(models.Manager):
 		# for scores, we set up a band around estimated_score
 		SCORE_BAND=25
 		school_ids = []
-		if estimated_score and province and student_type:
+		if estimated_score > 0 and province and student_type:
 			school_ids = MyAdmissionBySchool.objects.filter(
 				Q(school__in=data) & 
 				Q(min_score__lte = estimated_score+SCORE_BAND) & 
 				Q(min_score__gte=estimated_score-SCORE_BAND) &
 				Q(province=province) &
 				Q(category=student_type)).values_list('school',flat=True)
-		elif estimated_score and province:
+		elif estimated_score > 0 and province:
 			school_ids = MyAdmissionBySchool.objects.filter(
 				Q(school__in=data) & 
 				Q(min_score__lte = estimated_score+SCORE_BAND) & 
 				Q(min_score__gte=estimated_score-SCORE_BAND) &
 				Q(province=province)).values_list('school',flat=True)
-		elif estimated_score and student_type:
+		elif estimated_score > 0 and student_type:
 			school_ids = MyAdmissionBySchool.objects.filter(
 				Q(school__in=data) & 
 				Q(min_score__lte = estimated_score+SCORE_BAND) & 
 				Q(min_score__gte=estimated_score-SCORE_BAND) &
 				Q(category=student_type)).values_list('school',flat=True)
-		elif estimated_score:
+		elif estimated_score > 0:
 			school_ids = MyAdmissionBySchool.objects.filter(
 				Q(school__in=data) & 
 				Q(min_score__lte = estimated_score+SCORE_BAND) & 
@@ -623,7 +623,7 @@ class MyUserProfile(models.Model):
 			verbose_name = u'入考省份',
 		)
 	estimated_score = models.IntegerField(
-			default = -1, # -1 means no filter applied based on score
+			default = 200, # -1 means no filter applied based on score
 			verbose_name = u'分数',		
 		)
 	student_type = models.CharField(

@@ -165,7 +165,7 @@
 						<i class="fa fa-gears"></i>
 						<i class="fa fa-caret-down"></i>
 					</a>
-					<div class="dropdown-menu" style="min-width:250px; padding:0 20px 20px 20px;">
+					<div id="user-config" class="dropdown-menu" style="min-width:250px; padding:0 20px 20px 20px;">
 						<h4 class="page-header">
 							<b class="fa fa-cogs"></b>
 							你的个人情况
@@ -177,7 +177,7 @@
 								<label for="province" class="control-label">
 									你会在哪儿参加高考呢？
 								</label>
-								<input name="province" type="text" class="form-control" placeholder="写上你参加高考的省份吧" value="{{ user.myuserprofile.province }}">
+								<input name="province" type="text" class="form-control" placeholder="写上你参加高考的省份吧" value="{{ user.myuserprofile.province|default_if_none:'' }}">
 							</div><div class="form-group">
 								<label for="student_type" class="control-label">
 									你在高中学文还是学理？

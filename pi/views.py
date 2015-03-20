@@ -131,6 +131,7 @@ class UserRegisterView(FormView):
 		else:
 			user = User.objects.create_user(user_name, '', password)			
 			user.save()
+
 			return super(UserRegisterView,self).form_valid(form)
 
 class UserPropertyView(TemplateView):
