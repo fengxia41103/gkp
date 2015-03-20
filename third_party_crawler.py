@@ -14,6 +14,7 @@ from random import randint
 import time
 import hashlib
 from urllib3 import PoolManager, Retry, Timeout
+from tempfile import TemporaryFile
 
 # setup Django
 import django
@@ -197,13 +198,17 @@ class MyBaiduCrawler():
 				if len(Attachment.objects.filter(source_url=img_url)): continue # exist
 
 				self.logger.info('retrieving images [%s]' % img_url)
-				img_data = urllib.urlretrieve(img_url)
-				
-				attchment = Attachment(	
-					source_url = img_url,
-					content_object=data,
-					file=File(open(img_data[0]))
-				).save()
+
+				# get image and store into a tmp file
+				img_data = None
+				try: img_data = self.http_handler.request(img_url)
+				except: self.logger.error('Retrieve img failed: %s' % img_url)
+				if img_data:
+					attchment = Attachment(	
+						source_url = img_url,
+						content_object=data,
+						file=File(TemporaryFile().write(img_data))
+					).save()
 
 from threading import Thread
 class MyRequestConsumer(Thread):
@@ -213,9 +218,9 @@ class MyRequestConsumer(Thread):
 		self.http_handler = handler
 
 	def run(self):
-		for i in range(5):
+		for i in range(1000):
 			reqs = MyCrawlerRequest.objects.all().order_by('-created').values('source','params')[:1]			
-			self.logger.info('\t'*6+'Current TOR IP: %s'%self.http_handler.current_ip())
+			self.logger.info(str(i)+':\t'*6+'Current TOR IP: %s'%self.http_handler.current_ip())
 
 			self.logger.info('Queue size %d'%MyCrawlerRequest.objects.count())
 
@@ -258,7 +263,7 @@ def main():
 	logger.addHandler(ch)
 
 	retries = Retry(connect=5, read=2, redirect=5)
-	http = PoolManager(retries=retries, timeout=Timeout(total=5.0))
+	http = PoolManager(retries=retries, timeout=Timeout(total=15.0))
 
 	for i in range(1):
 		consumer = MyRequestConsumer(PlainUtility(http))
