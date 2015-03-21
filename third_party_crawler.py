@@ -205,7 +205,7 @@ class MyBaiduCrawler():
 				try: img_data = self.http_handler.request(img_url)
 				except: self.logger.error('Retrieve img failed: %s' % img_url)
 				if img_data:
-					tmp_file = NamedTemporaryFile( delete=False)
+					tmp_file = NamedTemporaryFile(suffix='.jpg',delete=False)
 					tmp_file.write(img_data)
 					attchment = Attachment(	
 						source_url = img_url,
