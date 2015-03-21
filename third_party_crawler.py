@@ -14,7 +14,7 @@ from random import randint
 import time
 import hashlib
 from urllib3 import PoolManager, Retry, Timeout
-from tempfile import TemporaryFile
+from tempfile import NamedTemporaryFile
 
 # setup Django
 import django
@@ -128,8 +128,7 @@ class MyBaiduCrawler():
 				'reply_num': stats['reply_num'],
 				'title': t.xpath('.//a[contains(@class,"j_th_tit")]')[0].text_content().strip(), # post title line
 				'abstract': t.xpath('.//div[contains(@class,"threadlist_abs_onlyline")]')[0].text_content().strip(), # post abstracts
-				'last_timestamp': t.xpath('.//span[contains(@class,"threadlist_reply_date")]')[0].text_content().strip()
-			}
+				'last_timestamp': t.xpath('.//span[contains(@class,"threadlist_reply_date")]')[0].text_content().strip()			}
 
 			imgs = []
 			for i in t.xpath('.//img[contains(@class,"threadlist_pic")]'):
@@ -206,21 +205,27 @@ class MyBaiduCrawler():
 				try: img_data = self.http_handler.request(img_url)
 				except: self.logger.error('Retrieve img failed: %s' % img_url)
 				if img_data:
+					tmp_file = NamedTemporaryFile( delete=False)
+					tmp_file.write(img_data)
 					attchment = Attachment(	
 						source_url = img_url,
 						content_object=data,
-						file=File(TemporaryFile().write(img_data))
+						file=File(tmp_file)
 					).save()
+
+					# this will remove the tmp file from filesystem
+					tmp_file.close()
 
 from threading import Thread
 class MyRequestConsumer(Thread):
-	def __init__(self, handler):
+	def __init__(self, handler, chunk_size):
 		Thread.__init__(self)
 		self.logger = logging.getLogger('gkp')
 		self.http_handler = handler
+		self.chunk_size = chunk_size # how many requests to process per iteration
 
 	def run(self):
-		for i in range(2):
+		for i in range(self.chunk_size):
 			reqs = MyCrawlerRequest.objects.filter(is_processing=False).order_by('-created')[:1]
 			for r in reqs: 
 				r.is_processing = True
@@ -242,7 +247,7 @@ class MyRequestConsumer(Thread):
 			for m in reqs: m.delete()
 
 			# Sleep for random time between 1 ~ 3 second
-			secondsToSleep = randint(1, 5)
+			secondsToSleep = randint(1, 60)
 			print('%s sleeping fo %d seconds...' % (self.getName(), secondsToSleep))
 			time.sleep(secondsToSleep)
  
@@ -270,8 +275,8 @@ def main():
 	retries = Retry(connect=5, read=2, redirect=5)
 	http = PoolManager(retries=retries, timeout=Timeout(total=15.0))
 
-	for i in range(1):
-		consumer = MyRequestConsumer(PlainUtility(http))
+	for i in range(int(sys.argv[1])):
+		consumer = MyRequestConsumer(PlainUtility(http), int(sys.argv[2]))
 		consumer.setName('Consumer %d'%i)
 		print 'Starting.... thread %s'%consumer.getName()
 		consumer.start()
