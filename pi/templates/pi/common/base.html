@@ -376,8 +376,11 @@
 		j$('a[data-toggle="tab"]:first').tab('show');	
 
 		// initialize all tooltips
-		j$('[data-toggle="tooltip"]').tooltip();			
+		j$('[data-toggle="tooltip"]').tooltip();
 
+	 j$('.dropdown-menu').find('form').click(function (e) {
+	    e.stopPropagation();
+	    });
 	</script>
 {% endblock %} <!-- end of block JS -->
 
