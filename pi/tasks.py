@@ -1,6 +1,8 @@
-#!/usr/bin/python  
 # -*- coding: utf-8 -*- 
-import sys,time,os,gc,csv
+from __future__ import absolute_import
+
+from celery import shared_task
+
 import lxml.html
 import urllib, urllib2
 import simplejson as json
@@ -15,18 +17,28 @@ import time
 import hashlib
 from urllib3 import PoolManager, Retry, Timeout
 from tempfile import NamedTemporaryFile
-
-# setup Django
-import django
-sys.path.append(os.path.join(os.path.dirname(__file__), 'gaokao'))
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gaokao.settings")
-from django.conf import settings
-from django.utils import timezone
 from django.core.files import File
-
-# import models
 from pi.models import *
-from pi.crawler import MyBaiduCrawler
+
+# create logger with 'spam_application'
+logger = logging.getLogger('gkp')
+logger.setLevel(logging.DEBUG)
+# create file handler which logs even debug messages
+fh = logging.FileHandler('/tmp/gkp.log')
+fh.setLevel(logging.DEBUG)
+# create console handler with a higher log level
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+# create formatter and add it to the handlers
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fh.setFormatter(formatter)
+ch.setFormatter(formatter)
+# add the handlers to the logger
+logger.addHandler(fh)
+logger.addHandler(ch)
+
+retries = Retry(connect=5, read=2, redirect=5)
+http_manager = PoolManager(retries=retries, timeout=Timeout(total=15.0))
 
 class PlainUtility():
 	def __init__(self, http):
@@ -216,71 +228,13 @@ class MyBaiduCrawler():
 					# this will remove the tmp file from filesystem
 					tmp_file.close()
 
-from threading import Thread
-class MyRequestConsumer(Thread):
-	def __init__(self, handler, chunk_size):
-		Thread.__init__(self)
-		self.logger = logging.getLogger('gkp')
-		self.http_handler = handler
-		self.chunk_size = chunk_size # how many requests to process per iteration
+@shared_task
+def test(param):
+    return 'The test task executed with argument "%s" ' % param
 
-	def run(self):
-		for i in range(self.chunk_size):
-			reqs = MyCrawlerRequest.objects.filter(is_processing=False).order_by('-created')[:1]
-			for r in reqs: 
-				r.is_processing = True
-				r.save()
-
-			self.logger.info(str(i)+':\t'*6+'Current TOR IP: %s'%self.http_handler.current_ip())
-
-			self.logger.info('Queue size %d'%MyCrawlerRequest.objects.count())
-
-			targets = list(set([(t.source,json.dumps(t.params)) for t in reqs]))
-			
-			self.logger.info('Downsized to %d'%len(targets))
-
-			for (source,params) in targets:
-				if source == 1: # baidu tieba
-					MyBaiduCrawler(self.http_handler).consumer(json.loads(params))
-
-			# clear queue for all other requests since data have been updated
-			for m in reqs: m.delete()
-
-			# Sleep for random time between 1 ~ 3 second
-			secondsToSleep = randint(1, 60)
-			print('%s sleeping fo %d seconds...' % (self.getName(), secondsToSleep))
-			time.sleep(secondsToSleep)
- 
-
-def main():
-	django.setup()
-
-	# create logger with 'spam_application'
-	logger = logging.getLogger('gkp')
-	logger.setLevel(logging.DEBUG)
-	# create file handler which logs even debug messages
-	fh = logging.FileHandler('/tmp/gkp.log')
-	fh.setLevel(logging.DEBUG)
-	# create console handler with a higher log level
-	ch = logging.StreamHandler()
-	ch.setLevel(logging.DEBUG)
-	# create formatter and add it to the handlers
-	formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-	fh.setFormatter(formatter)
-	ch.setFormatter(formatter)
-	# add the handlers to the logger
-	logger.addHandler(fh)
-	logger.addHandler(ch)
-
-	retries = Retry(connect=5, read=2, redirect=5)
-	http = PoolManager(retries=retries, timeout=Timeout(total=15.0))
-
-	for i in range(int(sys.argv[1])):
-		consumer = MyRequestConsumer(PlainUtility(http), int(sys.argv[2]))
-		consumer.setName('Consumer %d'%i)
-		print 'Starting.... thread %s'%consumer.getName()
-		consumer.start()
-
-	
-if __name__=='__main__':
-	main()
+@shared_task
+def baidu_consumer(param):
+	http_agent = PlainUtility(http_manager)
+	'The test task executed with argument "%s" ' % json.dumps(param)
+	crawler = MyBaiduCrawler(http_agent)
+	crawler.consumer(param)

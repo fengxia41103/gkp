@@ -200,3 +200,10 @@ elif DEPLOY_TYPE=='production':
 
 
     #STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+
+# Celery redis
+# CELERY SETTINGS
+BROKER_URL = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'

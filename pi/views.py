@@ -840,7 +840,8 @@ class AnalysisSchoolByProvince(TemplateView):
 #	3rd party data integration views
 #
 ###################################################
-import urllib2
+from tasks import baidu_consumer
+
 class IntegrationBaiduTiebaAJAX(TemplateView):
 	'''
 		AJAX post view
@@ -860,7 +861,10 @@ class IntegrationBaiduTiebaAJAX(TemplateView):
 
 		# read baidu
 		params = {'keyword':school.name}
-		MyCrawlerRequest(source=1,params=json.dumps(params)).save()
+
+		# send a 3rd party service request
+		#MyCrawlerRequest(source=1,params=json.dumps(params)).save()
+		baidu_consumer.delay(params)
 
 		feeds = MyBaiduStream.objects.filter(school=school).order_by('-last_updated')[:100]
 		content = loader.get_template(self.template_name)
