@@ -378,13 +378,6 @@
 		// initialize all tooltips
 		j$('[data-toggle="tooltip"]').tooltip();			
 
-		// dropdown slide fade effect
-		j$('.navbar .dropdown').click(function() {
-	    	j$(this).find('.dropdown-menu').first().stop(true, true).slideToggle(400);
-            e.preventDefault();
-            e.stopPropagation();// prevent the default anchor functionality
-            j$(this).dropdown('toggle');	    	
-	    });
 	</script>
 {% endblock %} <!-- end of block JS -->
 
