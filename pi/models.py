@@ -640,6 +640,8 @@ class MyUserProfile(models.Model):
 			verbose_name = u'学位类别',
 			choices = DEGREE_TYPE_CHOICES		
 		)
+	school_bookmarks = models.ManyToManyField('MySchool', related_name='bookmarks')
+	school_xouts = models.ManyToManyField('MySchool',related_name='xouts')
 
 class MyBaiduStream(MyBaseModel):
 	school = models.ForeignKey(

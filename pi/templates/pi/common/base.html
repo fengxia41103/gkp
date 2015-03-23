@@ -40,7 +40,7 @@
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
 	<!-- easyui stylesheets -->
-	<link rel="stylesheet" type="text/css" href="{% static 'easyui/themes/default/easyui.css' %}">
+	<!--link rel="stylesheet" type="text/css" href="{% static 'easyui/themes/default/easyui.css' %}"-->
 	<link rel="stylesheet" type="text/css" href="{% static 'easyui/themes/icon.css' %}">
 
 	<!-- Include *at least* the core style and default theme -->
@@ -115,36 +115,6 @@
 					</ul>
 				</li>
 
-				<!-- li class="dropdown">
-					<a href="" class="" data-toggle="dropdown">
-						数据Crawler
-						<b class="caret"></b>
-					</a>
-					<ul class="dropdown-menu">
-						<li><a href="{% url 'admission_school_crawler' %}">高考派分数线数据 school</a></li>
-						<li><a href="{% url 'admission_major_crawler' %}">高考派分数线数据 major</a></li>
-						<li><a href="{% url 'school_crawler' %}">高考派School数据</a></li>
-						<li><a href="{% url 'major_crawler' %}">高考派Major数据</a></li>
-					</ul>
-				</li>
-				<li class="dropdown">
-					<a href="" class="" data-toggle="dropdown">
-						数据导入
-						<b class="caret"></b>
-					</a>
-					<ul class="dropdown-menu">
-						<li><a href="{% url 'import_admission_school' %}">Admission by school</a></li>
-						<li><a href="{% url 'import_admission_major' %}">Admission by major</a></li>
-						<li><a href="{% url 'import_major' %}">Major codes</a></li>
-					</ul>
-				</li>
-
-				<li>
-					<a href="{% url 'school_map_filter' %}">
-						<i class="fa fa-map-marker"></i>
-						GoogleMap
-					</a>
-				</li-->
 				<li>
 					<a href="{% url 'school_echart_map_filter' %}">
 						<i class="fa fa-university"></i>
@@ -407,6 +377,14 @@
 
 		// initialize all tooltips
 		j$('[data-toggle="tooltip"]').tooltip();			
+
+		// dropdown slide fade effect
+		j$('.navbar .dropdown').click(function() {
+	    	j$(this).find('.dropdown-menu').first().stop(true, true).slideToggle(400);
+            e.preventDefault();
+            e.stopPropagation();// prevent the default anchor functionality
+            j$(this).dropdown('toggle');	    	
+	    });
 	</script>
 {% endblock %} <!-- end of block JS -->
 

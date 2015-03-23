@@ -271,13 +271,6 @@ class MyAdmissionBySchoolDelete (DeleteView):
 		context['list_url'] = reverse_lazy('admission_school_list')
 		return context
 
-def admission_school_crawler_view (request):
-	base_url = 'http://www.gaokaopai.com/fenshuxian'
-	crawler = MyCrawler()
-	crawler.thread_fenshu_crawler(base_url, 'school')
-
-	return HttpResponseRedirect(reverse_lazy('admission_school_list'))
-
 ###################################################
 #
 #	MyAdmissionByMajor views
@@ -345,13 +338,6 @@ class MyAdmissionByMajorDelete (DeleteView):
 		context['title'] = u'删除fenshuxian(admission)'
 		context['list_url'] = reverse_lazy('admission_major_list')
 		return context
-
-def admission_major_crawler_view (request):
-	base_url = 'http://www.gaokaopai.com/fenshuxian-sct-2-p'
-	crawler = MyCrawler()
-	crawler.thread_fenshu_crawler(base_url, 'major')
-
-	return HttpResponseRedirect(reverse_lazy('admission_major_list'))	
 
 ###################################################
 #
@@ -452,58 +438,11 @@ class MyMajorDetail(DetailView):
 		# return to client
 		return HttpResponse(json.dumps(result), content_type='application/javascript')			
 
-def import_major (request):
-	code_pat=re.compile('\d+[TK]*')
-	degree_pat = re.compile('(?P<name>[^(]+)[(](?P<degree>[^)]+)[)]')
-
-	content = open(os.path.join(settings.MEDIA_ROOT,'major_std_2.csv'), 'r').read().split('\n')
-	for (code,name) in filter(lambda x: len(x)==2 and code_pat.search(x[0]) is not None, [c.split(',') for c in content]):
-		code = code_pat.search(code.strip()).group()
-	
-		if degree_pat.search(name):
-			degree = degree_pat.search(name).group('degree')
-			name = degree_pat.search(name).group('name')			
-		else:
-			degree = None
-		if '应用化学' in name: print 'here', code, name, degree
-
-		if len(code) == 2: # this is category
-			cat, created = MyMajorCategory.objects.get_or_create(code=code,name=name)
-		elif len(code) == 4: # this is subcategory
-			subcat, created = MyMajorSubcategory.objects.get_or_create(code=code,name=name)
-			cat,created = MyMajorCategory.objects.get_or_create(code=code[:2])
-			subcat.category=cat
-			subcat.save()
-		else: # this is major
-			major,created = MyMajor.objects.get_or_create(name=name.strip())
-			major.code = code.strip()
-			
-			if 'T' in code: major.is_specialized = True
-			if 'K' in code: major.is_gov_controlled = True
-
-			subcat, created = MyMajorSubcategory.objects.get_or_create(code=code[:4])
-			major.subcategory = subcat
-			major.degree = degree
-			if int(major.code[:2])>13:
-				major.how_long = u'三年'
-				major.degree_type = u'专科'
-			else:
-				major.how_long = u'四年'
-				major.degree_type = u'本科'
-			major.save()
-	return HttpResponseRedirect(reverse_lazy('major_list'))	
-
-def major_crawler_view (request):
-	crawler = MyCrawler()
-	crawler.thread_major_crawler()
-	return HttpResponseRedirect(reverse_lazy('major_list'))	
-
 ###################################################
 #
 #	MySchool views
 #
 ###################################################
-
 class MySchoolListFilter (FilterSet):
 	class Meta:
 		model = MySchool
@@ -625,12 +564,28 @@ class MySchoolEchartMapFilter(TemplateView):
 		context['analysis_url'] = reverse_lazy('analysis_school_summary_ajax')
 		return context
 
-def school_crawler_view (request):
-	base_url = 'http://www.gaokaopai.com/daxue-jianjie'
-	crawler = MyCrawler()
-	crawler.thread_school_crawler(base_url)
+@class_view_decorator(login_required)
+class MySchoolBookmark(TemplateView):
+	'''
+		AJAX post view
+	'''
+	template_name = 'pi/school/bookmark.html'
 
-	return HttpResponseRedirect(reverse_lazy('school_list'))	
+	def post(self,request):
+		obj_id = request.POST['obj_id']
+		school = MySchool.objects.get(id=int(obj_id))
+
+		# get user property obj
+		user_profile,created = MyUserProfile.objects.get_or_create(owner=request.user)
+
+		if request.POST['action'] == '1': user_profile.bookmarks.add(school)
+		elif request.POST['action'] == '2': pass
+
+		content = loader.get_template(self.template_name)
+		html= content.render(Context({'obj':school}))
+
+		return HttpResponse(json.dumps({'html':html}), 
+			content_type='application/javascript')	
 
 ###################################################
 #
