@@ -641,28 +641,6 @@ class MyUserProfile(models.Model):
 			choices = DEGREE_TYPE_CHOICES		
 		)
 
-class MyCrawlerRequest(models.Model):
-	'''
-		Internal used ONLY! 
-		Should be replaced by a queue system on the background later.
-	'''
-	DATA_SOURCE_CHOICES	=(
-		(1, u'百度贴吧'),
-		(2, u'新浪微博'),
-		)
-	created = models.DateTimeField(
-		auto_now_add=True,
-		verbose_name=u'Using crawler machine timestamp'
-		)	
-	source = models.IntegerField(
-			verbose_name = u'数据源',
-			choices = DATA_SOURCE_CHOICES
-		)
-	params = JSONField (
-			verbose_name = u'数据参数'
-		)
-	is_processing = models.BooleanField(default=False)
-
 class MyBaiduStream(MyBaseModel):
 	school = models.ForeignKey(
 		MySchool,

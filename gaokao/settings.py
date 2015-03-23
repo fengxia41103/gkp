@@ -57,7 +57,7 @@ INSTALLED_APPS = (
     'pagination_bootstrap', # django-pagination-bootstrap
     'crispy_forms', # django-crispy-forms
     #'bootstrap3', # django-bootstrap3
-    'debug_toolbar', # django-debug-toolbar
+    #'debug_toolbar', # django-debug-toolbar
     'pi', 
 )
 
@@ -163,7 +163,7 @@ COMPRESS_PRECOMPILERS = (
 )
 
 # django-debug-toolbar
-DEBUG_TOOLBAR_PATCH_SETTINGS = False
+#DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
 # django-devserver
 DEVSERVER_MODULES = (

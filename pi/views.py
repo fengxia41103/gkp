@@ -863,7 +863,6 @@ class IntegrationBaiduTiebaAJAX(TemplateView):
 		params = {'keyword':school.name}
 
 		# send a 3rd party service request
-		#MyCrawlerRequest(source=1,params=json.dumps(params)).save()
 		baidu_consumer.delay(params)
 
 		feeds = MyBaiduStream.objects.filter(school=school).order_by('-last_updated')[:100]
