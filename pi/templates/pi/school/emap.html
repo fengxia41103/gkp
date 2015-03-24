@@ -89,19 +89,10 @@
 
             myChart.on('click', function(param){
                 var province_id = param.data.p_id;
-
-                // ajax to server to get a list of markers that are within the viewport
-                j$.post("{{ analysis_url }}", // passed in from view                    
-                    { 
-                        'province':province_id,
-                        'cats':JSON.stringify([
-                            '本科',
-                        ]),
-                    }, 
-                    function(resp) { // success callback
-                        j$('#analysis-detail').html(resp['html']);
-                    },'json'
-                );                  
+                j$('div[data-type="school"]').each(function(){
+                    j$(this).hide();
+                });
+                j$('#accordion-'+province_id).show();
             });
         } // end of func        
 
@@ -117,8 +108,37 @@
 {% endblock %}
 
 {% block content %}
-    <div id="echart-canvas" class="" style="height:450px"></div>
     <div class="row" id="target">    
-        <div id="analysis-detail" class="col-md-12"></div>
+        <div id="echart-canvas" class="col-md-8" style="height:450px"></div>    
+        <div class="col-md-4">
+            {% regroup schools|dictsort:"province" by province as by_province_list %}
+            {% for province in by_province_list %}
+            <div class="panel-group" id="accordion-{{ province.grouper.id }}" data-type="school" style="display:none;">
+                <div class="panel panel-default" id="province-{{province.grouper.id}}">
+                    {% regroup province.list|dictsort:"city" by city as by_city_list %}
+                    {% for city in by_city_list %}
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion-{{province.grouper.id}}"
+                            href="#school-{{province.grouper.id}}-{{forloop.counter}}">
+                                {{ city.grouper }}
+                                <span class="badge pull-right">{{ city.list|length }}</span>
+                            </a>
+                            </h4>
+                        </div>        
+                        <div id="school-{{province.grouper.id}}-{{forloop.counter}}" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <ul class="list-inline">
+                                    {% for s in city.list %}
+                                        <li><a href="{% url 'school_detail' s.id %}">{{ s.name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>        
+            {% endfor %}            
+        </div>
     </div>
 {% endblock %}

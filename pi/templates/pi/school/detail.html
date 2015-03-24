@@ -7,6 +7,13 @@
 		<i class="fa fa-plus"></i>
 		edit
 	</a>
+
+	<div class="btn-group btn-toggle"> 
+    <button class="btn btn-lg btn-default">
+    	<i class="fa fa-heart"></i>
+    </button>
+    <button class="btn btn-lg btn-primary active">X-OUT</button>
+  	</div>
 {% endblock %}
 
 {% block detail-navbar %}
@@ -259,6 +266,13 @@
 		    event.preventDefault();
 		    j$(this).ekkoLightbox();
 		}); 
-	});
+
+		j$('.btn-toggle').click(function() {
+			j$(this).find('.btn').toggleClass('active');  
+
+			if (j$(this).find('.btn-primary').size()>0) {
+				j$(this).find('.btn').toggleClass('btn-primary');
+			}		
+		});
 </script>
 {% endblock %}

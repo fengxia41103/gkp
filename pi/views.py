@@ -559,6 +559,7 @@ class MySchoolEchartMapFilter(TemplateView):
 		context['echart_data'] = echart_data
 		context['echart_data_min'] = min([a[2] for a in echart_data])
 		context['echart_data_max'] = max([a[2] for a in echart_data])
+		context['schools'] =  schools.order_by('province')
 
 		# this url will be AJAX post to get a detail analysis HTML added to this page
 		context['analysis_url'] = reverse_lazy('analysis_school_summary_ajax')
