@@ -9,10 +9,10 @@
 	</a>
 
 	<div class="btn-group btn-toggle"> 
-    <button class="btn btn-lg btn-default">
+    <button class="btn btn-xs btn-default">
     	<i class="fa fa-heart"></i>
     </button>
-    <button class="btn btn-lg btn-primary active">X-OUT</button>
+    <button class="btn btn-xs btn-default">X-OUT</button>
   	</div>
 {% endblock %}
 
@@ -207,34 +207,35 @@
 		<i class="fa fa-university"></i>
 		招生院校推荐
 	</h4>
+
 	<div class="panel-group" id="accordion">
 		{% regroup related_schools|dictsort:"province" by province as by_school_province_list %}
 		{% for province in by_school_province_list %}	
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h4 class="panel-title">
-				<a data-toggle="collapse" data-parent="#accordion"
-				href="#school-{{forloop.counter}}">
-					{{ province.grouper }}
-					<span class="badge pull-right">{{ province.list|length }}</span>
-				</a>
-				</h4>
-			</div>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion"
+					href="#school-{{forloop.counter}}">
+						{{ province.grouper }}
+						<span class="badge pull-right">{{ province.list|length }}</span>
+					</a>
+					</h4>
+				</div>
 
-			<div id="school-{{forloop.counter}}" class="panel-collapse collapse">
-				<div class="panel-body">
-					<ul class="list-inline">
-						{% for o in province.list %}
-							<li>
-								<a href="{% url 'school_detail' o.id %}">{{ o }}</a>				
-							</li>						
-						{% endfor %}
-					</ul>
+				<div id="school-{{forloop.counter}}" class="panel-collapse collapse">
+					<div class="panel-body">
+						<ul class="list-inline">
+							{% for o in province.list %}
+								<li>
+									<a href="{% url 'school_detail' o.id %}">{{ o }}</a>				
+								</li>						
+							{% endfor %}
+						</ul>
+					</div>
 				</div>
 			</div>
-		</div>
 		{% endfor %}
-	</div>
+	</div>		
 {% endblock %}
 
 {% block custom_js %}
@@ -262,8 +263,8 @@
 	j$(document).ready(function(){
 		setTimeout(get_bd_tb,500);
 
-		j$(document).delegate('*[data-toggle="lightbox"]', 'click', function(event) {
-		    event.preventDefault();
+		j$(document).delegate('*[data-toggle="lightbox"]', 'click', function(e) {
+		    e.preventDefault();
 		    j$(this).ekkoLightbox();
 		}); 
 
@@ -274,5 +275,6 @@
 				j$(this).find('.btn').toggleClass('btn-primary');
 			}		
 		});
+	});
 </script>
 {% endblock %}

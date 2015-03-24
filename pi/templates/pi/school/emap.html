@@ -109,34 +109,34 @@
 
 {% block content %}
     <div class="row" id="target">    
-        <div id="echart-canvas" class="col-md-8" style="height:450px"></div>    
-        <div class="col-md-4">
+        <div id="echart-canvas" class="col-md-9" style="height:450px"></div>    
+        <div class="col-md-3">
             {% regroup schools|dictsort:"province" by province as by_province_list %}
             {% for province in by_province_list %}
             <div class="panel-group" id="accordion-{{ province.grouper.id }}" data-type="school" style="display:none;">
-                <div class="panel panel-default" id="province-{{province.grouper.id}}">
-                    {% regroup province.list|dictsort:"city" by city as by_city_list %}
-                    {% for city in by_city_list %}
-                        <div class="panel-heading">
-                            <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion-{{province.grouper.id}}"
-                            href="#school-{{province.grouper.id}}-{{forloop.counter}}">
-                                {{ city.grouper }}
-                                <span class="badge pull-right">{{ city.list|length }}</span>
-                            </a>
-                            </h4>
-                        </div>        
-                        <div id="school-{{province.grouper.id}}-{{forloop.counter}}" class="panel-collapse collapse">
-                            <div class="panel-body">
-                                <ul class="list-inline">
-                                    {% for s in city.list %}
-                                        <li><a href="{% url 'school_detail' s.id %}">{{ s.name }}</a></li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
+                {% regroup province.list|dictsort:"city" by city as by_city_list %}
+                {% for city in by_city_list %}
+                <div class="panel panel-default" id="province-{{province.grouper.id}}">                    
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion-{{province.grouper.id}}"
+                        href="#school-{{province.grouper.id}}-{{forloop.counter}}">
+                            {{ city.grouper }}
+                            <span class="badge pull-right">{{ city.list|length }}</span>
+                        </a>
+                        </h4>
+                    </div>        
+                    <div id="school-{{province.grouper.id}}-{{forloop.counter}}" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <ul class="list-inline">
+                                {% for s in city.list %}
+                                    <li><a href="{% url 'school_detail' s.id %}">{{ s.name }}</a></li>
+                                {% endfor %}
+                            </ul>
                         </div>
-                    {% endfor %}
-                </div>
+                    </div>
+                </div>                        
+                {% endfor %}
             </div>        
             {% endfor %}            
         </div>

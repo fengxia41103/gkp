@@ -557,8 +557,10 @@ class MySchoolEchartMapFilter(TemplateView):
 
 		echart_data = [(key.id, key,len(value)) for key,value in result.iteritems()]
 		context['echart_data'] = echart_data
-		context['echart_data_min'] = min([a[2] for a in echart_data])
-		context['echart_data_max'] = max([a[2] for a in echart_data])
+		try: context['echart_data_min'] = min([a[2] for a in echart_data])
+		except: context['echart_data_min'] = 0
+		try: context['echart_data_max'] = max([a[2] for a in echart_data])
+		except: context['echart_data_max'] = 0
 		context['schools'] =  schools.order_by('province')
 
 		# this url will be AJAX post to get a detail analysis HTML added to this page
