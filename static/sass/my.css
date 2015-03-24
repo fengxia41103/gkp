@@ -306,3 +306,11 @@ body {
 .my-h2-border {
   padding-bottom: 7px; }
 
+#school-header {
+  min-height: 250px;
+  padding: 50px 30px;
+  color: #fefefe;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat; }
+

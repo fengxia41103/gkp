@@ -2,7 +2,8 @@
 
 {% load staticfiles %}
 {% block page-header %}
-	<div >
+
+	<div id="school-header" style="background-image:url({% static 'img/banner/banner.jpg' %});">
 		{{ object.name }}
 		<a href="{% url 'school_edit' object.id %}" class="btn btn-xs addlink">
 			<i class="fa fa-plus"></i>
@@ -10,11 +11,30 @@
 		</a>
 
 		<div class="btn-group pull-right"> 
-		    <button class="btn btn-small" id="btn-school-bookmark" style="border-right:1px solid #fefefe;margin-right:1px;" data-toggle="tooltip" title="添加到我的收藏中">
+		    <button 
+		    	class="btn btn-small ladda-button" 
+		    	id="btn-school-bookmark" 
+		    	style="border-right:1px solid #fefefe;margin-right:1px;" 
+		    	data-style="expand-left" 
+				data-size="l" 
+				data-spinner-color="#333" 
+				data-toggle="tooltip" 
+				title="添加到我的收藏中"
+			>
+				<span class="ladda-label"></span>			
 		    	<i class="fa fa-heart-o"></i>
 		    	Bookmark
 		    </button>
-		    <button class="btn btn-small" data-toggle="tooltip" title="我再也不想看见这个学校啦 >_<" id="btn-school-xout">
+		    <button 
+		    	class="btn btn-small ladda-button" 
+				data-style="expand-right" 
+				data-size="l" 
+				data-spinner-color="#333" 		    
+		    	data-toggle="tooltip" 
+		    	title="我再也不想看见这个学校啦 >_<" 
+		    	id="btn-school-xout"
+		    >
+				<span class="ladda-label"></span>			    
 		    	<i class="fa fa-thumbs-o-down"></i>
 		    	X-OUT
 		    </button>
@@ -276,6 +296,9 @@
 		}); 
 
 		j$('#btn-school-bookmark').click(function(){
+			var l = Ladda.create(this);
+	 		l.start();
+
 	        // ajax to server to get a list of columns:4"markers that are within the viewport
 	        j$.post("{% url 'school_bookmark' %}", // passed in from view
 	            { 
@@ -288,10 +311,14 @@
 	            		j$('#btn-school-xout').removeClass('btn-primary');
 	            	}
 	            },'json'
-	        ).always(function(){      	
+	        ).always(function(){     
+	        	l.stop(); 	
 	        });			
 		});
 		j$('#btn-school-xout').click(function(){
+			var l = Ladda.create(this);
+	 		l.start();
+
 	        // ajax to server to get a list of columns:4"markers that are within the viewport
 	        j$.post("{% url 'school_bookmark' %}", // passed in from view
 	            { 
@@ -304,7 +331,8 @@
 	            		j$('#btn-school-bookmark').removeClass('btn-primary');
 	            	}
 	            },'json'
-	        ).always(function(){      	
+	        ).always(function(){  
+	        	l.stop();     	
 	        });			
 		});		
 
