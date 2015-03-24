@@ -2,19 +2,25 @@
 
 {% load staticfiles %}
 {% block page-header %}
-	{{ object.name }}
-	<a href="{% url 'school_edit' object.id %}" class="btn btn-xs addlink">
-		<i class="fa fa-plus"></i>
-		edit
-	</a>
+	<div >
+		{{ object.name }}
+		<a href="{% url 'school_edit' object.id %}" class="btn btn-xs addlink">
+			<i class="fa fa-plus"></i>
+			edit
+		</a>
 
-	<div class="btn-group pull-right"> 
-	    <button class="btn btn-xs btn-default" id="btn-school-bookmark" style="border-right:1px solid #fefefe;margin-right:1px;" data-toggle="tooltip" title="添加到我的收藏中">
-	    	<i class="fa fa-heart"></i>
-	    	Bookmark
-	    </button>
-	    <button class="btn btn-xs btn-default" data-toggle="tooltip" title="我再也不想看见这个学校啦 >_<" id="btn-school-xout">X-OUT</button>
+		<div class="btn-group pull-right"> 
+		    <button class="btn btn-small" id="btn-school-bookmark" style="border-right:1px solid #fefefe;margin-right:1px;" data-toggle="tooltip" title="添加到我的收藏中">
+		    	<i class="fa fa-heart-o"></i>
+		    	Bookmark
+		    </button>
+		    <button class="btn btn-small" data-toggle="tooltip" title="我再也不想看见这个学校啦 >_<" id="btn-school-xout">
+		    	<i class="fa fa-thumbs-o-down"></i>
+		    	X-OUT
+		    </button>
+	  	</div>
   	</div>
+	<small class="my-footer-banner">{{ object.en_name }}</small>
 {% endblock %}
 
 {% block detail-navbar %}
@@ -279,6 +285,7 @@
 	            function(resp) { // success callback
 	            	if (resp['status'] == 'ok'){
 	            		j$('#btn-school-bookmark').toggleClass('btn-primary');
+	            		j$('#btn-school-xout').removeClass('btn-primary');
 	            	}
 	            },'json'
 	        ).always(function(){      	
