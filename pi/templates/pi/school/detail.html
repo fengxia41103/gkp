@@ -8,11 +8,12 @@
 		edit
 	</a>
 
-	<div class="btn-group btn-toggle"> 
-    <button class="btn btn-xs btn-default">
-    	<i class="fa fa-heart"></i>
-    </button>
-    <button class="btn btn-xs btn-default">X-OUT</button>
+	<div class="btn-group pull-right"> 
+	    <button class="btn btn-xs btn-default" id="btn-school-bookmark" style="border-right:1px solid #fefefe;margin-right:1px;" data-toggle="tooltip" title="添加到我的收藏中">
+	    	<i class="fa fa-heart"></i>
+	    	Bookmark
+	    </button>
+	    <button class="btn btn-xs btn-default" data-toggle="tooltip" title="我再也不想看见这个学校啦 >_<" id="btn-school-xout">X-OUT</button>
   	</div>
 {% endblock %}
 
@@ -268,13 +269,38 @@
 		    j$(this).ekkoLightbox();
 		}); 
 
-		j$('.btn-toggle').click(function() {
-			j$(this).find('.btn').toggleClass('active');  
-
-			if (j$(this).find('.btn-primary').size()>0) {
-				j$(this).find('.btn').toggleClass('btn-primary');
-			}		
+		j$('#btn-school-bookmark').click(function(){
+	        // ajax to server to get a list of columns:4"markers that are within the viewport
+	        j$.post("{% url 'school_bookmark' %}", // passed in from view
+	            { 
+	                'obj_id':{{ object.id }},
+	                'action':1
+	            }, 
+	            function(resp) { // success callback
+	            	if (resp['status'] == 'ok'){
+	            		j$('#btn-school-bookmark').toggleClass('btn-primary');
+	            	}
+	            },'json'
+	        ).always(function(){      	
+	        });			
 		});
+		j$('#btn-school-xout').click(function(){
+	        // ajax to server to get a list of columns:4"markers that are within the viewport
+	        j$.post("{% url 'school_bookmark' %}", // passed in from view
+	            { 
+	                'obj_id':{{ object.id }},
+	                'action':2
+	            }, 
+	            function(resp) { // success callback
+	            	if (resp['status'] == 'ok'){
+	            		j$('#btn-school-xout').toggleClass('btn-primary');
+	            		j$('#btn-school-bookmark').removeClass('btn-primary');
+	            	}
+	            },'json'
+	        ).always(function(){      	
+	        });			
+		});		
+
 	});
 </script>
 {% endblock %}

@@ -572,7 +572,7 @@ class MySchoolBookmark(TemplateView):
 	'''
 		AJAX post view
 	'''
-	template_name = 'pi/school/bookmark.html'
+	template_name = ''
 
 	def post(self,request):
 		obj_id = request.POST['obj_id']
@@ -581,13 +581,16 @@ class MySchoolBookmark(TemplateView):
 		# get user property obj
 		user_profile,created = MyUserProfile.objects.get_or_create(owner=request.user)
 
-		if request.POST['action'] == '1': user_profile.bookmarks.add(school)
-		elif request.POST['action'] == '2': pass
+		if request.POST['action'] == '1': # toogle bookmark
+			if school in user_profile.school_bookmarks.all(): user_profile.school_bookmarks.remove(school)
+			else: user_profile.school_bookmarks.add(school)
+			user_profile.school_xouts.remove(school)
+		elif request.POST['action'] == '2':
+			user_profile.school_bookmarks.remove(school)
+			if school in user_profile.school_xouts.all(): user_profile.school_xouts.remove(school)
+			else: user_profile.school_xouts.add(school)			
 
-		content = loader.get_template(self.template_name)
-		html= content.render(Context({'obj':school}))
-
-		return HttpResponse(json.dumps({'html':html}), 
+		return HttpResponse(json.dumps({'status':'ok'}), 
 			content_type='application/javascript')	
 
 ###################################################
