@@ -55,24 +55,6 @@
 </div>
 
 <script type="text/javascript">
-	// initialize all tooltips
- 	j$('[data-toggle="tooltip"]').tooltip();	
-
-    j$('a[data-toggle="tab"]').click(function ( e ) {
-        e.preventDefault ();
-        j$(this).tab('show');
-    });  
-
-    j$('a[data-toggle="tab"]').on('shown.bs.tab',function(e){
-    	e.preventDefault();
-    	var tab_id = j$(this).attr('href');
-    	var activeTab = j$(e.target).text();   
-    	get_detail(this, tab_id,{
-                'province':{{ p_id }},
-                'cats':JSON.stringify([activeTab])
-            });	
-    });
-
     function get_detail(obj, tab_id, filters){
 		// loading spinner
 		var l = Ladda.create(obj);
@@ -91,5 +73,22 @@
 
     j$(document).ready(function(){
     	j$('a[data-toggle="tab"]:first').tab('show');
+  		j$('a[data-toggle="tab"]').click(function ( e ) {
+		    e.preventDefault ();
+		    j$(this).tab('show');
+		});  
+
+		j$('a[data-toggle="tab"]').on('shown.bs.tab',function(e){
+			e.preventDefault();
+			var tab_id = j$(this).attr('href');
+			var activeTab = j$(e.target).text();   
+			get_detail(this, tab_id,{
+		            'province':{{ p_id }},
+		            'cats':JSON.stringify([activeTab])
+		        });	
+		}); 
+
+		// initialize all tooltips
+		j$('[data-toggle="tooltip"]').tooltip();	
     });
 </script>

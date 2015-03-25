@@ -1,0 +1,20 @@
+<a href="" class="" data-toggle="dropdown">
+	My bookmarks
+	<b class="caret"></b>
+</a>
+<ul class="dropdown-menu my-dropdown-container">
+	{% regroup schools|dictsort:"city" by city as by_city_list %}
+	{% for city in by_city_list %}
+	<h4 class="page-header">{{city.grouper}}</h4>
+	<ul class="list-unstyled">
+		{% for s in city.list %}
+		<li>
+			<a href="{% url 'school_detail' s.id %}">
+			<i class="fa fa-external-link"></i>
+			{{ s }}
+			</a>
+		</li>
+		{% endfor %}
+	</ul>
+	{% endfor %}
+</ul>

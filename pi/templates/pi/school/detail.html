@@ -69,13 +69,7 @@
     	</a>
     </li>    
 </ul>
-
-	{% if user.myuserprofile.school_bookmarks.all %}
-		{% for s in user.myuserprofile.school_bookmarks.all %}
-			{{ s }}
-		{% endfor %}
-	{% endif %}
-{% endblock %}China
+{% endblock %}
 
 {% block breadcrumb %}
 <ol class="breadcrumb">
@@ -330,6 +324,7 @@
 	            		j$('#btn-school-bookmark').toggleClass('btn-primary');
 	            		j$('#btn-school-xout').removeClass('btn-primary');
 	            	}
+	            	update_user_bookmarks();
 	            },'json'
 	        ).always(function(){     
 	        	l.stop(); 	
@@ -350,6 +345,7 @@
 	            		j$('#btn-school-xout').toggleClass('btn-primary');
 	            		j$('#btn-school-bookmark').removeClass('btn-primary');
 	            	}
+	            	update_user_bookmarks();
 	            },'json'
 	        ).always(function(){  
 	        	l.stop();     	

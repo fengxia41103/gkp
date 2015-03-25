@@ -572,7 +572,13 @@ class MySchoolBookmark(TemplateView):
 	'''
 		AJAX post view
 	'''
-	template_name = ''
+	template_name = 'pi/school/bookmark.html'
+
+	def get_context_data(self, **kwargs):
+		context = super(MySchoolBookmark, self).get_context_data(**kwargs)
+		user_profile,created = MyUserProfile.objects.get_or_create(owner=self.request.user)
+		context['schools']=user_profile.school_bookmarks.all()
+		return context	
 
 	def post(self,request):
 		obj_id = request.POST['obj_id']

@@ -54,18 +54,17 @@
 	{# lightbos http://ashleydw.github.io/lightbox/ #} 
 	<link rel="stylesheet" type="text/css" href="{% static 'lightbox/ekko-lightbox.css' %}">
 
-	<link rel="stylesheet" type="text/css" href="{% static 'sass/my.css' %}">	
-	
 	{# loading spinner: http://msurguy.github.io/ladda-bootstrap/ #}
 	<link rel="stylesheet" type="text/css" href="{% static 'loading/ladda-themeless.min.css' %}">
 	
 	{# DataTable #}
 	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.5/css/jquery.dataTables.css">
 
+	<link rel="stylesheet" type="text/css" href="{% static 'sass/my.css' %}">	
+	
 	<!-- JQuery lib -->
 	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
 	<!-- script src="{% static 'jquery/dist/jquery.min.js' %}"></script -->
-
 {% endblock %}
 
 {# extra css code #}
@@ -130,21 +129,29 @@
 						<i class="fa fa-university"></i>
 						学校浏览
 					</a>
-				</li>					
+				</li>		
+
 				<li><a href="#about">About</a></li>
 				<li><a href="#contact">
 					<i class="fa fa-thumbs-up"></i>
 					Contact</a>
 				</li>
-			</ul>
+			</ul> 
 			<ul class="nav navbar-nav navbar-right visible-md visible-lg">	
+
+				{# bookmarks #}
+				{% if user.myuserprofile.school_bookmarks.all %}
+				<li class="dropdown" id="user-bookmarks">
+
+				</li>
+				{% endif %}
+
 				<li class="dropdown" data-toggle="tooltip" title="更新你的用户信息">
 					<a href="" class="" data-toggle="dropdown">
 					Preferences
 						<i class="fa fa-gears"></i>
-						<i class="fa fa-caret-down"></i>
 					</a>
-					<div id="user-config" class="dropdown-menu" style="min-width:250px; padding:0 20px 20px 20px;">
+					<div id="user-config" class="dropdown-menu my-dropdown-container">
 						<h4 class="page-header">
 							<b class="fa fa-cogs"></b>
 							你的个人情况
@@ -280,7 +287,7 @@
 	<script src="{% static 'js/fuelux.min.js' %}"></script>
 
 	<!-- easyui js -->	
-	<script type="text/javascript" src="{% static 'easyui/jquery.easyui.min.js' %}"></script>
+	<!--script type="text/javascript" src="{% static 'easyui/jquery.easyui.min.js' %}"></script-->
 
 	<!-- syntaxhighlighter -->
 	<script type="text/javascript" src="{% static 'syntaxhighlighter/scripts/shCore.js' %}"></script>
@@ -302,8 +309,6 @@
     <script type="text/javascript"
     	src="{% static 'loading/ladda.min.js' %}">
     </script>    
-	
-
 
 	{# DataTable #}
     <script type="text/javascript"
@@ -317,11 +322,6 @@
     <script type="text/javascript"
     	src="{% static 'lightbox/ekko-lightbox.js' %}">
     </script>
-
-        <!-- Bootflat's JS files.-->
-        <script src="https://bootflat.github.io/bootflat/js/icheck.min.js"></script>
-        <script src="https://bootflat.github.io/bootflat/js/jquery.fs.selecter.min.js"></script>
-        <script src="https://bootflat.github.io/bootflat/js/jquery.fs.stepper.min.js"></script>
 
 	<script type="text/javascript">
 		var j$ = jQuery.noConflict();
@@ -373,36 +373,52 @@
         	}); 			
 		}
 
-		// common global widget initializations
-		j$('table.my-datatable').dataTable({
-			paging: false,
-			info:false,
-			"pagingType": "simple"
-		});
+		function update_user_bookmarks(){
+	        j$.get("{% url 'school_bookmark' %}", // passed in from view
+	            function(resp) { // success callback
+	            	j$('#user-bookmarks').html(resp);
+	            }
+	        ).always(function(){     
+	        });	
+		}
 
-		// register tab events
-	   j$('a[data-toggle="tab"]').click(function ( e ) {
-	        e.preventDefault ();
-	        j$(this).tab('show');
-	    });  
+		j$(document).ready(function(){
+			// common global widget initializations
+			j$('table.my-datatable').dataTable({
+				paging: false,
+				info:false,
+				"pagingType": "simple"
+			});
 
-	   // show first tab after page loading
-		j$('a[data-toggle="tab"]:first').tab('show');	
+			// register tab events
+			j$('a[data-toggle="tab"]').click(function ( e ) {
+			    e.preventDefault ();
+			    j$(this).tab('show');
+			});  
 
-		// initialize all tooltips
-		j$('[data-toggle="tooltip"]').tooltip();
+			// show first tab after page loading
+			j$('a[data-toggle="tab"]:first').tab('show');	
 
-		// navbar form spinner
-		// loading spinner
-		j$('#btn-save-user-property').click(function(){
-			var l = Ladda.create(this);
-	 		l.start();
-	 		j$(this).parents('form:first').submit();
-		});
+			// initialize all tooltips
+			j$("[data-toggle='tooltip']").tooltip({
+				'placement': 'bottom'
+			});
 
-		// navbar dropdown form
-		j$('.dropdown-menu').find('form').click(function (e) {
-			e.stopPropagation();
+			// navbar form spinner
+			// loading spinner
+			j$('#btn-save-user-property').click(function(){
+				var l = Ladda.create(this);
+					l.start();
+					j$(this).parents('form:first').submit();
+			});
+
+			// navbar dropdown form
+			j$('.dropdown-menu').find('form').click(function (e) {
+				e.stopPropagation();
+			});
+
+			// populate bookmarks
+			update_user_bookmarks();
 		});
 	</script>
 {% endblock %} <!-- end of block JS -->
