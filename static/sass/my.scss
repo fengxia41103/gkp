@@ -381,3 +381,13 @@ body {
   background-position: center center;
   background-repeat: no-repeat;
 }
+
+.background-shade{
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0,0,0,.5);
+  background-size: cover;  
+}

@@ -2,8 +2,7 @@
 
 {% load staticfiles %}
 {% block page-header %}
-
-	<div id="school-header" style="background-image:url({% static 'img/banner/banner.jpg' %});">
+	<div>
 		{{ object.name }}
 		<a href="{% url 'school_edit' object.id %}" class="btn btn-xs addlink">
 			<i class="fa fa-plus"></i>
@@ -70,6 +69,27 @@
     	</a>
     </li>    
 </ul>
+
+	{% if user.myuserprofile.school_bookmarks.all %}
+		{% for s in user.myuserprofile.school_bookmarks.all %}
+			{{ s }}
+		{% endfor %}
+	{% endif %}
+{% endblock %}China
+
+{% block breadcrumb %}
+<ol class="breadcrumb">
+	<li>
+		<a href="{% url 'school_echart_map_filter' %}">全国</a>
+	</li>
+	<li>
+		<a href="{% url 'analysis_school_by_province' object.province.id %}">{{object.province}}</a>
+	</li>
+	<li>
+		<a href="{% url 'analysis_school_by_province' 1 %}">{{ object.city }}</a>
+	</li>
+	<li class="active">{{ object.name }}</li>
+</ol>
 {% endblock %}
 
 {% block detail-content %}
