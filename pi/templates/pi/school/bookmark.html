@@ -8,13 +8,48 @@
 	<h4 class="page-header">{{city.grouper}}</h4>
 	<ul class="list-unstyled">
 		{% for s in city.list %}
-		<li>
+		<li class="">
 			<a href="{% url 'school_detail' s.id %}">
-			<i class="fa fa-external-link"></i>
 			{{ s }}
 			</a>
+			<span data-toggle="school-xout" 
+				class="glyphicon glyphicon-remove my-filter-value-close ladda-button pull-right" 
+				obj-id="{{s.id}}"
+				data-style="expand-right" 
+				data-size="l" 
+				data-spinner-color="#333"
+				data-toggle="tooltip"
+				title="Remove {{s.name }} from my bookmarks"				
+			>
+				<span class="ladda-label"></span>	
+			</span>			
 		</li>
 		{% endfor %}
 	</ul>
 	{% endfor %}
 </ul>
+
+<script type="text/javascript">
+	j$("[data-toggle='school-xout']").click(function(e){
+		e.stopPropagation();
+		var l = Ladda.create(this);
+ 		l.start();
+ 		var obj_id = j$(this).attr('obj-id');
+
+        // ajax to server to get a list of columns:4"markers that are within the viewport
+        j$.post("{% url 'school_bookmark' %}", // passed in from view
+            { 
+                'obj_id':obj_id,
+                'action':3
+            }, 
+            function(resp) { // success callback
+            	if (resp['status'] == 'ok'){
+	            	update_user_bookmarks();
+	            	j$('#btn-school-bookmark').removeClass('btn-primary');
+            	}
+            },'json'
+        ).always(function(){  
+        	l.stop();     	
+        });			
+	});	
+</script>

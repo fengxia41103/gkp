@@ -10,8 +10,13 @@
 		</a>
 
 		<div class="btn-group pull-right"> 
-		    <button 
-		    	class="btn btn-small ladda-button" 
+		    <button
+		    	{% if object in user.myuserprofile.school_bookmarks.all %} 
+		    		class="btn btn-small ladda-button btn-primary"
+		    	{% else %}
+		    		class="btn btn-small ladda-button" 
+		    	{% endif %}
+
 		    	id="btn-school-bookmark" 
 		    	style="border-right:1px solid #fefefe;margin-right:1px;" 
 		    	data-style="expand-left" 
@@ -25,7 +30,12 @@
 		    	Bookmark
 		    </button>
 		    <button 
-		    	class="btn btn-small ladda-button" 
+		    	{% if object in user.myuserprofile.school_xouts.all %} 
+		    		class="btn btn-small ladda-button btn-primary"
+		    	{% else %}
+		    		class="btn btn-small ladda-button" 
+		    	{% endif %}
+		    	
 				data-style="expand-right" 
 				data-size="l" 
 				data-spinner-color="#333" 		    

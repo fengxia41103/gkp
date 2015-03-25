@@ -216,15 +216,16 @@ body {
   transition-delay: initial; }
   .flabel:hover {
     border: 1px solid red; }
-    .flabel:hover .glyphicon-remove {
-      -webkit-transition: all 0.6s ease-in-out;
-      -moz-transition: all 0.6s ease-in-out;
-      -o-transition: all 0.6s ease-in-out;
-      -ms-transition: all 0.6s ease-in-out;
-      -webkit-transform: rotate(360deg);
-      -moz-transform: rotate(360deg);
-      -o-transform: rotate(360deg);
-      -ms-transform: rotate(360deg); }
+
+.glyphicon-remove:hover {
+  -webkit-transition: all 0.6s ease-in-out;
+  -moz-transition: all 0.6s ease-in-out;
+  -o-transition: all 0.6s ease-in-out;
+  -ms-transition: all 0.6s ease-in-out;
+  -webkit-transform: rotate(360deg);
+  -moz-transform: rotate(360deg);
+  -o-transform: rotate(360deg);
+  -ms-transform: rotate(360deg); }
 
 /* Customize Bootstrap default CSS
 -------------------------------------------------- */
