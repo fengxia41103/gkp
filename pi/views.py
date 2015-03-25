@@ -598,6 +598,9 @@ class MySchoolBookmark(TemplateView):
 		elif request.POST['action'] == '3': # add to x-out
 			user_profile.school_bookmarks.remove(school)
 			user_profile.school_xouts.add(school)
+		elif request.POST['action'] == '4': # add to bookmark
+			user_profile.school_bookmarks.add(school)
+			user_profile.school_xouts.remove(school)			
 
 		return HttpResponse(json.dumps({'status':'ok'}), 
 			content_type='application/javascript')	

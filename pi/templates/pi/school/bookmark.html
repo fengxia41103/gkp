@@ -2,7 +2,7 @@
 	My bookmarks ({{user.myuserprofile.school_bookmarks.all|length}})
 	<b class="caret"></b>
 </a>
-<ul class="dropdown-menu my-dropdown-container">
+<ul class="dropdown-menu my-dropdown-container my-multicol-2" style="min-width:450px;">
 	{% regroup schools|dictsort:"city" by city as by_city_list %}
 	{% for city in by_city_list %}
 	<h4 class="page-header">{{city.grouper}}</h4>
