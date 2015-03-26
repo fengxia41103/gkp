@@ -148,100 +148,11 @@
 				{# bookmarks #}
 				{% if user.myuserprofile.school_bookmarks.all %}
 				<li class="dropdown" id="user-bookmarks">
-
 				</li>
 				{% endif %}
 
-				<li class="dropdown" data-toggle="tooltip" title="更新你的用户信息">
-					<a href="" class="" data-toggle="dropdown">
-					Preferences
-						<i class="fa fa-gears"></i>
-					</a>
-					<div id="user-config" class="dropdown-menu my-dropdown-container">
-						<h4 class="page-header">
-							<b class="fa fa-cogs"></b>
-							你的个人情况
-						</h4>
-
-						<form class="" id="user-property-form" role="form" action="{% url 'user_property' %}" method="post">
-							{% csrf_token %}
-							<div class="form-group">
-								<label for="province" class="control-label">
-									你会在哪儿参加高考呢？
-								</label>
-								<input name="province" type="text" class="form-control" placeholder="写上你参加高考的省份吧" value="{{ user.myuserprofile.province|default_if_none:'' }}">
-							</div><div class="form-group">
-								<label for="student_type" class="control-label">
-									你在高中学文还是学理？
-								</label>
-								<select class="form-control" name="student_type">
-									<option value="">--</option>
-
-									{% if user.myuserprofile.student_type == '文科' %}
-										<option value="文科" selected="selected">我学文科</option>
-									{% else %}
-										<option value="文科">我学文科</option>
-									{% endif %}
-
-									{% if user.myuserprofile.student_type == '理科' %}
-										<option value="理科" selected="selected">我学理科</option>
-									{% else %}
-										<option value="理科">我学理科</option>
-									{% endif %}
-								</select>
-							</div><div class="form-group">
-								<label for="degree_type" class="control-label">
-									上个大本还是大专？
-								</label>
-								<select class="form-control" name="degree_type">
-									<option value="">--</option>
-
-									{% if user.myuserprofile.degree_type == '本科' %}
-										<option value="" selected="selected">本科</option>
-									{% else %}
-										<option value="本科">本科</option>
-									{% endif %}
-
-									{% if user.myuserprofile.degree_type == '专科' %}
-										<option value="专科" selected="selected">专科</option>
-									{% else %}
-										<option value="专科">专科</option>
-									{% endif %}
-								</select>
-							</div><div class="form-group">
-								<label for="score" class="control-label">
-								幻想一下考多少分吧？
-								</label>
-								<input name="score" type="number" step="10" class="form-control"
-								placeholder="大胆猜测、不计后果 ^_^" 
-								value="{{ user.myuserprofile.estimated_score }}">
-							</div><div class="form-group">
-								<label for="tags" class="control-label">
-								Tags
-								</label>
-								<input name="tags" type="text" class="form-control"
-								placeholder="体育,计算机,绘画" 
-								value="">
-							</div><div class="form-group">
-								<ul class="list-unstyled my-multicol-3">
-								{% for tag in user.myuserprofile.tags.all %}
-									<li data-type="tag" data-toggle="tooltip" title="Click to remove this tag">
-									{{ tag }}
-									</li>
-								{% endfor %}
-								</ul>
-							</div>
-
-							<button class="btn btn-small btn-primary default pull-right ladda-button"  
-							id="btn-save-user-property" data-style="expand-left" 
-							data-size="l" data-spinner-color="#333">
-							Save
-								<span class="ladda-label"></span>
-							</button>
-
-						<div id="results"></div> <!-- errors go here -->
-						</form>						
-					</div>
+				{# user profile #}
+				<li class="dropdown" data-toggle="tooltip" title="更新你的用户信息" id="user-profile">
 				</li>
 
 				<li>
@@ -395,13 +306,21 @@
 		}
 
 		function update_user_bookmarks(){
-	        j$.get("{% url 'school_bookmark' %}", // passed in from view
+	        j$.get("{% url 'user_bookmark' %}", // passed in from view
 	            function(resp) { // success callback
 	            	j$('#user-bookmarks').html(resp);
 	            }
 	        ).always(function(){     
 	        });	
 		}
+		function update_user_profile(){
+	        j$.get("{% url 'user_profile' %}", // passed in from view
+	            function(resp) { // success callback
+	            	j$('#user-profile').html(resp);
+	            }
+	        ).always(function(){     
+	        });	
+		}		
 
 		j$(document).ready(function(){
 			// common global widget initializations
@@ -425,14 +344,6 @@
 				'placement': 'bottom'
 			});
 
-			// navbar form spinner
-			// loading spinner
-			j$('#btn-save-user-property').click(function(){
-				var l = Ladda.create(this);
-					l.start();
-					j$(this).parents('form:first').submit();
-			});
-
 			// navbar dropdown form
 			j$('.dropdown-menu').find('form').click(function (e) {
 				e.stopPropagation();
@@ -440,6 +351,9 @@
 
 			// populate bookmarks
 			update_user_bookmarks();
+
+			// populate user preference
+			update_user_profile();
 		});
 	</script>
 {% endblock %} <!-- end of block JS -->

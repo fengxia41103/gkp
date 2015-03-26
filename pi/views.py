@@ -134,8 +134,14 @@ class UserRegisterView(FormView):
 
 			return super(UserRegisterView,self).form_valid(form)
 
-class UserPropertyView(TemplateView):
-	template_name=''
+class UserProfileView(TemplateView):
+	template_name='pi/user/profile.html'
+	def get_context_data(self, **kwargs):
+		context = super(UserProfileView, self).get_context_data(**kwargs)
+		user_profile,created = MyUserProfile.objects.get_or_create(owner=self.request.user)
+		context['schools']=user_profile.school_bookmarks.all()
+		return context
+
 	def post(self,request):
 		province = request.POST['province']
 		student_type = request.POST['student_type']
@@ -166,6 +172,54 @@ class UserPropertyView(TemplateView):
 		# refresh current page, whatever it is.
 		return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
+@class_view_decorator(login_required)
+class UserBookmark(TemplateView):
+	template_name = 'pi/user/bookmark.html'
+	def get_context_data(self, **kwargs):
+		context = super(UserBookmark, self).get_context_data(**kwargs)
+		user_profile,created = MyUserProfile.objects.get_or_create(owner=self.request.user)
+		context['schools']=user_profile.school_bookmarks.all()
+		return context	
+
+	def post(self,request):
+		obj_id = request.POST['obj_id']
+		school = MySchool.objects.get(id=int(obj_id))
+
+		# get user property obj
+		user_profile,created = MyUserProfile.objects.get_or_create(owner=request.user)
+
+		if request.POST['action'] == '1': # toogle bookmark
+			if school in user_profile.school_bookmarks.all(): user_profile.school_bookmarks.remove(school)
+			else: user_profile.school_bookmarks.add(school)
+			user_profile.school_xouts.remove(school)
+		elif request.POST['action'] == '2': # toggle x-out
+			user_profile.school_bookmarks.remove(school)
+			if school in user_profile.school_xouts.all(): user_profile.school_xouts.remove(school)
+			else: user_profile.school_xouts.add(school)			
+		elif request.POST['action'] == '3': # add to x-out
+			user_profile.school_bookmarks.remove(school)
+			user_profile.school_xouts.add(school)
+		elif request.POST['action'] == '4': # add to bookmark
+			user_profile.school_bookmarks.add(school)
+			user_profile.school_xouts.remove(school)			
+
+		return HttpResponse(json.dumps({'status':'ok'}), 
+			content_type='application/javascript')
+
+@class_view_decorator(login_required)
+class UserTags(TemplateView):
+	template_name = ''
+	def post(self,request):
+		obj_id = request.POST['obj_id']
+		school = MySchool.objects.get(id=int(obj_id))
+
+		# get user property obj
+		user_profile,created = MyUserProfile.objects.get_or_create(owner=request.user)
+		user_profile.tags.remove(MyTaggedItem.objects.get(id=obj_id))
+		# refresh current page, whatever it is.
+		return HttpResponse(json.dumps({'status':'ok'}), 
+			content_type='application/javascript')	
+		
 ###################################################
 #
 #	Data import views
@@ -529,7 +583,7 @@ class MySchoolDetail(DetailView):
 		context['school_admission_by_year']=school_admission_by_year
 
 		# school majors
-		context['majors'] = self.get_object().mymajor_set.all()
+		context['majors'] = self.get_object().majors.all()
 
 		return context
 
@@ -573,41 +627,6 @@ class MySchoolEchartMapFilter(TemplateView):
 		# this url will be AJAX post to get a detail analysis HTML added to this page
 		context['analysis_url'] = reverse_lazy('analysis_school_summary_ajax')
 		return context
-
-@class_view_decorator(login_required)
-class MySchoolBookmark(TemplateView):
-	template_name = 'pi/school/bookmark.html'
-
-	def get_context_data(self, **kwargs):
-		context = super(MySchoolBookmark, self).get_context_data(**kwargs)
-		user_profile,created = MyUserProfile.objects.get_or_create(owner=self.request.user)
-		context['schools']=user_profile.school_bookmarks.all()
-		return context	
-
-	def post(self,request):
-		obj_id = request.POST['obj_id']
-		school = MySchool.objects.get(id=int(obj_id))
-
-		# get user property obj
-		user_profile,created = MyUserProfile.objects.get_or_create(owner=request.user)
-
-		if request.POST['action'] == '1': # toogle bookmark
-			if school in user_profile.school_bookmarks.all(): user_profile.school_bookmarks.remove(school)
-			else: user_profile.school_bookmarks.add(school)
-			user_profile.school_xouts.remove(school)
-		elif request.POST['action'] == '2': # toggle x-out
-			user_profile.school_bookmarks.remove(school)
-			if school in user_profile.school_xouts.all(): user_profile.school_xouts.remove(school)
-			else: user_profile.school_xouts.add(school)			
-		elif request.POST['action'] == '3': # add to x-out
-			user_profile.school_bookmarks.remove(school)
-			user_profile.school_xouts.add(school)
-		elif request.POST['action'] == '4': # add to bookmark
-			user_profile.school_bookmarks.add(school)
-			user_profile.school_xouts.remove(school)			
-
-		return HttpResponse(json.dumps({'status':'ok'}), 
-			content_type='application/javascript')	
 
 @class_view_decorator(login_required)
 class MySchoolRank(TemplateView):

@@ -280,7 +280,7 @@
 	 		l.start();
 
 	        // ajax to server to get a list of columns:4"markers that are within the viewport
-	        j$.post("{% url 'school_bookmark' %}", // passed in from view
+	        j$.post("{% url 'user_bookmark' %}", // passed in from view
 	            { 
 	                'obj_id':{{ object.id }},
 	                'action':1
@@ -301,7 +301,7 @@
 	 		l.start();
 
 	        // ajax to server to get a list of columns:4"markers that are within the viewport
-	        j$.post("{% url 'school_bookmark' %}", // passed in from view
+	        j$.post("{% url 'user_bookmark' %}", // passed in from view
 	            { 
 	                'obj_id':{{ object.id }},
 	                'action':2

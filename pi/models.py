@@ -229,7 +229,7 @@ class MyMajor (MyBaseModel):
 			verbose_name = u'文理科',
 		)
 	# related models
-	schools = models.ManyToManyField ('MySchool')
+	schools = models.ManyToManyField ('MySchool', related_name='majors')
 	related_majors = models.ManyToManyField('MyMajor')
 
 	def __unicode__(self):
@@ -351,6 +351,7 @@ class MyAdmissionByMajor (models.Model):
 
 from shapely.geometry import box as Box
 from shapely.geometry import Point
+from difflib import SequenceMatcher
 class MySchoolCustomManager(models.Manager):
 	def get_queryset(self):
 		'''
@@ -393,21 +394,20 @@ class MySchoolCustomManager(models.Manager):
 		user_profile,created = MyUserProfile.objects.get_or_create(owner = user)
 		if created: return data
 
-		# filter based on user profile
-		province = user_profile.province
-		student_type = user_profile.student_type
-		estimated_score = user_profile.estimated_score
-		degree_type = user_profile.degree_type
-
 		# filter by user profile location
+		province = user_profile.province		
 		if province: data = data.filter(accepting_province=province)
 
+		# filter by student type
+		degree_type = user_profile.degree_type
 		if degree_type == u'本科': data = data.filter(take_bachelor=True)
 		elif degree_type == u'专科': data = data.filter(take_associate=True)
 
 		# for scores, we set up a band around estimated_score
+		estimated_score = user_profile.estimated_score	
+		student_type = user_profile.student_type
 		SCORE_BAND=25
-		school_ids = []
+		school_ids = []		
 		if estimated_score > 0 and province and student_type:
 			school_ids = MyAdmissionBySchool.objects.filter(
 				Q(school__in=data) & 
@@ -434,6 +434,19 @@ class MySchoolCustomManager(models.Manager):
 				Q(min_score__gte=estimated_score-SCORE_BAND)).values_list('school',flat=True)			
 		data = data.filter(id__in=school_ids)
 
+		# filter by tags
+		matched_by_tags = []
+		tags = [t.tag for t in user_profile.tags.all()]
+		if tags:
+			for school in data:
+				majors = [m.name for m in school.majors.all()]
+				for tag in tags: 
+					match_ratio = map(lambda x: SequenceMatcher(None,x,tag).ratio(), majors)
+
+					if match_ratio and max(match_ratio) > 0.5: # this is a close enough match
+						matched_by_tags.append(school)
+						break
+			data = data.filter(id__in=[m.id for m in matched_by_tags])
 		return data
 
 class MySchool (MyBaseModel):

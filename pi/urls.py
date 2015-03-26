@@ -16,7 +16,9 @@ urlpatterns = patterns(
 		url(r'^register/$', views.UserRegisterView.as_view(), name='user_register'),
 
 		# user related
-		url(r'^user/property/$', views.UserPropertyView.as_view(), name='user_property'),
+		url(r'^user/profile/$', views.UserProfileView.as_view(), name='user_profile'),
+		url(r'^user/bookmark/$', views.UserBookmark.as_view(), name='user_bookmark'),
+		url(r'^user/tags/$', views.UserTags.as_view(), name='user_tags'),
 
 		# file import/export
 		url(r'^import/admission/school/$',views.import_admission_by_school, name='import_admission_school'),
@@ -50,7 +52,6 @@ urlpatterns = patterns(
 		url(r'^school/map/detail/', ensure_csrf_cookie(views.MySchoolMapDetail.as_view()),name='school_map_detail'),
 		url(r'^school/map/info/', ensure_csrf_cookie(views.MySchoolMapInfo.as_view()),name='school_map_info'),
 		url(r'^school/e/map/filter/$', views.MySchoolEchartMapFilter.as_view(),name='school_echart_map_filter'),
-		url(r'^school/bookmark/$', views.MySchoolBookmark.as_view(), name='school_bookmark'),
 		url(r'^school/rank/(?P<rank>\d+)/$', views.MySchoolRank.as_view(), name='school_rank'),
 
 
