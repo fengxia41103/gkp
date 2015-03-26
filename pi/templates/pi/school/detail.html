@@ -107,12 +107,6 @@
 			</iframe>
 		</section>
 
-		{# school introduction #}
-		<section id="school-intro">
-			<h2 class="my-h2-border">学校简介</h2>
-			{{ object.description|default:"暂无信息"|safe|truncatechars:1000 }}
-		</section>
-
 		{# school related majors #}
 		<section id="school-major">
 			<h2 class="my-h2-border">学校专业</h2>
@@ -207,51 +201,13 @@
 
 {% block detail-sidebar %}
 	{# float to right, attributes #}
-	<h4>
-		<i class="fa fa-university"></i>
-		 学校快照
-	</h4>
-	<dl class="dl-horizontal my-dl-horizontal">
-		<dt>City</dt><dd>{{ object.city|default:"暂无信息"}}</dd>
-		
-		<dt>Province</dt><dd>
-			{% if object.province %}
-				<a href="{% url 'analysis_school_by_province' object.province.id %}">{{ object.province }}</a>
-			{% else %}
-				暂无信息
-			{% endif %}
-		</dd>
-		
-		<dt>地址</dt><dd>{{ obj.address|default:"暂无信息"}}</dd>
-		<dt>创建时间</dt><dd>{{ object.founded|default:"暂无信息" }}</dd>
-		<dt>学校类型</dt><dd>{{ object.school_type|default:"暂无信息"}}</dd>
-		<dt>学生人数</dt><dd>{{ object.no_student|default:"暂无信息" }}
-			{% if object.no_student %}
-				人
-			{% endif %}
-		</dd>
-		<dt>院士人数</dt><dd>{{ object.no_fellow|default:"暂无信息" }}
-			{% if object.no_fellow %}
-				人
-			{% endif %}
-		</dd>
-		<dt>博士点个数</dt><dd>{{ object.no_phd_program|default:"暂无信息" }}
-			{% if object.no_phd_program %}
-				个
-			{% endif %}
-		</dd>
-		<dt>硕士点个数</dt><dd>{{ object.no_master_program|default:"暂无信息" }}
-			{% if object.no_master_program %}
-				个
-			{% endif %}			
-		</dd>
-		<dt>重点学科</dt><dd>{{ obj.no_key_major|default:"暂无信息" }}
-			{% if object.no_key_major %}
-				个
-			{% endif %}					
-		</dd>
-		<dt>隶属于</dt><dd>教育部</dd>
-	</dl>
+	{# school introduction #}
+	<section id="school-intro">
+		<h4 class="my-h2-border"><i class="fa fa-university"></i>学校简介</h4>
+		<div style="overflow:hidden;max-height:300px;">
+		{{ object.description|default:"暂无信息"|safe|truncatechars:1000 }}
+		</div>
+	</section>
 
 	{# float to right, related #}
 	<h4>

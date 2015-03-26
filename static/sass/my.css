@@ -255,7 +255,8 @@ body {
 .my-huge-font {
   font-family: 'Francois One', sans-serif;
   font-size: 2em;
-  color: #819FF7; }
+  color: #819FF7;
+  display: inline-block; }
 
 /* Wrapper for page content to push down footer */
 #wrap {

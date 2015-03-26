@@ -443,6 +443,22 @@ def blanketRequest():
 		MyCrawlerRequest(source=1,params=json.dumps(params)).save()
 		print 'Requesting', s.name		
 
+from django.db.models import Avg
+def populateRank():
+	ids = MySchool.objects.values_list('id',flat=True)
+	for id in ids:
+		avg_score = MyAdmissionBySchool.objects.filter(school=id).aggregate(Avg('avg_score'))
+		try: avg_score = int(avg_score['avg_score__avg'])
+		except: avg_score = 0
+		rank, created = MyRank.objects.get_or_create(school=MySchool.objects.get(id=id),rank_index=3,rank=avg_score)
+		print id, avg_score
+
+def cleanupSchoolName():
+	for s in MySchool.objects.all():
+		if u'-' in s.name: 
+			print s.name
+			#s.save()
+
 import googlemaps
 def main():
 	django.setup()
@@ -462,7 +478,9 @@ def main():
 	#populateSchoolAttribute()
 	#fixBatch()
 	#baidu_crawler()
-	blanketRequest()
+	#blanketRequest()
+	#populateRank()
+	cleanupSchoolName()
 
 if __name__ == '__main__':
 	main()

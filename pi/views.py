@@ -569,9 +569,6 @@ class MySchoolEchartMapFilter(TemplateView):
 
 @class_view_decorator(login_required)
 class MySchoolBookmark(TemplateView):
-	'''
-		AJAX post view
-	'''
 	template_name = 'pi/school/bookmark.html'
 
 	def get_context_data(self, **kwargs):
@@ -604,6 +601,25 @@ class MySchoolBookmark(TemplateView):
 
 		return HttpResponse(json.dumps({'status':'ok'}), 
 			content_type='application/javascript')	
+
+@class_view_decorator(login_required)
+class MySchoolRank(TemplateView):
+	template_name = 'pi/school/rank.html'
+
+	def get_context_data(self, **kwargs):
+		context = super(MySchoolRank, self).get_context_data(**kwargs)		
+		top_count = int(context['rank'])
+		schools = MySchool.objects.filter_by_user_profile(self.request.user)
+		ranks = MyRank.objects.filter(school__in=schools)
+
+		rank_by_min_score = ranks.filter(rank_index=1).order_by('rank').reverse()[:top_count]
+		rank_by_max_score = ranks.filter(rank_index=2).order_by('rank').reverse()[:top_count]
+		rank_by_avg_score = ranks.filter(rank_index=3).order_by('rank').reverse()[:top_count]
+
+		context['rank_by_min_score']=rank_by_min_score
+		context['rank_by_max_score']=rank_by_max_score
+		context['rank_by_avg_score']=rank_by_avg_score
+		return context
 
 ###################################################
 #

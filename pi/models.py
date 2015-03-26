@@ -675,3 +675,25 @@ class MyBaiduStream(MyBaseModel):
 		'''
 		return (dt.now()-self.created).total_seconds()
 	age = property(_age)
+
+class MyRank(models.Model):
+	CATEGORY_CHOICES = (
+		(0,u'未知'),		
+		(1,u'按最低录取分数线排名'), 
+		(2,u'按最高录取分数线排名'), 
+		(3,u'按平均录取分数线排名'), 
+	)
+	school = models.ForeignKey (
+		'MySchool',
+		verbose_name = u'高校名称'
+	)
+	rank_index = models.IntegerField (
+		blank = False,
+		null = False,
+		choices = CATEGORY_CHOICES,
+		verbose_name = u'排名维度'
+	)
+	rank = models.IntegerField(
+		default = 0,
+		verbose_name = u'打分'
+	)
