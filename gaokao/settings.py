@@ -53,7 +53,7 @@ INSTALLED_APPS = (
     's3_folder_storage', # django-s3-folder-storage
     'compressor', # django_compressor
     'django_filters', # django-filters
-    'tagging', # django-tagging
+    #'taggit', # django-taggit
     'pagination_bootstrap', # django-pagination-bootstrap
     'crispy_forms', # django-crispy-forms
     #'bootstrap3', # django-bootstrap3

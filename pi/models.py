@@ -8,7 +8,6 @@ from django.contrib.contenttypes.generic import GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from tagging.fields import TagField
 from mptt.models import MPTTModel, TreeForeignKey
 from django.utils import timezone
 from datetime import datetime
@@ -45,13 +44,7 @@ class MyBaseModel (models.Model):
 			blank = True,
 			verbose_name = u'帮助提示'
 		)
-		
-	# tags
-	tags = TagField( 
-			default = 'default',
-			verbose_name = u'标签'
-		)
-	
+
 	# attachments
 	attachments = GenericRelation('Attachment')
 	
@@ -61,6 +54,21 @@ class MyBaseModel (models.Model):
 
 	def __unicode__(self):
 		return self.name
+
+######################################################
+#
+#	Tags
+#
+#####################################################
+class MyTaggedItem (models.Model):
+	# basic value fields
+	tag = models.SlugField(
+			default = '',
+			max_length = 16,
+			verbose_name = u'Tag'
+	)
+	def __unicode__(self):
+		return self.tag
 
 ######################################################
 #
@@ -642,6 +650,8 @@ class MyUserProfile(models.Model):
 		)
 	school_bookmarks = models.ManyToManyField('MySchool', related_name='bookmarks')
 	school_xouts = models.ManyToManyField('MySchool',related_name='xouts')
+	# tags
+	tags = models.ManyToManyField('MyTaggedItem')
 
 class MyBaiduStream(MyBaseModel):
 	school = models.ForeignKey(
@@ -668,7 +678,7 @@ class MyBaiduStream(MyBaseModel):
 		null = True,
 		verbose_name = u'Posted timestamp read from the source site'
 		)
-
+	
 	def _age(self):
 		'''
 			Calculate object age based on NOW and its creation timestamp

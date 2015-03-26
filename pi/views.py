@@ -141,6 +141,7 @@ class UserPropertyView(TemplateView):
 		student_type = request.POST['student_type']
 		score = request.POST['score']
 		degree_type = request.POST['degree_type']
+		tags = request.POST['tags']
 
 		# get user property obj
 		user_profile,created = MyUserProfile.objects.get_or_create(owner=request.user)
@@ -153,8 +154,14 @@ class UserPropertyView(TemplateView):
 		if student_type: user_profile.student_type = student_type
 		if score: user_profile.estimated_score = int(score)
 		if degree_type: user_profile.degree_type = degree_type
-
 		user_profile.save()
+
+		# tags
+		if tags:
+			existing = user_profile.tags.all()
+			for t in tags.replace(u'，',',').split(','):
+				tagged_item,created = MyTaggedItem.objects.get_or_create(tag=t[:16])
+				if tagged_item not in existing: user_profile.tags.add(tagged_item)
 
 		# refresh current page, whatever it is.
 		return HttpResponseRedirect(request.META['HTTP_REFERER'])

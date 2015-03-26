@@ -102,7 +102,7 @@
 
 				<li>
 					<a href="{% url 'school_rank' 10%}">
-						Top 10
+						Top 10 推荐
 					</a>
 				</li>
 
@@ -215,6 +215,21 @@
 								<input name="score" type="number" step="10" class="form-control"
 								placeholder="大胆猜测、不计后果 ^_^" 
 								value="{{ user.myuserprofile.estimated_score }}">
+							</div><div class="form-group">
+								<label for="tags" class="control-label">
+								Tags
+								</label>
+								<input name="tags" type="text" class="form-control"
+								placeholder="体育,计算机,绘画" 
+								value="">
+							</div><div class="form-group">
+								<ul class="list-unstyled my-multicol-3">
+								{% for tag in user.myuserprofile.tags.all %}
+									<li data-type="tag" data-toggle="tooltip" title="Click to remove this tag">
+									{{ tag }}
+									</li>
+								{% endfor %}
+								</ul>
 							</div>
 
 							<button class="btn btn-small btn-primary default pull-right ladda-button"  
