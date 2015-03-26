@@ -468,7 +468,7 @@ def main():
 	#baidu_geocoding()
 	#populate_school_geo()
 	#populate_school_province()
-	#populate_hash()
+	populate_hash()
 	#cleanup_school_name()
 	#cleanupSchoolAdmission()
 	#cleanupProvince()
@@ -480,7 +480,7 @@ def main():
 	#baidu_crawler()
 	#blanketRequest()
 	#populateRank()
-	cleanupSchoolName()
+	#cleanupSchoolName()
 
 if __name__ == '__main__':
 	main()
