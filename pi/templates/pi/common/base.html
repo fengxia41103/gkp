@@ -98,14 +98,22 @@
 
 				<li>
 					<a href="{% url 'school_rank' 10%}">
+						<i class="fa fa-university"></i>
 						Top 10 推荐
 					</a>
 				</li>
 
+				<li>
+					<a href="{% url 'school_echart_map_filter' %}">
+						<i class="fa fa-globe"></i>
+						学校浏览
+					</a>
+				</li>	
+
 				<li class="dropdown">
 					<a href="" class="" data-toggle="dropdown">
-					<i class="fa fa-flag"></i>
-						Models
+					<i class="fa fa-folder-open"></i>
+						海选引擎
 						<b class="caret"></b>
 					</a>
 					<ul class="dropdown-menu">
@@ -117,7 +125,7 @@
 				<li class="dropdown">
 					<a href="" class="" data-toggle="dropdown">
 						<i class="fa fa-bar-chart"></i>
-						分数线									
+						历史分数线									
 						<b class="caret"></b>
 					</a>
 					<ul class="dropdown-menu">
@@ -126,12 +134,7 @@
 					</ul>
 				</li>
 
-				<li>
-					<a href="{% url 'school_echart_map_filter' %}">
-						<i class="fa fa-university"></i>
-						学校浏览
-					</a>
-				</li>		
+	
 
 				<li><a href="#about">About</a></li>
 				<li><a href="#contact">
