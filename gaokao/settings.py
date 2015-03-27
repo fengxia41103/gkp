@@ -48,16 +48,13 @@ INSTALLED_APPS = (
     'django.contrib.sites', 
 
     # custom packages
-    'devserver', # django-devserver
+    #'devserver', # django-devserver
     'storages', # django-storage
     's3_folder_storage', # django-s3-folder-storage
     'compressor', # django_compressor
     'django_filters', # django-filters
-    #'taggit', # django-taggit
     'pagination_bootstrap', # django-pagination-bootstrap
     'crispy_forms', # django-crispy-forms
-    #'bootstrap3', # django-bootstrap3
-    #'debug_toolbar', # django-debug-toolbar
     'pi', 
 )
 
@@ -69,9 +66,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware', # django-debug-toolbar
-    'pagination_bootstrap.middleware.PaginationMiddleware', # django-pagination-bootstrap
-    'devserver.middleware.DevServerMiddleware',        
+    'pagination_bootstrap.middleware.PaginationMiddleware', # django-pagination-bootstrap   
 )
 
 ROOT_URLCONF = 'gaokao.urls'
@@ -166,18 +161,19 @@ COMPRESS_PRECOMPILERS = (
 #DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
 # django-devserver
-DEVSERVER_MODULES = (
-    'devserver.modules.sql.SQLRealTimeModule',
-    'devserver.modules.sql.SQLSummaryModule',
-    'devserver.modules.profile.ProfileSummaryModule',
+if DEPLOY_TYPE=='dev':
+    DEVSERVER_MODULES = (
+        'devserver.modules.sql.SQLRealTimeModule',
+        'devserver.modules.sql.SQLSummaryModule',
+        'devserver.modules.profile.ProfileSummaryModule',
 
-    # Modules not enabled by default
-    'devserver.modules.ajax.AjaxDumpModule',
-    'devserver.modules.profile.MemoryUseModule',
-    'devserver.modules.cache.CacheSummaryModule',
-    'devserver.modules.profile.LineProfilerModule',
-)
-DEVSERVER_AUTO_PROFILE = False  # profiles all views without the need of function decorator
+        # Modules not enabled by default
+        'devserver.modules.ajax.AjaxDumpModule',
+        'devserver.modules.profile.MemoryUseModule',
+        'devserver.modules.cache.CacheSummaryModule',
+        'devserver.modules.profile.LineProfilerModule',
+    )
+    DEVSERVER_AUTO_PROFILE = False  # profiles all views without the need of function decorator
 
 # S3 storages
 
