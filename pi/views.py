@@ -645,6 +645,7 @@ class MySchoolRank(TemplateView):
 		ranks = MyRank.objects.filter(school__in=schools)
 
 		rank_by_min_score = ranks.filter(rank_index=1).order_by('rank').reverse()[:top_count]
+
 		rank_by_max_score = ranks.filter(rank_index=2).order_by('rank').reverse()[:top_count]
 		rank_by_avg_score = ranks.filter(rank_index=3).order_by('rank').reverse()[:top_count]
 

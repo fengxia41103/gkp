@@ -442,18 +442,12 @@ class MySchoolCustomManager(models.Manager):
 		data = data.filter(id__in=school_ids)
 
 		# filter by tags
-		matched_by_tags = []
-		tags = [t.tag for t in user_profile.tags.all()]
-		if tags:
-			for school in data:
-				majors = [m.name for m in school.majors.all()]
-				for tag in tags: 
-					match_ratio = map(lambda x: x.find(tag), majors)
-
-					if match_ratio and max(match_ratio) >= 0: # this is a close enough match
-						matched_by_tags.append(school)
-						break
+		if user_profile.tags.all():
+			# DO NOT CHANGE: this is more efficient than calling individual school objects's method!
+			profile_related_majors = [major for tag in user_profile.tags.all() for major in tag.mymajor_set.all()]
+			matched_by_tags = [school for school in data if set(school.majors.all()).intersection(profile_related_majors)]
 			data = data.filter(id__in=[m.id for m in matched_by_tags])
+
 		return data
 
 class MySchool (MyBaseModel):
@@ -626,6 +620,13 @@ class MySchool (MyBaseModel):
 			related_name='accepting_schools',
 			verbose_name=u'招生学校'
 		)
+	def _is_related_to_tag(self,tag):
+		tag_related_majors = [major for major in tag.mymajor_set.all()]
+		if set(self.majors.all()).intersection(set(tag_related_majors)): return True
+		else: return False
+
+	def is_related_to_tags(self,tags):
+		return reduce(lambda x,y:x or y,[self._is_related_to_tag(tag) for tag in tags])
 
 class MyUserProfile(models.Model):
 	DEGREE_TYPE_CHOICES = (
@@ -670,6 +671,7 @@ class MyUserProfile(models.Model):
 		)
 	school_bookmarks = models.ManyToManyField('MySchool', related_name='bookmarks')
 	school_xouts = models.ManyToManyField('MySchool',related_name='xouts')
+
 	# tags
 	tags = models.ManyToManyField('MyTaggedItem')
 

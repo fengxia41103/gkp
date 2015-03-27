@@ -106,7 +106,7 @@ j$(document).ready(function(){
 
 	j$('[data-type="remove-tag"]').click(function(e){
 		e.stopPropagation();
-		myBlockUI();
+		//myBlockUI();
 		var obj_id = j$(this).attr('obj-id');
 	 	// ajax to server to get a list of columns:4"markers that are within the viewport
 	    j$.post("{% url 'user_tags' %}", // passed in from view
