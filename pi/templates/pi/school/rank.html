@@ -1,0 +1,135 @@
+{% extends 'pi/common/base.html' %}
+
+{% block page-header %}
+	Top {{rank}}院校排行榜
+{% endblock %}
+
+{% block content %}
+
+<ul id="myTab" class="nav nav-tabs">
+	<li><a href="#rank-by-min-score" data-toggle="tab">
+		按往年的最低录取分数线排名
+	</a></li>		
+	<li><a href="#rank-by-max-score" data-toggle="tab">
+		按往年的最高录取分数线排名
+	</a></li>
+	<li><a href="#rank-by-avg-score" data-toggle="tab">
+		按往年的平均录取分数线排名
+	</a></li>
+	<li class="pull-right">
+		<i class="fa fa-sort-amount-desc"></i>
+		分数排名由高到低
+	</li>			
+</ul>
+
+<div id="myTabContent" class="tab-content">
+	<div class="tab-pane" id="rank-by-min-score">
+		{% for s in rank_by_min_score %}
+		<section class="page-header">
+			<div class="row">
+				<div class="col-md-1"><span class="btn btn-default">{{ forloop.counter }}</span></div>
+				<div class="col-md-3" style="">
+					<span class="my-logo">
+					<a href="{% url 'school_detail' s.school.id %}">{{ s.school }}</a>
+					</span>
+				</div>
+				
+				<div class="col-md-4">
+					{% for major in s.school.majors.all %}
+						{% for tag in user.myuserprofile.tags.all %}
+							{% if major in tag.mymajor_set.all %}
+								{{ major }}
+							{% endif %}
+						{% endfor %}
+					{% endfor %}
+				</div>
+
+				<div class="col-md-2" style="border-right:1px solid #ccc;border-left:1px solid #ccc;">
+					{{ s.school.province }}
+					<br />
+					<h6>{{ s.school.city }}</h4>
+					
+				</div>
+
+				<div class="col-md-2">
+					<span class="my-huge-font">{{ s.rank }}</span>
+				</div>
+			</div>
+		</section>
+		{% endfor %}
+	</div>
+
+	<div class="tab-pane" id="rank-by-max-score">
+		{% for s in rank_by_max_score %}
+		<section class="page-header">
+			<div class="row">
+				<div class="col-md-1"><span class="btn btn-default">{{ forloop.counter }}</span></div>
+				<div class="col-md-3" style="">
+					<span class="my-logo">
+					<a href="{% url 'school_detail' s.school.id %}">{{ s.school }}</a>
+					</span>
+				</div>
+				
+				<div class="col-md-4">
+					{% for major in s.school.majors.all %}
+						{% for tag in user.myuserprofile.tags.all %}
+							{% if major in tag.mymajor_set.all %}
+								{{ major }}
+							{% endif %}
+						{% endfor %}
+					{% endfor %}
+				</div>
+
+				<div class="col-md-2" style="border-right:1px solid #ccc;border-left:1px solid #ccc;">
+					{{ s.school.province }}
+					<br />
+					<h6>{{ s.school.city }}</h4>
+					
+				</div>
+
+				<div class="col-md-2">
+					<span class="my-huge-font">{{ s.rank }}</span>
+				</div>
+			</div>
+		</section>
+		{% endfor %}
+	</div>
+
+	<div class="tab-pane" id="rank-by-avg-score">
+		{% for s in rank_by_avg_score %}
+		<section class="page-header">
+			<div class="row">
+				<div class="col-md-1"><span class="btn btn-default">{{ forloop.counter }}</span></div>
+				<div class="col-md-3" style="">
+					<span class="my-logo">
+					<a href="{% url 'school_detail' s.school.id %}">{{ s.school }}</a>
+					</span>
+				</div>
+				
+				<div class="col-md-4">
+					{% for major in s.school.majors.all %}
+						{% for tag in user.myuserprofile.tags.all %}
+							{% if major in tag.mymajor_set.all %}
+								{{ major }}
+							{% endif %}
+						{% endfor %}
+					{% endfor %}
+				</div>
+
+				<div class="col-md-2" style="border-right:1px solid #ccc;border-left:1px solid #ccc;">
+					{{ s.school.province }}
+					<br />
+					<h6>{{ s.school.city }}</h4>
+					
+				</div>
+
+				<div class="col-md-2">
+					<span class="my-huge-font">{{ s.rank }}</span>
+				</div>
+			</div>
+		</section>
+		{% endfor %}
+	</div>
+</div>
+
+{% endblock %}
