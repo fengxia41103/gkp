@@ -1,7 +1,15 @@
-<ul class="list-inline">
-{% for obj in objs %}
-	<li>
-		<a href="{% url 'major_detail' obj.id %}">{{ obj }}</a>
-	</li>
-{% endfor %}
-</ul>
+{% if objs %}
+	<ul class="list-inline">
+	{% for obj in objs %}
+		<li>
+			<a href="{% url 'major_detail' obj.id %}">{{ obj }}</a>
+		</li>
+	{% endfor %}
+	</ul>
+{% else %}
+	<span class="ladda-button" data-style="expand-right" 
+	data-size="l" data-spinner-color="#333">
+	正在努力搜索你喜欢的专业 ^_^
+		<span class="ladda-label"></span>
+	</span>
+{% endif %}
