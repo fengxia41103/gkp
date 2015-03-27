@@ -643,15 +643,22 @@ class MySchoolRank(TemplateView):
 		top_count = int(context['rank'])
 		schools = MySchool.objects.filter_by_user_profile(self.request.user)
 		ranks = MyRank.objects.filter(school__in=schools)
+		user_profile = MyUserProfile.objects.get(owner=self.request.user)
+		tags_related_majors = [major for tag in user_profile.tags.all() for major in tag.mymajor_set.all()]
 
-		rank_by_min_score = ranks.filter(rank_index=1).order_by('rank').reverse()[:top_count]
 
-		rank_by_max_score = ranks.filter(rank_index=2).order_by('rank').reverse()[:top_count]
-		rank_by_avg_score = ranks.filter(rank_index=3).order_by('rank').reverse()[:top_count]
+		context['rank_by_min_score']=[]
+		for rank in ranks.filter(rank_index=1).order_by('rank').reverse()[:top_count]:
+			context['rank_by_min_score'].append((rank,set(tags_related_majors).intersection(rank.school.majors.all())))
 
-		context['rank_by_min_score']=rank_by_min_score
-		context['rank_by_max_score']=rank_by_max_score
-		context['rank_by_avg_score']=rank_by_avg_score
+		context['rank_by_max_score']=[]
+		for rank in ranks.filter(rank_index=2).order_by('rank').reverse()[:top_count]:
+			context['rank_by_max_score'].append((rank,set(tags_related_majors).intersection(rank.school.majors.all())))
+
+		context['rank_by_avg_score']=[]
+		for rank in ranks.filter(rank_index=3).order_by('rank').reverse()[:top_count]:
+			context['rank_by_avg_score'].append((rank,set(tags_related_majors).intersection(rank.school.majors.all())))
+
 		return context
 
 ###################################################
