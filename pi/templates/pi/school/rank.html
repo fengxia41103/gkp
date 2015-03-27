@@ -18,8 +18,9 @@
 	</a></li>
 	<li class="pull-right">
 		<i class="fa fa-sort-amount-desc"></i>
-		分数排名由高到低<br />		
+		分数排名由高到低<br />
 		<ul class="list-inline">
+			<li class="label label-primary">关键字：</li>
 			{% for tag in user.myuserprofile.tags.all %}
 				<li data-type="remove-tag" data-toggle="tooltip" 
 					title="Click to remove this tag" 
