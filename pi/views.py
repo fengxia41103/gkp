@@ -648,8 +648,6 @@ class MySchoolRank(TemplateView):
 		tags_related_majors = [major for tag in user_profile.tags.all() for major in tag.mymajor_set.all()]
 
 		context['rank_by_min_score']=ranks.filter(rank_index=1).order_by('-rank')[:top_count]
-		context['rank_by_max_score']=ranks.filter(rank_index=2).order_by('-rank')[:top_count]
-		context['rank_by_avg_score']=ranks.filter(rank_index=3).order_by('-rank')[:top_count]
 		return context
 
 @class_view_decorator(login_required)
