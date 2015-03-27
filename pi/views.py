@@ -164,7 +164,7 @@ class UserProfileView(TemplateView):
 
 		# add tags
 		if tags:
-			existing = user_profile.tags.all()
+			user_profile.tags.all().delete()
 			for t in tags.replace(u'，',',').split(','):
 				if not t.strip(): continue
 				tagged_item,created = MyTaggedItem.objects.get_or_create(tag=t[:16])
@@ -647,6 +647,7 @@ class MySchoolRank(TemplateView):
 		user_profile = MyUserProfile.objects.get(owner=self.request.user)
 		tags_related_majors = [major for tag in user_profile.tags.all() for major in tag.mymajor_set.all()]
 
+		# this is how we measure a TOP 10!
 		context['rank_by_min_score']=ranks.filter(rank_index=1).order_by('-rank')[:top_count]
 		return context
 
