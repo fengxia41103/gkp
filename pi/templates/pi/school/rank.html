@@ -23,7 +23,11 @@
 			{% for tag in user.myuserprofile.tags.all %}
 				<li data-type="remove-tag" data-toggle="tooltip" 
 					title="Click to remove this tag" 
-					obj-id="{{tag.id}}">
+					obj-id="{{tag.id}}"
+					data-style="expand-left" 
+					data-size="s" data-spinner-color="#333"					
+				>
+					<span class="ladda-label"></span>
 					{{ tag }}/
 				</li>
 			{% endfor %}		
@@ -165,7 +169,9 @@
 		});		
 
 		j$('[data-type="remove-tag"]').click(function(e){
-			e.stopPropagation();
+			// loading spinner	 			
+			var l = Ladda.create(this);
+			l.start();
 
 			var this_obj = j$(this);
 			var obj_id = j$(this).attr('obj-id');
@@ -176,9 +182,7 @@
 		        }, 
 		        function(resp) { // success callback
 	            	if (resp['status'] == 'ok'){
-	          			//j$(this_obj).siblings('div').first().remove();
-	            		j$(this_obj).remove();
-
+	            		j$(this_obj).tooltip('destroy').remove();	            		
 						j$.each(j$('[data-type="filtered-majors"]'),function(index,value){
 							var rank_id = j$(value).attr('rank-id');
 							reset_filtered_majors(this,rank_id);
@@ -186,6 +190,7 @@
 	            	}
 		        },'json'
 		    ).always(function(){       	
+		    	l.stop();
 		    });		
 		});		
 	});
