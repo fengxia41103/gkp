@@ -1,6 +1,6 @@
 <a href="" class="" data-toggle="dropdown">
+	<i class="fa fa-save"></i>
 	我的收藏夹 ({{user.myuserprofile.school_bookmarks.all|length}})
-	<i class="fa fa-bookmark"></i>
 </a>
 <ul class="dropdown-menu my-dropdown-container" style="">
 	{% regroup schools|dictsort:"city" by city as by_city_list %}

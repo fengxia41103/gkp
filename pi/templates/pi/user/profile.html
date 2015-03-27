@@ -1,6 +1,6 @@
 <a href="" class="" data-toggle="dropdown">
-我的私人订制
 	<i class="fa fa-gears"></i>
+	我的私人订制
 </a>
 <div id="user-config" class="dropdown-menu my-dropdown-container">
 	<h4 class="page-header">
@@ -68,16 +68,6 @@
 			placeholder="体育,计算机,绘画" data-toggle="tooltip"
 			title="如果有多个，可以用逗号分割，例如“工程，教育，计算机“"
 			value="">
-		</div><div class="form-group">
-			<ul class="list-inline">
-				{% for tag in user.myuserprofile.tags.all %}
-					<li data-type="remove-tag" data-toggle="tooltip" 
-						title="Click to remove this tag" 
-						obj-id="{{tag.id}}">
-						{{ tag }}/
-					</li>
-				{% endfor %}		
-			</ul>
 		</div>
 
 		<button class="btn btn-small btn-primary default pull-right ladda-button"  
@@ -103,24 +93,6 @@ j$(document).ready(function(){
 		l.start();
 
 		j$(this).parents('form:first').submit();
-	});
-
-	j$('[data-type="remove-tag"]').click(function(e){
-		e.stopPropagation();
-		//myBlockUI();
-		var obj_id = j$(this).attr('obj-id');
-	 	// ajax to server to get a list of columns:4"markers that are within the viewport
-	    j$.post("{% url 'user_tags' %}", // passed in from view
-	        { 
-	            'obj_id':obj_id
-	        }, 
-	        function(resp) { // success callback
-            	if (resp['status'] == 'ok'){
-	            	j$('#btn-save-user-property').click();
-            	}
-	        },'json'
-	    ).always(function(){       	
-	    });		
 	});
 });	
 </script>

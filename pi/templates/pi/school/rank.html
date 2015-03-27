@@ -18,7 +18,16 @@
 	</a></li>
 	<li class="pull-right">
 		<i class="fa fa-sort-amount-desc"></i>
-		分数排名由高到低
+		分数排名由高到低<br />		
+		<ul class="list-inline">
+			{% for tag in user.myuserprofile.tags.all %}
+				<li data-type="remove-tag" data-toggle="tooltip" 
+					title="Click to remove this tag" 
+					obj-id="{{tag.id}}">
+					{{ tag }}/
+				</li>
+			{% endfor %}		
+		</ul>
 	</li>			
 </ul>
 
@@ -37,11 +46,6 @@
 				<div class="col-md-4" rank-id="{{s.id}}" 
 				data-type="filtered-majors" 
 				id="{{s.rank_index}}-{{s.id}}">
-					<span class="ladda-button" data-style="expand-right" 
-					data-size="l" data-spinner-color="#333">
-					正在努力搜索你喜欢的专业 ^_^
-						<span class="ladda-label"></span>
-					</span>
 				</div>
 
 				<div class="col-md-2" style="border-right:1px solid #ccc;border-left:1px solid #ccc;">
@@ -73,11 +77,6 @@
 				<div class="col-md-4" rank-id="{{s.id}}" 
 				data-type="filtered-majors" 
 				id="{{s.rank_index}}-{{s.id}}">
-					<span class="ladda-button" data-style="expand-right" 
-					data-size="l" data-spinner-color="#333">
-					正在努力搜索你喜欢的专业 ^_^
-						<span class="ladda-label"></span>
-					</span>
 				</div>
 
 				<div class="col-md-2" style="border-right:1px solid #ccc;border-left:1px solid #ccc;">
@@ -109,11 +108,6 @@
 				<div class="col-md-4" rank-id="{{s.id}}" 
 				data-type="filtered-majors" 
 				id="{{s.rank_index}}-{{s.id}}">
-					<span class="ladda-button" data-style="expand-right" 
-					data-size="l" data-spinner-color="#333">
-					正在努力搜索你喜欢的专业 ^_^
-						<span class="ladda-label"></span>
-					</span>
 				</div>
 
 				<div class="col-md-2" style="border-right:1px solid #ccc;border-left:1px solid #ccc;">
@@ -135,6 +129,17 @@
 
 {% block custom_js %}
 <script type="text/javascript">
+	function reset_filtered_majors(html_obj,rank_id){
+        // ajax
+        j$.get("{% url 'school_majors_filter_by_tags' %}", // passed in from view
+            function(resp) { // success callback
+                j$(html_obj).html(resp);
+                get_filtered_majors(html_obj,rank_id);          
+            }
+        ).always(function(){
+        });  
+	}
+
 	function get_filtered_majors(html_obj,rank_id){
 		// loading spinner	 			
 		var l = Ladda.create(j$(html_obj).children('span')[0]);
@@ -156,8 +161,33 @@
 	j$(document).ready(function(){
 		j$.each(j$('[data-type="filtered-majors"]'),function(index,value){
 			var rank_id = j$(value).attr('rank-id');
-			get_filtered_majors(this,rank_id);
-		});
+			reset_filtered_majors(this,rank_id);
+		});		
+
+		j$('[data-type="remove-tag"]').click(function(e){
+			e.stopPropagation();
+
+			var this_obj = j$(this);
+			var obj_id = j$(this).attr('obj-id');
+		 	// ajax to server to get a list of columns:4"markers that are within the viewport
+		    j$.post("{% url 'user_tags' %}", // passed in from view
+		        { 
+		            'obj_id':obj_id
+		        }, 
+		        function(resp) { // success callback
+	            	if (resp['status'] == 'ok'){
+	          			//j$(this_obj).siblings('div').first().remove();
+	            		j$(this_obj).remove();
+
+						j$.each(j$('[data-type="filtered-majors"]'),function(index,value){
+							var rank_id = j$(value).attr('rank-id');
+							reset_filtered_majors(this,rank_id);
+						});		           	
+	            	}
+		        },'json'
+		    ).always(function(){       	
+		    });		
+		});		
 	});
 </script>
 {% endblock %}

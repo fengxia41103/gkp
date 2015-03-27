@@ -98,7 +98,7 @@ class HomeView (TemplateView):
 ###################################################
 class LoginView(FormView):
 	template_name = 'registration/login.html'
-	success_url = reverse_lazy('school_rank')
+	success_url = reverse_lazy('school_rank', kwargs={'rank': 10})
 	form_class = AuthenticationForm
 	def form_valid(self,form):
 		username = form.cleaned_data['username']
@@ -166,6 +166,7 @@ class UserProfileView(TemplateView):
 		if tags:
 			existing = user_profile.tags.all()
 			for t in tags.replace(u'，',',').split(','):
+				if not t.strip(): continue
 				tagged_item,created = MyTaggedItem.objects.get_or_create(tag=t[:16])
 				# link to related majors
 				MyMajor.objects.link_tag(tagged_item)
@@ -649,7 +650,6 @@ class MySchoolRank(TemplateView):
 		context['rank_by_min_score']=ranks.filter(rank_index=1).order_by('-rank')[:top_count]
 		context['rank_by_max_score']=ranks.filter(rank_index=2).order_by('-rank')[:top_count]
 		context['rank_by_avg_score']=ranks.filter(rank_index=3).order_by('-rank')[:top_count]
-
 		return context
 
 @class_view_decorator(login_required)
@@ -658,6 +658,10 @@ class MySchoolMajorsFilterByTags(TemplateView):
 		AJAX post view
 	'''	
 	template_name = 'pi/school/majors_filter_by_tags.html'
+	def get_context_data(self, **kwargs):
+		context = super(MySchoolMajorsFilterByTags, self).get_context_data(**kwargs)
+		return context	
+
 	def post(self,request):		
 		# user profile and profile tags to get tag linked majors
 		user_profile = MyUserProfile.objects.get(owner=self.request.user)
