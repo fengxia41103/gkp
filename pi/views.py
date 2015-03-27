@@ -98,7 +98,7 @@ class HomeView (TemplateView):
 ###################################################
 class LoginView(FormView):
 	template_name = 'registration/login.html'
-	success_url = reverse_lazy('school_echart_map_filter')
+	success_url = reverse_lazy('school_rank')
 	form_class = AuthenticationForm
 	def form_valid(self,form):
 		username = form.cleaned_data['username']
