@@ -162,12 +162,16 @@ class UserProfileView(TemplateView):
 		if degree_type: user_profile.degree_type = degree_type
 		user_profile.save()
 
-		# tags
+		# add tags
 		if tags:
 			existing = user_profile.tags.all()
 			for t in tags.replace(u'，',',').split(','):
 				tagged_item,created = MyTaggedItem.objects.get_or_create(tag=t[:16])
-				if tagged_item not in existing: user_profile.tags.add(tagged_item)
+				# link to related majors
+				MyMajor.objects.link_tag(tagged_item)
+
+				# add to associated user profile
+				user_profile.tags.add(tagged_item)
 
 		# refresh current page, whatever it is.
 		return HttpResponseRedirect(request.META['HTTP_REFERER'])
@@ -210,8 +214,10 @@ class UserBookmark(TemplateView):
 class UserTags(TemplateView):
 	template_name = ''
 	def post(self,request):
+		'''
+			Remove tags
+		'''
 		obj_id = request.POST['obj_id']
-		school = MySchool.objects.get(id=int(obj_id))
 
 		# get user property obj
 		user_profile,created = MyUserProfile.objects.get_or_create(owner=request.user)
@@ -636,7 +642,6 @@ class MySchoolRank(TemplateView):
 		context = super(MySchoolRank, self).get_context_data(**kwargs)		
 		top_count = int(context['rank'])
 		schools = MySchool.objects.filter_by_user_profile(self.request.user)
-		print 'found',len(schools)
 		ranks = MyRank.objects.filter(school__in=schools)
 
 		rank_by_min_score = ranks.filter(rank_index=1).order_by('rank').reverse()[:top_count]

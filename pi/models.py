@@ -66,7 +66,7 @@ class MyTaggedItem (models.Model):
 			default = '',
 			max_length = 16,
 			verbose_name = u'Tag'
-	)
+	)	
 	def __unicode__(self):
 		return self.tag
 
@@ -172,12 +172,19 @@ class MyMajorSubcategory (models.Model):
 	def __unicode__(self):
 		return u'%s (%s)' %(self.name,self.code)
 
+class MyMajorCustomManager(models.Manager):
+	def link_tag (self,tag):
+		for major in self.get_queryset():
+			# we use string contain for now, switch to "SequenceMatcher" later
+			if tag.tag in major.name: major.tags.add(tag)
+
 class MyMajor (MyBaseModel):
 	DEGREE_TYPE_CHOICES = (
 		('',''),
 		(u'本科', u'本科'),
 		(u'专科', u'专科'),
 	)
+	objects = MyMajorCustomManager()
 	code = models.CharField (
 			max_length = 16,
 			default = '',
@@ -231,6 +238,7 @@ class MyMajor (MyBaseModel):
 	# related models
 	schools = models.ManyToManyField ('MySchool', related_name='majors')
 	related_majors = models.ManyToManyField('MyMajor')
+	tags = models.ManyToManyField('MyTaggedItem')
 
 	def __unicode__(self):
 		return self.name
@@ -351,7 +359,6 @@ class MyAdmissionByMajor (models.Model):
 
 from shapely.geometry import box as Box
 from shapely.geometry import Point
-from difflib import SequenceMatcher
 class MySchoolCustomManager(models.Manager):
 	def get_queryset(self):
 		'''
