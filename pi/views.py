@@ -219,7 +219,7 @@ class UserTags(TemplateView):
 		# refresh current page, whatever it is.
 		return HttpResponse(json.dumps({'status':'ok'}), 
 			content_type='application/javascript')	
-		
+
 ###################################################
 #
 #	Data import views
@@ -636,6 +636,7 @@ class MySchoolRank(TemplateView):
 		context = super(MySchoolRank, self).get_context_data(**kwargs)		
 		top_count = int(context['rank'])
 		schools = MySchool.objects.filter_by_user_profile(self.request.user)
+		print 'found',len(schools)
 		ranks = MyRank.objects.filter(school__in=schools)
 
 		rank_by_min_score = ranks.filter(rank_index=1).order_by('rank').reverse()[:top_count]

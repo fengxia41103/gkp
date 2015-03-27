@@ -441,9 +441,9 @@ class MySchoolCustomManager(models.Manager):
 			for school in data:
 				majors = [m.name for m in school.majors.all()]
 				for tag in tags: 
-					match_ratio = map(lambda x: SequenceMatcher(None,x,tag).ratio(), majors)
+					match_ratio = map(lambda x: x.find(tag), majors)
 
-					if match_ratio and max(match_ratio) > 0.5: # this is a close enough match
+					if match_ratio and max(match_ratio) >= 0: # this is a close enough match
 						matched_by_tags.append(school)
 						break
 			data = data.filter(id__in=[m.id for m in matched_by_tags])

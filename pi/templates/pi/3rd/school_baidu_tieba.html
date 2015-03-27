@@ -27,9 +27,8 @@
 				<ul class="list-inline">
 				{% for img in t.attachments.all %}
 					<li>
-						<a href="{{ img.file.url }}" data-toggle="lightbox" data-gallery="multiimages" data-parent data-title="{{t.name}}" data-footer="{{t.description}}">
-						<img src="{{img.file.url}}" class="img-responsive img-thumbnail" width="40px">
-						</a>
+						<img src="{{img.file.url}}" 
+						data-type="attachment-thumbnail" class="img-responsive img-thumbnail" width="40px">
 					</li>
 				{% endfor %}
 				</ul>
@@ -51,3 +50,11 @@
 {% else %}
 暂无信息
 {% endif %}
+
+<script type="text/javascript">
+j$('[data-type="attachment-thumbnail"]').click(function(){
+	var url = j$(this).attr('src');
+	j$(this).closest('section').find('[data-toggle="lightbox"]').attr('href',url);
+	j$(this).closest('section').find('[data-toggle="lightbox"]').find('img:first-child').attr('src',url);
+});
+</script>
