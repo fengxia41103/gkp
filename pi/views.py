@@ -646,20 +646,31 @@ class MySchoolRank(TemplateView):
 		user_profile = MyUserProfile.objects.get(owner=self.request.user)
 		tags_related_majors = [major for tag in user_profile.tags.all() for major in tag.mymajor_set.all()]
 
-
-		context['rank_by_min_score']=[]
-		for rank in ranks.filter(rank_index=1).order_by('rank').reverse()[:top_count]:
-			context['rank_by_min_score'].append((rank,set(tags_related_majors).intersection(rank.school.majors.all())))
-
-		context['rank_by_max_score']=[]
-		for rank in ranks.filter(rank_index=2).order_by('rank').reverse()[:top_count]:
-			context['rank_by_max_score'].append((rank,set(tags_related_majors).intersection(rank.school.majors.all())))
-
-		context['rank_by_avg_score']=[]
-		for rank in ranks.filter(rank_index=3).order_by('rank').reverse()[:top_count]:
-			context['rank_by_avg_score'].append((rank,set(tags_related_majors).intersection(rank.school.majors.all())))
+		context['rank_by_min_score']=ranks.filter(rank_index=1).order_by('-rank')[:top_count]
+		context['rank_by_max_score']=ranks.filter(rank_index=2).order_by('-rank')[:top_count]
+		context['rank_by_avg_score']=ranks.filter(rank_index=3).order_by('-rank')[:top_count]
 
 		return context
+
+@class_view_decorator(login_required)
+class MySchoolMajorsFilterByTags(TemplateView):
+	'''
+		AJAX post view
+	'''	
+	template_name = 'pi/school/majors_filter_by_tags.html'
+	def post(self,request):		
+		# user profile and profile tags to get tag linked majors
+		user_profile = MyUserProfile.objects.get(owner=self.request.user)
+		tags_related_majors = [major for tag in user_profile.tags.all() for major in tag.mymajor_set.all()]
+		
+		rank = MyRank.objects.get(id=int(request.POST['obj_id']))		
+		related_majors = set(tags_related_majors).intersection(rank.school.majors.all())
+
+		content = loader.get_template(self.template_name)
+		html= content.render(Context({'objs':related_majors}))
+
+		return HttpResponse(json.dumps({'html':html}), 
+			content_type='application/javascript')		
 
 ###################################################
 #

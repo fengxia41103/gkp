@@ -53,7 +53,7 @@ urlpatterns = patterns(
 		url(r'^school/map/info/', ensure_csrf_cookie(views.MySchoolMapInfo.as_view()),name='school_map_info'),
 		url(r'^school/e/map/filter/$', views.MySchoolEchartMapFilter.as_view(),name='school_echart_map_filter'),
 		url(r'^school/rank/(?P<rank>\d+)/$', views.MySchoolRank.as_view(), name='school_rank'),
-
+		url(r'^school/majors/filter/tags/$', ensure_csrf_cookie(views.MySchoolMajorsFilterByTags.as_view()), name='school_majors_filter_by_tags'),
 
 		# analysis
 		url(r'^analysis/school/summary/ajax/$', views.AnalysisSchoolSummaryAJAX.as_view(), name='analysis_school_summary_ajax'),

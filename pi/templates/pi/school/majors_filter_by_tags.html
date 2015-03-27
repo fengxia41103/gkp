@@ -1,0 +1,7 @@
+<ul class="list-inline">
+{% for obj in objs %}
+	<li>
+		<a href="{% url 'major_detail' obj.id %}">{{ obj }}</a>
+	</li>
+{% endfor %}
+</ul>
