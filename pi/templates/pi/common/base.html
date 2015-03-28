@@ -26,9 +26,8 @@
     <![endif]-->
 
 	<!-- Latest compiled and minified CSS -->
-	<!--link rel="stylesheet" href="{% static 'bootstrap3/css/bootstrap.min.css' %}"-->
 	{# http://www.bootstrapcdn.com/?theme=14#bootswatch_tab #}
-	<link rel="stylesheet" href="{% static 'theme/simplex/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="{% static 'bootstrap3/css/bootstrap.min.css' %}">	
 	<!--link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css"-->
 	<!--link rel="stylesheet" href="https://bootflat.github.io/bootflat/css/bootflat.css"-->
 
@@ -167,12 +166,19 @@
 {% endblock %}<!-- end of block navbar -->
 	
 {% block main %}
+	<div class="col-sm-1">
+		<ul class="nav nav-stacked affix">
+		{% block nav-sidebar %}
+		{% endblock %}
+		</ul>
+	</div>
+
 	{% block custom_tags %}
 	{% endblock %}
 	<div id="wrap">
 	<div class="container">
-			{% block page-info %}
-			{% endblock %}
+		{% block page-info %}
+		{% endblock %}
 		
 		<div class="page-header">
 			<h1>

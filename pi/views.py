@@ -165,7 +165,8 @@ class UserProfileView(TemplateView):
 		# add tags
 		if tags:
 			user_profile.tags.all().delete()
-			for t in tags.replace(u'，',',').split(','):
+			# MONEY: limit 10 tags per user
+			for t in tags.replace(u'，',',').split(',')[:10]:
 				if not t.strip(): continue
 				tagged_item,created = MyTaggedItem.objects.get_or_create(tag=t[:16])
 				# link to related majors
@@ -577,6 +578,7 @@ class MySchoolDetail(DetailView):
 	def get_context_data(self, **kwargs):
 		context = super(MySchoolDetail, self).get_context_data(**kwargs)
 		context['list_url'] = reverse_lazy('school_list')
+		user_profile=MyUserProfile.objects.get(owner=self.request.user)
 
 		# related list
 		schools = MySchool.objects.filter_by_user_profile(self.request.user)
@@ -590,7 +592,7 @@ class MySchoolDetail(DetailView):
 		context['school_admission_by_year']=school_admission_by_year
 
 		# school majors
-		context['majors'] = self.get_object().majors.all()
+		context['majors'] = filter(lambda x: x.degree_type == user_profile.degree_type,self.get_object().majors.all())
 
 		return context
 

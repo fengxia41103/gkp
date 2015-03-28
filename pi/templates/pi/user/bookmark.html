@@ -12,7 +12,7 @@
 			<a href="{% url 'school_detail' s.id %}">
 			{{ s }}
 			</a>
-			<span data-toggle="school-xout" 
+			<span data-toggle="tooltip" data-type="school-xout" 
 				class="glyphicon glyphicon-remove my-filter-value-close ladda-button pull-right" 
 				obj-id="{{s.id}}"
 				data-style="expand-right" 
@@ -30,26 +30,54 @@
 </ul>
 
 <script type="text/javascript">
-	j$("[data-toggle='school-xout']").click(function(e){
-		e.stopPropagation();
-		var l = Ladda.create(this);
- 		l.start();
- 		var obj_id = j$(this).attr('obj-id');
+	j$(document).ready(function(){
+		// tooltips
+		j$("[data-toggle='tooltip']").tooltip();
 
-        // ajax to server to get a list of columns:4"markers that are within the viewport
-        j$.post("{% url 'user_bookmark' %}", // passed in from view
-            { 
-                'obj_id':obj_id,
-                'action':3
-            }, 
-            function(resp) { // success callback
-            	if (resp['status'] == 'ok'){
-	            	update_user_bookmarks();
-	            	j$('#btn-school-bookmark').removeClass('btn-primary');
-            	}
-            },'json'
-        ).always(function(){  
-        	l.stop();     	
-        });			
-	});	
+		// register event
+		j$("[data-type='school-xout']").click(function(e){
+			e.stopPropagation();
+			var l = Ladda.create(this);
+	 		l.start();
+	 		var obj_id = j$(this).attr('obj-id');
+
+	        // ajax to server to get a list of columns:4"markers that are within the viewport
+	        j$.post("{% url 'user_bookmark' %}", // passed in from view
+	            { 
+	                'obj_id':obj_id,
+	                'action':3
+	            }, 
+	            function(resp) { // success callback
+	            	if (resp['status'] == 'ok'){
+		            	update_user_bookmarks();
+		            	j$('#btn-school-bookmark').removeClass('btn-primary');
+	            	}
+	            },'json'
+	        ).always(function(){  
+	        	l.stop();     	
+	        });			
+		});	
+
+		// register bookmark events
+        j$("[data-type='school-bookmark']").click(function(e){
+            var l = Ladda.create(this);
+            l.start();
+            var obj_id = j$(this).attr('obj-id');
+
+            j$.post("{% url 'user_bookmark' %}", // passed in from view
+                { 
+                    'obj_id':obj_id,
+                    'action':4
+                }, 
+                function(resp) { // success callback
+                    if (resp['status'] == 'ok'){
+                        update_user_bookmarks();
+                        j$('#btn-school-xout').removeClass('btn-primary');
+                    }
+                },'json'
+            ).always(function(){  
+                l.stop();       
+            });         
+        }); 		
+	});
 </script>

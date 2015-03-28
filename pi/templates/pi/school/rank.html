@@ -10,7 +10,7 @@
 	<i class="fa fa-sort-amount-desc"></i>
 	综合评分排名由高到低
 </div>
-<div class="">
+{% if user.myuserprofile.tags.all %}
 	<ul class="list-inline">
 		<li class="">关键字：</li>
 		{% for tag in user.myuserprofile.tags.all %}
@@ -21,11 +21,12 @@
 				data-size="s" data-spinner-color="#333"					
 			>
 				<span class="ladda-label"></span>
-				{{ tag }}/
+				<i class="fa fa-tag"></i>
+				{{ tag }}
 			</li>
-		{% endfor %}		
+		{% endfor %}
 	</ul>
-</div>			
+{% endif %}
 
 <div id="rank-by-min-score">
 	{% for s in rank_by_min_score %}
@@ -50,8 +51,23 @@
 				
 			</div>
 
-			<div class="col-md-2">
+			<div class="col-md-1">
 				<span class="my-huge-font">{{ s.rank }}</span>
+			</div>
+
+			<div class="col-md-1">
+                <span data-type="school-bookmark" 
+                class="fa fa-save ladda-button" 
+                obj-id="{{s.school.id}}"
+                data-style="expand-left" 
+                data-size="l" 
+                data-spinner-color="#333"
+                data-toggle="tooltip"
+                title='把"{{s.school}}"加到我的收藏夹里慢慢看' 
+                style="font-size: 2.0em;padding: 5px;"               
+                >
+                <span class="ladda-label"></span>   
+                </span>  			
 			</div>
 		</div>
 	</section>
@@ -97,6 +113,7 @@
 			reset_filtered_majors(this,rank_id);
 		});		
 
+		// remove user profile tag
 		j$('[data-type="remove-tag"]').click(function(e){
 			// loading spinner	 			
 			var l = Ladda.create(this);
@@ -112,10 +129,15 @@
 		        function(resp) { // success callback
 	            	if (resp['status'] == 'ok'){
 	            		j$(this_obj).tooltip('destroy').remove();	            		
+
+	            		// refresh user profile
+						update_user_profile();
+						
+	            		// retrieve related majors fore each schoo listed
 						j$.each(j$('[data-type="filtered-majors"]'),function(index,value){
 							var rank_id = j$(value).attr('rank-id');
 							reset_filtered_majors(this,rank_id);
-						});		           	
+						});         	
 	            	}
 		        },'json'
 		    ).always(function(){       	

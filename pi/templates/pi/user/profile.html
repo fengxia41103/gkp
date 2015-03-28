@@ -64,10 +64,9 @@
 			<label for="tags" class="control-label">
 			想要学些什么呢
 			</label>
-			<textarea name="tags" type="text" class="form-control"
+			<input name="tags" type="text" class="form-control"
 			placeholder="体育,计算机,绘画" data-toggle="tooltip"
-			title="如果有多个，可以用逗号分割，例如“工程，教育，计算机“">{{user.myuserprofile.tags.all|join:","}}
-			</textarea>
+			title="最多可定义10个关键词，用逗号分割，例如“工程，教育，计算机“" value="{{user.myuserprofile.tags.all|join:","}}">
 		</div>
 
 		<button class="btn btn-small btn-primary default pull-right ladda-button"  

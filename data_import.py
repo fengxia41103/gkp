@@ -455,9 +455,8 @@ def populateRank():
 
 def cleanupSchoolName():
 	for s in MySchool.objects.all():
-		if u'-' in s.name: 
+		if s.description and s.name not in s.description:
 			print s.name
-			#s.save()
 
 import googlemaps
 def main():
@@ -480,7 +479,7 @@ def main():
 	#baidu_crawler()
 	#blanketRequest()
 	#populateRank()
-	#cleanupSchoolName()
+	cleanupSchoolName()
 
 if __name__ == '__main__':
 	main()

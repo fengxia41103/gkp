@@ -98,31 +98,7 @@
 
         j$(document).ready(function(){
             j$('#user-config').dropdown('toggle');
-            echart_map();
-
-            j$("[data-toggle='school-bookmark']").click(function(e){
-                console.log('here');
-
-                var l = Ladda.create(this);
-                l.start();
-                var obj_id = j$(this).attr('obj-id');
-
-                // ajax to server to get a list of columns:4"markers that are within the viewport
-                j$.post("{% url 'user_bookmark' %}", // passed in from view
-                    { 
-                        'obj_id':obj_id,
-                        'action':4
-                    }, 
-                    function(resp) { // success callback
-                        if (resp['status'] == 'ok'){
-                            update_user_bookmarks();
-                            j$('#btn-school-xout').removeClass('btn-primary');
-                        }
-                    },'json'
-                ).always(function(){  
-                    l.stop();       
-                });         
-            });             
+            echart_map();            
         })
     </script>
 {% endblock %}
@@ -156,17 +132,6 @@
                                 {% for s in city.list %}
                                     <li>
                                         <a href="{% url 'school_detail' s.id %}">{{ s.name }}</a>
-                                        <span data-toggle="school-bookmark" 
-                                        class="fa fa-plus my-filter-value-close ladda-button pull-right" 
-                                        obj-id="{{s.id}}"
-                                        data-style="expand-right" 
-                                        data-size="l" 
-                                        data-spinner-color="#333"
-                                        data-toggle="tooltip"
-                                        title="Add {{s.name }} to my bookmarks"                
-                                        >
-                                        <span class="ladda-label"></span>   
-                                        </span>                                             
                                     </li>
                                 {% endfor %}
                             </ul>

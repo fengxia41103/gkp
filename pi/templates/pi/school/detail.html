@@ -120,7 +120,7 @@
 						<span class="label label-primary">{{ student_type.grouper }}</span>
 					</h3>
 				</li>
-				<ul class="list-inline">
+				<ul class="list-inline my-multicol-4">
 				{% for ad in student_type.list %}
 					<li><a href="{%url 'major_detail' ad.id %}">{{ ad }}</a></li>
 				{% endfor %}
