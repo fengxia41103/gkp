@@ -581,8 +581,14 @@ class MySchoolDetail(DetailView):
 		user_profile=MyUserProfile.objects.get(owner=self.request.user)
 
 		# related list
-		schools = MySchool.objects.filter_by_user_profile(self.request.user)
-		context['related_schools']=schools		
+		my_rank = MyRank.objects.get(rank_index=1,school=self.get_object())
+		schools_with_similar_rank = MyRank.objects.filter(rank_index=1,rank__gte=(my_rank.rank-25),rank__lte=(my_rank.rank+25))
+		tmp = [rank.school for rank in schools_with_similar_rank if user_profile.province in rank.school.accepting_province.all()]
+		context['related_schools']=sorted(tmp,lambda x,y:cmp(x.province,y.province))
+
+		# hot topics
+		topics = MyBaiduStream.objects.filter(school=self.get_object()).order_by('-last_updated')[:20]
+		context['hot_topics'] = topics
 
 		# admission history
 		school_admission = MyAdmissionBySchool.objects.filter_by_user_profile_and_school(self.request.user, self.get_object().id)
@@ -621,20 +627,18 @@ class MySchoolEchartMapFilter(TemplateView):
 		# echart data, group by province
 		result = {}
 		schools = MySchool.objects.filter_by_user_profile(self.request.user)
-		context['total_count']=len(schools)
+		context['schools'] =  schools.order_by('province')
+
+		# echart data
 		for s in schools:
 			result.setdefault(s.province, []).append(s.id)
-
 		echart_data = [(key.id, key,len(value)) for key,value in result.iteritems()]
 		context['echart_data'] = echart_data
 		try: context['echart_data_min'] = min([a[2] for a in echart_data])
 		except: context['echart_data_min'] = 0
 		try: context['echart_data_max'] = max([a[2] for a in echart_data])
 		except: context['echart_data_max'] = 0
-		context['schools'] =  schools.order_by('province')
 
-		# this url will be AJAX post to get a detail analysis HTML added to this page
-		context['analysis_url'] = reverse_lazy('analysis_school_summary_ajax')
 		return context
 
 @class_view_decorator(login_required)

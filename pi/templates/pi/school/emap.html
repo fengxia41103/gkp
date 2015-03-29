@@ -13,7 +13,7 @@
         function echart_map(){
             var options = {
                 title : {
-                    text: '共查到符合你条件的学校{{ total_count }}个',
+                    text: '共查到符合你条件的学校{{ schools|length }}个',
                     subtext: '使用的分数线标准为你的估分的+/-50分',
                     x:'center'
                 },
@@ -98,7 +98,10 @@
 
         j$(document).ready(function(){
             j$('#user-config').dropdown('toggle');
-            echart_map();            
+            echart_map(); 
+
+            // beijing
+            j$('#accordion-2').show();           
         })
     </script>
 {% endblock %}
@@ -114,6 +117,10 @@
             {% regroup schools|dictsort:"province" by province as by_province_list %}
             {% for province in by_province_list %}
             <div class="panel-group" id="accordion-{{ province.grouper.id }}" data-type="school" style="display:none;">
+                
+                <h4 class="my-section-header text-right">{{province.grouper}}的学校
+                <span class="my-huge-font">{{ province.list|length }}</span>个</h4>
+
                 {% regroup province.list|dictsort:"city" by city as by_city_list %}
                 {% for city in by_city_list %}
                 <div class="panel panel-default" id="province-{{province.grouper.id}}">                    

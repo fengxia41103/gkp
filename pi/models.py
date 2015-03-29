@@ -441,6 +441,9 @@ class MySchoolCustomManager(models.Manager):
 				Q(min_score__gte=estimated_score-SCORE_BAND)).values_list('school',flat=True)			
 		data = data.filter(id__in=school_ids)
 
+		# filter by x-outs
+		data = data.exclude(id__in=user_profile.school_xouts.all())
+
 		# filter by tags
 		if user_profile.tags.all():
 			# DO NOT CHANGE: this is more efficient than calling individual school objects's method!
@@ -692,6 +695,7 @@ class MyBaiduStream(MyBaseModel):
 		verbose_name = u'回复数'
 		)
 	url_original = models.URLField(
+		max_length=512,
 		default = '',
 		verbose_name = u'Data source original link'
 		)
