@@ -193,7 +193,6 @@ class MyBaiduCrawler():
 					school = school,
 					author = t['author'],
 					url_original = t['url'],
-					reply_num = t['reply_num'],
 					name = t['title'][:64],
 					description = t['abstract'],
 				)
@@ -201,10 +200,11 @@ class MyBaiduCrawler():
 				self.logger.error('DB save failed!')
 				self.logger.error(t)				
 				continue # DB was not successful
+			data.reply_num = t['reply_num']
 
 			if post_timestamp: 
 				data.last_updated=post_timestamp
-				data.save()
+			data.save()
 
 			# look up its attachments, if any
 			for img_url in t['imgs']:

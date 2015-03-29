@@ -583,8 +583,8 @@ class MySchoolDetail(DetailView):
 		# related list
 		my_rank = MyRank.objects.get(rank_index=1,school=self.get_object())
 		schools_with_similar_rank = MyRank.objects.filter(rank_index=1,rank__gte=(my_rank.rank-25),rank__lte=(my_rank.rank+25))
-		tmp = [rank.school for rank in schools_with_similar_rank if user_profile.province in rank.school.accepting_province.all()]
-		context['related_schools']=sorted(tmp,lambda x,y:cmp(x.province,y.province))
+		tmp = [rank for rank in schools_with_similar_rank if self.get_object().city == rank.school.city]
+		context['related_schools']=[a for a in reversed(sorted(tmp,lambda x,y:cmp(x.rank,y.rank)))]
 
 		# hot topics
 		topics = MyBaiduStream.objects.filter(school=self.get_object()).order_by('-last_updated')[:20]

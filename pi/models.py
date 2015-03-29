@@ -692,6 +692,8 @@ class MyBaiduStream(MyBaseModel):
 		verbose_name = u'作者'
 		)
 	reply_num = models.IntegerField(
+		blank = True,
+		null = True,
 		verbose_name = u'回复数'
 		)
 	url_original = models.URLField(

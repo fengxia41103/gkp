@@ -215,7 +215,7 @@
 	</h4>
 	<ul class="list-unstyled newsticker" style="min-height:240px;overflow:hidden;">
 		{% for topic in hot_topics %}
-			<li style="border-bottom:1px solid #ccc;height:50px;background-color:rgb(125,125,125,0.5);">
+			<li style="border-bottom:1px dashed #dedede;height:50px;">
 			<h6 style="color:#89e;">
 				<i class="fa fa-bullhorn"></i>
 				{{ topic.author }}
@@ -227,38 +227,14 @@
 
 	{# float to right, related #}
 	<h4>
-		<i class="fa fa-university"></i>
-		招生院校推荐
+		<i class="fa fa-map-marker"></i>
+		同城市类似分数的学校
 	</h4>
-
-	<div class="panel-group" id="accordion">
-		{% regroup related_schools|dictsort:"province" by province as by_school_province_list %}
-		{% for province in by_school_province_list %}	
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h4 class="panel-title">
-					<a data-toggle="collapse" data-parent="#accordion"
-					href="#school-{{forloop.counter}}">
-						{{ province.grouper }}
-						<span class="badge pull-right">{{ province.list|length }}</span>
-					</a>
-					</h4>
-				</div>
-
-				<div id="school-{{forloop.counter}}" class="panel-collapse collapse">
-					<div class="panel-body">
-						<ul class="list-inline">
-							{% for o in province.list %}
-								<li>
-									<a href="{% url 'school_detail' o.id %}">{{ o }}</a>				
-								</li>						
-							{% endfor %}
-						</ul>
-					</div>
-				</div>
-			</div>
+	<ol class="">
+		{% for s in related_schools %}
+			<li><a href="{% url 'school_detail' s.school.id %}">{{ s.school }}({{s.rank}})</a></li>
 		{% endfor %}
-	</div>		
+	</ol>
 {% endblock %}
 
 {% block custom_js %}
