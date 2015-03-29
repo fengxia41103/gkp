@@ -108,6 +108,11 @@ body {
   -webkit-column-count: 5;
   column-count: 5; }
 
+.my-multicol-6 {
+  -moz-column-count: 6;
+  -webkit-column-count: 6;
+  column-count: 6; }
+
 /* CUSTOMIZE THE NAVBAR
 -------------------------------------------------- */
 /* Special class on .container surrounding .navbar, used for positioning it into place. */

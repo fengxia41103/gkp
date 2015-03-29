@@ -5,6 +5,8 @@
 {% endblock %}
 
 {% block content %}
+	<div id="analysis-detail"></div>
+    
     <h2>按条件搜索到{{province}}的学校</h2>
     <dl class="dl-horizontal">
         {# filter by city #}
@@ -44,9 +46,7 @@
             </ul>
         </dd>
         {% endfor %}
-    </dl>
-
-	<div id="analysis-detail"></div>
+    </dl>    
 {% endblock %}
 
 {% block custom_js %}

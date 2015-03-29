@@ -1,12 +1,5 @@
 {% load staticfiles %}
 
-<h2 class="page-header">
-	{{ schools.0.province }}招生信息
-	<a href="{% url 'analysis_school_by_province' schools.0.province.id %}" class="btn btn-xs addlink">
-		更多信息 ....
-		<i class="fa fa-angle-double-right"></i>
-	</a>
-</h2>
 <div class="container">
 	{# some aggregated data as a teaser so user will click to see more details #}
 	<blockquote>
@@ -72,13 +65,13 @@
     }
 
     j$(document).ready(function(){
-    	j$('a[data-toggle="tab"]:first').tab('show');
-  		j$('a[data-toggle="tab"]').click(function ( e ) {
+    	// register tab events
+  		j$('[data-toggle="tab"]').click(function ( e ) {
 		    e.preventDefault ();
 		    j$(this).tab('show');
 		});  
 
-		j$('a[data-toggle="tab"]').on('shown.bs.tab',function(e){
+		j$('[data-toggle="tab"]').on('shown.bs.tab',function(e){
 			e.preventDefault();
 			var tab_id = j$(this).attr('href');
 			var activeTab = j$(e.target).text();   
@@ -87,6 +80,9 @@
 		            'cats':JSON.stringify([activeTab])
 		        });	
 		}); 
+
+		// starting first tab
+    	j$('[data-toggle="tab"]:first').tab('show');
 
 		// initialize all tooltips
 		j$('[data-toggle="tooltip"]').tooltip();	

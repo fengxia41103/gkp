@@ -782,9 +782,7 @@ class CategorizeSchoolHelper:
 		batch = self.filters.get('batch')
 		
 		# filter by province
-		schools = MySchool.objects.filter_by_user_profile(self.filters.get('user'))
-
-		if province: schools=schools.filter(province = int(province))
+		schools = MySchool.objects.filter(province=province)
 
 		# filter by city
 		if city: schools = schools.filter(city=city)
@@ -864,9 +862,9 @@ class AnalysisSchoolDetailAJAX(TemplateView):
 				})
 
 			my_context['by_batch']=(
-				(u'一批',len(objs.filter(take_1st_batch=True))),
-				(u'二批',len(objs.filter(take_2nd_batch=True))),
-				(u'三批',len(objs.filter(take_3rd_batch=True)))
+				(u'一批',objs.filter(take_1st_batch=True)),
+				(u'二批',objs.filter(take_2nd_batch=True)),
+				(u'三批',objs.filter(take_3rd_batch=True))
 			)
 
 			html+= detail.render(my_context)
@@ -878,10 +876,10 @@ class AnalysisSchoolByProvince(TemplateView):
 	template_name = 'pi/analysis/schools_by_province.html'
 	def get_context_data(self, **kwargs):
 		context = super(TemplateView, self).get_context_data(**kwargs)
-		context['province'] = MyAddress.objects.get(id=int(kwargs['pk']))
+		province = MyAddress.objects.get(id=int(kwargs['pk']))
+		context['province'] = province 
 
-		schools = MySchool.objects.filter_by_user_profile(self.request.user)
-		context['schools'] = schools.filter(province=int(kwargs['pk']))
+		context['schools'] = MySchool.objects.filter(province=province)
 		return context
 
 ###################################################

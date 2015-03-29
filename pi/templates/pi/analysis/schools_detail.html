@@ -2,7 +2,7 @@
 	{{ subject }}
 </h2>
 <div class="row">
-	<div class="col-md-6">
+	<div class="col-md-7">
 		<dl class="dl-horizontal my-dl-horizontal">
 			<dt>此类高校个数</dt><dd>{{ objs|length }}</dd>
 			<dt>历史最高分数线</dt>
@@ -29,19 +29,29 @@
 		</dl>
 		<div id="{{subject}}-by-batch-canvas" style="min-height:300px;width:100%;"></div>
 	</div>
-	<div class="col-md-6">
-		<div id="{{subject}}-by-type-canvas" style="min-height:300px;width:100%;"></div>
-		<div class="" style="border-top:2px solid #55c4b8;">
-			<h4>符合你条件的学校:</h4>
-			<ul class="list-inline">
-				{% for obj in objs|dictsort:"name" %}
-				<li class="">
-					<a href="{% url 'school_detail' obj.id %}">{{ obj.name }}</a>
-				</li>
-				{% endfor %}
-			</ul>
-		</div><!-- end of related list -->				
+	<div class="col-md-5" id="{{subject}}-by-type-canvas" style="min-height:450px;">
 	</div>
+ </div>
+ <div class="row my-multicol-6">
+		{% for label,objs  in by_batch %}
+			<section>
+				<h5>{{label}}</h5>
+				{% for school in objs %}
+					{{ school }}
+				{% endfor %}
+			</section>
+		{% endfor %}
+
+        {% regroup objs|dictsort:'school_type' by school_type as obj_list %}
+        {% for type in obj_list %}
+        	<section>
+        	<h5>{{ type.grouper }}</h5>
+        	{% for school in type.list %}
+        		{{ school }}
+        	{% endfor %}
+        	</section>
+        {% endfor %}
+    </div>
 </div>
 
 <script type="text/javascript">
@@ -153,8 +163,8 @@
 		            name:'count',
 		            type:'bar',
 		            data:[
-		            	{% for label,val in by_batch reversed %}
-		            		{{val}},
+		            	{% for label,objs  in by_batch reversed %}
+		            		{{objs|length}},
 		            	{% endfor %}
 		            ],
 			    	itemStyle:{
