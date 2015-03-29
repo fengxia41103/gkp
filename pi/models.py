@@ -28,7 +28,7 @@ class MyBaseModel (models.Model):
 	# basic value fields
 	name = models.CharField(
 			default = None,
-			max_length = 64,
+			max_length = 128,
 			verbose_name = u'名称'
 		)
 	description = models.TextField (
@@ -681,6 +681,8 @@ class MyUserProfile(models.Model):
 class MyBaiduStream(MyBaseModel):
 	school = models.ForeignKey(
 		MySchool,
+		blank = True,
+		null = True,
 		verbose_name=u'所属学校'
 		)
 	created = models.DateTimeField(
@@ -689,6 +691,8 @@ class MyBaiduStream(MyBaseModel):
 		)
 	author = models.CharField(
 		max_length=64,
+		blank = True,
+		null = True,
 		verbose_name = u'作者'
 		)
 	reply_num = models.IntegerField(

@@ -157,14 +157,12 @@ class MyBaiduCrawler():
 		'''
 			read 3rd party content		
 		'''
-		self.logger.info(params)
 		keyword = params['keyword']
 		if '(' in keyword: keyword=keyword[:keyword.find('(')]
 		try: # school name can be changed outside this request, so we take precaution here!
 			school = MySchool.objects.get(name=keyword)
 		except: return
 		results = self.tieba(keyword)
-		self.logger.info(len(results))
 
 		# save results to DB
 		for t in results:
@@ -188,19 +186,18 @@ class MyBaiduCrawler():
 			else: post_timestamp = None
 
 			# create records in DB
-			try:
-				data,created = MyBaiduStream.objects.get_or_create(
-					school = school,
-					author = t['author'],
-					url_original = t['url'],
-					name = t['title'][:64],
-					description = t['abstract'],
-				)
-			except: 
-				self.logger.error('DB save failed!')
-				self.logger.error(t)				
-				continue # DB was not successful
+			data,created = MyBaiduStream.objects.get_or_create(
+				url_original = t['url']
+			)
+			#except: 
+			#	self.logger.error('DB save failed!')
+			#	self.logger.error(t)				
+			#	continue # DB was not successful
 			data.reply_num = t['reply_num']
+			data.school = school
+			data.author = t['author']
+			data.name = t['title'][:128]
+			data.description = t['abstract']
 
 			if post_timestamp: 
 				data.last_updated=post_timestamp

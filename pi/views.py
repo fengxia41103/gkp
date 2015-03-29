@@ -890,7 +890,6 @@ class AnalysisSchoolByProvince(TemplateView):
 #
 ###################################################
 from tasks import baidu_consumer
-
 class IntegrationBaiduTiebaAJAX(TemplateView):
 	'''
 		AJAX post view
