@@ -111,13 +111,17 @@
 
 				<li class="dropdown">
 					<a href="" class="" data-toggle="dropdown">
-					<i class="fa fa-folder-open"></i>
+					<i class="fa fa-database"></i>
 						海选引擎
 						<b class="caret"></b>
 					</a>
 					<ul class="dropdown-menu">
-						<li><a href="{% url 'major_list' %}">Major</a></li>
-						<li><a href="{% url 'school_list' %}">School</a></li>
+						<li>
+							<a href="{% url 'school_list' %}">高校库</a>
+						</li>					
+						<li>
+							<a href="{% url 'major_list' %}">专业库</a>
+						</li>
 					</ul>
 				</li>
 					
@@ -128,8 +132,8 @@
 						<b class="caret"></b>
 					</a>
 					<ul class="dropdown-menu">
-						<li><a href="{% url 'admission_school_list' %}">高考派分数线数据 school</a></li>
-						<li><a href="{% url 'admission_major_list' %}">高考派分数线数据 major</a></li>
+						<li><a href="{% url 'admission_school_list' %}">历年高校录取分数线</a></li>
+						<li><a href="{% url 'admission_major_list' %}">历年各校分专业录取分数线</a></li>
 					</ul>
 				</li>
 

@@ -453,6 +453,38 @@ def populateRank():
 		rank, created = MyRank.objects.get_or_create(school=MySchool.objects.get(id=id),rank_index=3,rank=avg_score)
 		print id, avg_score
 
+def populateOverallRank():
+	# how we are to give each school an overall score
+	# weighted average: 0.6
+	min_score_weight = 1
+	max_score_weight = 0.8
+	avg_score_weight = 0.5
+	no_fellow_weight = 5.0
+	no_phd_program_weight = 3.0
+	no_master_program_weight = 2.0
+	weights = [min_score_weight,max_score_weight,avg_score_weight,no_fellow_weight,no_phd_program_weight,no_master_program_weight]
+
+	ids = MySchool.objects.values_list('id',flat=True)
+	for id in ids:
+		min_score = MyRank.objects.get(school=id,rank_index=1)
+		max_score = MyRank.objects.get(school=id,rank_index=2)
+		avg_score = MyRank.objects.get(school=id,rank_index=3)
+		scores = [min_score.rank,max_score.rank,avg_score.rank]
+
+		rank = MyRank.objects.get(school=id,rank_index=-1)
+		if rank.school.no_fellow: scores.append(rank.school.no_fellow)
+		else: scores.append(0)
+
+		if rank.school.no_phd_program: scores.append(rank.school.no_phd_program)
+		else: scores.append(0)
+
+		if rank.school.no_master_program: scores.append(rank.school.no_master_program)
+		else: scores.append(0)
+
+		rank.rank = int(sum([a*b for a,b in zip(weights,scores)])/sum(weights))
+		rank.save
+		print id, rank.rank
+
 def cleanupSchoolName():
 	for s in MySchool.objects.all():
 		if s.description and s.name not in s.description:
@@ -479,7 +511,8 @@ def main():
 	#baidu_crawler()
 	#blanketRequest()
 	#populateRank()
-	cleanupSchoolName()
+	#cleanupSchoolName()
+	populateOverallRank()
 
 if __name__ == '__main__':
 	main()

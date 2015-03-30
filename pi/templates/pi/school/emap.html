@@ -114,7 +114,7 @@
     <div class="row" id="target">    
         <div id="echart-canvas" class="col-md-9" style="height:450px"></div>    
         <div class="col-md-3">
-            {% regroup schools|dictsort:"province" by province as by_province_list %}
+            {% regroup schools by province as by_province_list %}
             {% for province in by_province_list %}
             <div class="panel-group" id="accordion-{{ province.grouper.id }}" data-type="school" style="display:none;">
                 

@@ -1,8 +1,5 @@
-<h2 class="">
-	{{ subject }}
-</h2>
 <div class="row">
-	<div class="col-md-7">
+	<div class="col-md-5">
 		<dl class="dl-horizontal my-dl-horizontal">
 			<dt>此类高校个数</dt><dd>{{ objs|length }}</dd>
 			<dt>历史最高分数线</dt>
@@ -27,32 +24,45 @@
 				{% endif %}
 			</dd>
 		</dl>
-		<div id="{{subject}}-by-batch-canvas" style="min-height:300px;width:100%;"></div>
+		<div id="{{subject}}-by-batch-canvas" style="min-height:230px;width:100%;"></div>
+		<div class="col-md-5" id="{{subject}}-by-type-canvas" style="min-height:400px;width:100%;"></div>
 	</div>
-	<div class="col-md-5" id="{{subject}}-by-type-canvas" style="min-height:450px;">
+
+	<div class="col-md-7">
+		{# list of schools #}
+		<h2 class="">
+			{{ subject }}
+		</h2>
+		 <div class="row my-multicol-2">
+		 	<h4 class="page-header">
+		        <i class="fa fa-hand-o-right"></i>
+		        <span class="label label-default">按录取批次</span>
+		 	</h4>
+			{% for label,schools in by_batch %}
+				<section>
+					<h5>{{label}}</h5>
+						{{ schools|join:"|" }}
+				</section>
+			{% endfor %}
+
+			<h4 class="page-header">
+		        <i class="fa fa-hand-o-right"></i>
+		        <span class="label label-default">按学校类型</span>
+			</h4>
+		    {% regroup objs|dictsort:'school_type' by school_type as obj_list %}
+		    {% for type in obj_list %}
+		    	<section>
+		    	<h5>{{ type.grouper }}</h5>
+		    	{% for school in type.list %}
+		    		{{ school }}
+		    	{% endfor %}
+		    	</section>
+		    {% endfor %}
+		</div>	
 	</div>
  </div>
- <div class="row my-multicol-6">
-		{% for label,objs  in by_batch %}
-			<section>
-				<h5>{{label}}</h5>
-				{% for school in objs %}
-					{{ school }}
-				{% endfor %}
-			</section>
-		{% endfor %}
 
-        {% regroup objs|dictsort:'school_type' by school_type as obj_list %}
-        {% for type in obj_list %}
-        	<section>
-        	<h5>{{ type.grouper }}</h5>
-        	{% for school in type.list %}
-        		{{ school }}
-        	{% endfor %}
-        	</section>
-        {% endfor %}
-    </div>
-</div>
+
 
 <script type="text/javascript">
 	function drawGraph_1(){

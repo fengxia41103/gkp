@@ -186,18 +186,27 @@ class MyBaiduCrawler():
 			else: post_timestamp = None
 
 			# create records in DB
-			data,created = MyBaiduStream.objects.get_or_create(
-				url_original = t['url']
+			data = MyBaiduStream.objects.filter(
+				url_original = t['url'],
+				school = school
 			)
+			if len(data) > 1: 
+				for d in data[1:]:
+					Attachment.objects.filter(object_id=d.id).delete()
+					d.delete()
+				data = data[0]
+			elif len(data)==1: data = data[0]
+			else: data = MyBaiduStream(url_original=t['url'],school=school)
+
 			#except: 
 			#	self.logger.error('DB save failed!')
 			#	self.logger.error(t)				
 			#	continue # DB was not successful
 			data.reply_num = t['reply_num']
-			data.school = school
-			data.author = t['author']
-			data.name = t['title'][:128]
+			data.name = t['title']
 			data.description = t['abstract']
+			data.author_id = str(t['author_id'])
+			data.author = t['author']
 
 			if post_timestamp: 
 				data.last_updated=post_timestamp

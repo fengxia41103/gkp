@@ -163,8 +163,8 @@ class UserProfileView(TemplateView):
 		user_profile.save()
 
 		# add tags
+		user_profile.tags.all().delete()
 		if tags:
-			user_profile.tags.all().delete()
 			# MONEY: limit 10 tags per user
 			for t in tags.replace(u'，',',').split(',')[:10]:
 				if not t.strip(): continue
@@ -516,8 +516,10 @@ class MySchoolListFilter (FilterSet):
 	class Meta:
 		model = MySchool
 		fields = {
-				'name':['contains'],		
-				'en_name':['contains'],
+				'name':['contains'],
+				'province':['exact'],
+				'city':['contains'],
+				'take_bachelor':['exact'],
 				}
 
 @class_view_decorator(login_required)
@@ -581,8 +583,8 @@ class MySchoolDetail(DetailView):
 		user_profile=MyUserProfile.objects.get(owner=self.request.user)
 
 		# related list
-		my_rank = MyRank.objects.get(rank_index=1,school=self.get_object())
-		schools_with_similar_rank = MyRank.objects.filter(rank_index=1,rank__gte=(my_rank.rank-25),rank__lte=(my_rank.rank+25))
+		my_rank = MyRank.objects.get(rank_index=-1,school=self.get_object())
+		schools_with_similar_rank = MyRank.objects.filter(rank_index=-1,rank__gte=(my_rank.rank-50),rank__lte=(my_rank.rank+50))
 		tmp = [rank for rank in schools_with_similar_rank if self.get_object().city == rank.school.city]
 		context['related_schools']=[a for a in reversed(sorted(tmp,lambda x,y:cmp(x.rank,y.rank)))]
 
@@ -649,12 +651,13 @@ class MySchoolRank(TemplateView):
 		context = super(MySchoolRank, self).get_context_data(**kwargs)		
 		top_count = int(context['rank'])
 		schools = MySchool.objects.filter_by_user_profile(self.request.user)
-		ranks = MyRank.objects.filter(school__in=schools)
+
+		# related majors
 		user_profile = MyUserProfile.objects.get(owner=self.request.user)
 		tags_related_majors = [major for tag in user_profile.tags.all() for major in tag.mymajor_set.all()]
 
 		# this is how we measure a TOP 10!
-		context['rank_by_min_score']=ranks.filter(rank_index=1).order_by('-rank')[:top_count]
+		context['ranks'] = MyRank.objects.filter(rank_index=-1,school__in=schools).order_by('-rank')[:top_count]
 		return context
 
 @class_view_decorator(login_required)

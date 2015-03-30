@@ -695,6 +695,12 @@ class MyBaiduStream(MyBaseModel):
 		null = True,
 		verbose_name = u'作者'
 		)
+	author_id = models.CharField(
+		max_length=64,
+		blank = True,
+		null = True,
+		verbose_name = u'作者ID'
+		)
 	reply_num = models.IntegerField(
 		blank = True,
 		null = True,
@@ -720,6 +726,7 @@ class MyBaiduStream(MyBaseModel):
 
 class MyRank(models.Model):
 	CATEGORY_CHOICES = (
+		(-1,u'综合评分'),
 		(0,u'未知'),		
 		(1,u'按最低录取分数线排名'), 
 		(2,u'按最高录取分数线排名'), 

@@ -11,43 +11,14 @@
 
 {% block content %}
 {% load crispy_forms_tags %}
-<form action="" method="post">
+<form role="form" action="" method="post">
 	{% csrf_token %}
 	<div class="form-actions pull-right">
 		<input class="btn btn-small btn-primary default" type="submit" value="Save" />
 	</div>
-	{% crispy form %}
+	{%crispy form %}
 	                           
 </form>
 {% endblock %}
 
 
-{% block custom_css %}
-<style>
-.CodeMirror {
-	border: 1px solid #eee;
-    height: auto;
-}
-.CodeMirror-scroll {
-	overflow-y: hidden;
-	overflow-x: auto;
-}
-</style>
-{% endblock %}
-
-{% block custom_js %}
-	<script type="text/javascript">
-		j$(document).ready(function(){	
-			var cm = CodeMirror.fromTextArea(j$('#id_code')[0], {
-				mode:'python',
-				theme:'lesser-dark',
-				lineNumbers: true,
-				autofocus: true,
-				viewportMargin:Infinity,
-				matchBrackets: true,
-				styleSelectedText: true,
-				styleActiveLine: true
-			});			
-		});
-	</script>
-{% endblock %}

@@ -4,10 +4,6 @@
 {% block page-header %}
 	<div>
 		{{ object.name }}
-		<a href="{% url 'school_edit' object.id %}" class="btn btn-xs addlink">
-			<i class="fa fa-plus"></i>
-			edit
-		</a>
 
 		<div class="btn-group pull-right"> 
 		    <button
@@ -96,118 +92,86 @@
 {% endblock %}
 
 {% block detail-content %}
-		{# google map of this school #}
-		<section>
-			<iframe
-			  width="100%"
-			  height="250"
-			  frameborder="0" style="border:0"
-			  src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBs9Lh9SBeGg8azzB5h50y8DDjxFO4SLwA&q={{ object.name }}&language=zh-cn">
-			</iframe>
-		</section>
-
-		{# school related majors #}
-		<section id="school-major">
-			<h2 class="my-h2-border">学校专业</h2>
-
-			<ul class="list-inline">
-			{% regroup majors|dictsort:"student_type" by student_type as by_major_category_list %}
-			{% for student_type in by_major_category_list %}
-				<li>
-					<h3>
-						<i class="fa fa-hand-o-right"></i>			
-						<span class="label label-primary">{{ student_type.grouper }}</span>
-					</h3>
-				</li>
-				<ul class="list-inline my-multicol-4">
-				{% for ad in student_type.list %}
-					<li><a href="{%url 'major_detail' ad.id %}">{{ ad }}</a></li>
-				{% endfor %}
-				</ul>
-			{% endfor %}
-			</ul>
-		</section>
-
-		{# school admission score tables #}
-		<section id="school-admission">
-			<h2 class="my-h2-border">录取分数线</h2>
-
-			{% if school_admission_by_year %}
-				<ul id="myTab" class="nav nav-tabs">
-				{% for year in school_admission_by_year %}
-					<li><a href="#school-admission-{{year}}" data-toggle="tab">
-						{{year}}年
-					</a></li>			
-				{% endfor %}
-				</ul>
-
-				<div id="myTabContent" class="tab-content">
-				{% for year,school_list in school_admission_by_year.items %}
-					<div class="tab-pane" id="school-admission-{{year}}">
-					{% regroup school_list|dictsort:"category" by category as admission_by_cat %}
-					{% for category in admission_by_cat %}
-					{# 理科 #}
-					<h3>
-					<i class="fa fa-hand-o-right"></i>
-					<span class="label label-primary">{{ category.grouper }}</span>
-					</h3>
-						
-					
-					<table class="table table-condensed table-striped table-hover">
-						<thead><tr>
-							<th>招生地区</th>
-							<th>考生类别</th>
-							<th>录取批次</th>
-							<th>最低分</th>
-							<th>最高分</th>
-							<th>平均分</th>
-							<th>省控线</th>
-						</tr></thead>
-						<tbody>
-							{% for s in category.list %}
-								<tr>
-									<td>{{ s.province|default:"暂无信息" }}</td>
-									<td>{{ s.category|default:"暂无信息" }}</td>
-									<td>{{ s.batch|default:"暂无信息" }}</td>
-									<td>{{ s.min_score|default:"&mdash;" }}</td>
-									<td>{{ s.max_score|default:"&mdash;" }}</td>
-									<td>{{ s.avg_score|default:"&mdash;" }}</td>
-									<td>{{ s.province_score|default:"&mdash;"}}</td>
-								</tr>
-							{% endfor %}
-						</tbody>
-					</table>
-					{% endfor %}<!-- end cat loop -->
-					</div>
-				{%endfor%}<!-- end year loop-->
-			</div><!-- end of tab content -->	
-			{% else %}
-				暂无信息
-			{% endif %}					
-		</section>
-
-		{# school admission score tables #}
-		<section id="school-stream">
-			<h2 class="my-h2-border ladda-button" 
-			data-style="expand-right" 
-			data-size="l" data-spinner-color="#333" id="school-stream-bd">
-			同学们都在说什么呢
-			<span class="ladda-label">
-			</h2>
-			<div id="school-tieba"></div>
-		</section>		
-{% endblock %}
-
-{% block detail-sidebar %}
-	{# float to right, attributes #}
 	{# school introduction #}
 	<section id="school-intro">
 		<h4 class="my-h2-border"><i class="fa fa-university"></i>学校简介</h4>
-		<div style="overflow:hidden;max-height:300px;">
+		<div style="overflow:hidden;max-height:600px;">
 		{{ object.description|default:"暂无信息"|safe|truncatechars:1000 }}
 		</div>
 	</section>
 
+	{# school admission score tables #}
+	<section id="school-admission">
+		<h2 class="my-h2-border">录取分数线</h2>
+
+		{% if school_admission_by_year %}
+			<ul id="myTab" class="nav nav-tabs">
+			{% for year in school_admission_by_year %}
+				<li><a href="#school-admission-{{year}}" data-toggle="tab">
+					{{year}}年
+				</a></li>			
+			{% endfor %}
+			</ul>
+
+			<div id="myTabContent" class="tab-content">
+			{% for year,school_list in school_admission_by_year.items %}
+				<div class="tab-pane" id="school-admission-{{year}}">
+				{% regroup school_list|dictsort:"category" by category as admission_by_cat %}
+				{% for category in admission_by_cat %}
+				{# 理科 #}
+				<h3>
+				<i class="fa fa-hand-o-right"></i>
+				<span class="label label-primary">{{ category.grouper }}</span>
+				</h3>
+					
+				
+				<table class="table table-condensed table-striped table-hover">
+					<thead><tr>
+						<th>招生地区</th>
+						<th>考生类别</th>
+						<th>录取批次</th>
+						<th>最低分</th>
+						<th>最高分</th>
+						<th>平均分</th>
+						<th>省控线</th>
+					</tr></thead>
+					<tbody>
+						{% for s in category.list %}
+							<tr>
+								<td>{{ s.province|default:"暂无信息" }}</td>
+								<td>{{ s.category|default:"暂无信息" }}</td>
+								<td>{{ s.batch|default:"暂无信息" }}</td>
+								<td>{{ s.min_score|default:"&mdash;" }}</td>
+								<td>{{ s.max_score|default:"&mdash;" }}</td>
+								<td>{{ s.avg_score|default:"&mdash;" }}</td>
+								<td>{{ s.province_score|default:"&mdash;"}}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				{% endfor %}<!-- end cat loop -->
+				</div>
+			{%endfor%}<!-- end year loop-->
+		</div><!-- end of tab content -->	
+		{% else %}
+			暂无信息
+		{% endif %}					
+	</section>
+
+
+	{# school feeds #}
+	<section id="school-stream">
+		<h2 class="my-h2-border ladda-button" 
+		data-style="expand-right" 
+		data-size="l" data-spinner-color="#333" id="school-stream-bd">
+		同学们都在说什么呢
+		<span class="ladda-label">
+		</h2>
+		<div id="school-tieba"></div>
+	</section>		
+{% endblock %}
+
+{% block detail-sidebar %}
 	{# hot topics #}
 	<h4>
 		<i class="fa fa-fire"></i>
@@ -224,11 +188,41 @@
 			</li>
 		{% endfor %}
 	</ul>
+	
+	{# google map of this school #}
+	<section>
+		<iframe
+		  width="100%"
+		  height="250"
+		  frameborder="0" style="border:0"
+		  src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBs9Lh9SBeGg8azzB5h50y8DDjxFO4SLwA&q={{ object.name }}&language=zh-cn">
+		</iframe>
+	</section>
+
+	{# school related majors #}
+	<section id="school-major">
+		<ul class="list-inline">
+		{% regroup majors|dictsort:"student_type" by student_type as by_major_category_list %}
+		{% for student_type in by_major_category_list %}
+			<li>
+				<h4>
+					<i class="fa fa-graduation-cap"></i>			
+					{{ student_type.grouper }}
+				</h4>
+			</li>
+			<ul class="list-inline my-multicol-2">
+			{% for ad in student_type.list %}
+				<li><a href="{%url 'major_detail' ad.id %}">{{ ad }}</a></li>
+			{% endfor %}
+			</ul>
+		{% endfor %}
+		</ul>
+	</section>
 
 	{# float to right, related #}
 	<h4>
 		<i class="fa fa-map-marker"></i>
-		同城市类似分数的学校
+		同城大学推荐
 	</h4>
 	<ol class="">
 		{% for s in related_schools %}

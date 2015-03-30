@@ -14,39 +14,34 @@
 	<section class="row">
 	<table class="table table-striped table-hover">
 	<thead>
-		<th>操作</th>
-		<th>名称</th>
-		<th>City</th>
-		<th>学生数量</th>
-		<th>Majors</th>
 	</thead>
 	<tbody>
 		{% for obj in object_list %}
-		<tr>
-			<td>
-     			<a href="{% url 'school_edit' obj.id %}" class="">
-     				Edit
-				</a>
-     			<a href="{% url 'school_detail' obj.id %}" class="">
-					Detail
-				</a>
-     			<a href="{% url 'school_delete' obj.id %}" class="">
-					Delete
-				</a>				
+		<tr><td>
+			<h4>{{ obj.name }}</h4>
+			<small>{{ obj.city }}</small>
 			</td><td>
-     			{{ obj.name }}
-     		</td><td>
-     			{{ obj.city }}
-     		</td><td>
-     			{{ obj.no_student }}
-     		</td><td>
-     			<ul class="list-inline">
-     			{% for s in obj.myadmissionbymajor_set.all|slice:":10" %}
-     				<li>{{ s.major}} ({{s.year}},{{s.batch}},{{s.max_score}})</li>
-     			{% endfor %}
-     			</ul>
-     		</td>
-    	</tr>
+				<div>
+					{% for rank in obj.myrank_set.all %}
+						{{ rank.index}}.{{rank.rank}}
+					{% endfor %}
+				</div>
+			</td><td>
+				{% for feeds in obj.mybaidustream_set.all %}
+					{% if feeds.attachments.all %}
+						{% for img in feeds.attachments.all %}
+							<img src="{{ img.file.url }}" style="width:20px;height:25px;">
+						{% endfor %}
+					{% endif %}
+				{% endfor %}
+			</td><td>
+			<span class="pull-right">
+     			<a href="{% url 'school_detail' obj.id %}" class="">
+     				查看详情
+					<i class="fa fa-external-link"></i>
+				</a>
+			</span>
+		</td></tr>
     	{% endfor %}
 	</tbody>
 	</table>

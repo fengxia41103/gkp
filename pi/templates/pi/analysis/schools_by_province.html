@@ -5,48 +5,22 @@
 {% endblock %}
 
 {% block content %}
-	<div id="analysis-detail"></div>
-    
-    <h2>按条件搜索到{{province}}的学校</h2>
-    <dl class="dl-horizontal">
-        {# filter by city #}
-        <dt>
-            <i class="fa fa-hand-o-right"></i>        
-            <span class="label label-default">按城市</span>
-        </dt><dd>
-        {% regroup schools|dictsort:"city" by city as city_list %}  
-            <ul class="list-inline">
-            {% for city in city_list %} 
-                {% if city.grouper %}
-                <li><a data-type="city" val="{{city.grouper}}">{{ city.grouper }}</a></li>
-                {% endif %}
-            {% endfor%}
-            </ul>
-        </dd>
-    </dl>
-
-    <dl class="dl-horizontal">
+    <div class="row">
+        <div class="col-md-12">
+        <div class="my-multicol-6">
         {# filter by city #}
         {% regroup schools|dictsort:"city" by city as city_list %} 
-        {% for city in city_list %}
-        <dt>
-            <i class="fa fa-hand-o-right"></i>        
-            <span class="label label-default">
-                {% if city.grouper %}
-                    {{ city.grouper }}
-                {% endif %}
-            </span>
-        </dt><dd>
-            <ul class="list-inline">
-            {% for obj in city.list %} 
-                <li>
-                <a href="{% url 'school_detail' obj.id %}">{{ obj.name }}</a>
-                </li>
-            {% endfor%}
-            </ul>
-        </dd>
+        {% for city in city_list %}  
+            <h4>{{ city.grouper}}</h4>
+            {% for school in city.list %}
+                <a href="{% url 'school_detail' school.id %}">{{ school.name }}</a>
+                {% if not forloop.last %} | {% endif%}
+            {% endfor %}
         {% endfor %}
-    </dl>    
+        </div>
+        </div>
+    </div>
+    <div id="analysis-detail"></div>
 {% endblock %}
 
 {% block custom_js %}
