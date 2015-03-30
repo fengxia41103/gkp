@@ -5,22 +5,18 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-md-12">
-        <div class="my-multicol-6">
-        {# filter by city #}
+<div class="row">
+    <div class="col-md-12">
+        <div class="pull-right">
         {% regroup schools|dictsort:"city" by city as city_list %} 
         {% for city in city_list %}  
-            <h4>{{ city.grouper}}</h4>
-            {% for school in city.list %}
-                <a href="{% url 'school_detail' school.id %}">{{ school.name }}</a>
-                {% if not forloop.last %} | {% endif%}
-            {% endfor %}
+            <a href="">{{city.grouper}}/</a>
         {% endfor %}
         </div>
-        </div>
+
+        <div id="analysis-detail"></div>        
     </div>
-    <div id="analysis-detail"></div>
+</div>
 {% endblock %}
 
 {% block custom_js %}

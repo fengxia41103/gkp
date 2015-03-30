@@ -8,7 +8,7 @@
 	{% for cat, objs in categories.items %}
 		<span class="my-huge-font">{{ objs|length }}</span>个院校招收{{ cat }}
 		{% if not forloop.last %},
-		{% else %}。。{% endif %}
+		{% else %}。{% endif %}
 	{% endfor %}
 	</blockquote>
 </div>
