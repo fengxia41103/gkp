@@ -56,6 +56,9 @@
 			</div>
 
 			<div class="col-md-1">
+			{% if s.school in user.myuserprofile.school_bookmarks.all %}
+			已收藏
+			{% else %}
                 <span data-type="school-bookmark" 
                 class="fa fa-save ladda-button" 
                 obj-id="{{s.school.id}}"
@@ -68,6 +71,7 @@
                 >
                 <span class="ladda-label"></span>   
                 </span>  			
+            {% endif %}
 			</div>
 		</div>
 	</section>

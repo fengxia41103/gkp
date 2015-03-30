@@ -63,16 +63,18 @@
             var l = Ladda.create(this);
             l.start();
             var obj_id = j$(this).attr('obj-id');
+            var this_obj = j$(this);
 
             j$.post("{% url 'user_bookmark' %}", // passed in from view
                 { 
                     'obj_id':obj_id,
-                    'action':4
+                    'action':4 // add bookmark
                 }, 
                 function(resp) { // success callback
                     if (resp['status'] == 'ok'){
                         update_user_bookmarks();
                         j$('#btn-school-xout').removeClass('btn-primary');
+                        j$(this_obj).tooltip('destroy').remove();
                     }
                 },'json'
             ).always(function(){  

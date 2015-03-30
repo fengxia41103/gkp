@@ -673,10 +673,12 @@ class MySchoolMajorsFilterByTags(TemplateView):
 	def post(self,request):		
 		# user profile and profile tags to get tag linked majors
 		user_profile = MyUserProfile.objects.get(owner=self.request.user)
-		tags_related_majors = [major for tag in user_profile.tags.all() for major in tag.mymajor_set.all()]
-		
 		rank = MyRank.objects.get(id=int(request.POST['obj_id']))		
-		related_majors = set(tags_related_majors).intersection(rank.school.majors.all())
+		
+		if user_profile.tags.all():
+			tags_related_majors = [major for tag in user_profile.tags.all() for major in tag.mymajor_set.all()]
+			related_majors = set(tags_related_majors).intersection(rank.school.majors.all())
+		else: related_majors = rank.school.majors.all()
 
 		content = loader.get_template(self.template_name)
 		html= content.render(Context({'objs':related_majors}))
