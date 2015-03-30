@@ -15,7 +15,7 @@ from stem.control import Controller
 from random import randint
 import time
 import hashlib
-from urllib3 import PoolManager, Retry, Timeout
+from urllib3 import PoolManager, Retry, Timeout,ProxyManager
 from tempfile import NamedTemporaryFile
 from django.core.files import File
 from pi.models import *
@@ -38,7 +38,7 @@ logger.addHandler(fh)
 logger.addHandler(ch)
 
 retries = Retry(connect=5, read=2, redirect=5)
-http_manager = PoolManager(retries=retries, timeout=Timeout(total=15.0))
+http_manager = PoolManager(10,retries=retries, timeout=Timeout(total=15.0))
 
 class PlainUtility():
 	def __init__(self, http):
@@ -62,6 +62,7 @@ class TorUtility():
 		self.headers={'User-Agent':user_agent}
 		self.ip_url = 'http://icanhazip.com/'
 		self.logger = logging.getLogger('gkp')
+		self.http = ProxyManager('http://localhost:8118/')
 
 	def renewTorIdentity(self,passAuth):
 	    try:
@@ -93,24 +94,14 @@ class TorUtility():
 		self.logger.info('*'*50)
 		self.logger.info('\t'*6+'Renew TOR IP: %s'%self.request(self.ip_url))
 		self.logger.info('*'*50)
-	
-	def _set_urlproxy(self):
-	    proxy_support = urllib2.ProxyHandler({"http" : "127.0.0.1:8118"})
-	    opener = urllib2.build_opener(proxy_support)
-	    urllib2.install_opener(opener)
 
-	def request(self, url, retry=3):
-		go = 0
-		while go < retry:
-			try:
-				self._set_urlproxy()
-				request=urllib2.Request(url, None, self.headers)
-				return urllib2.urlopen(request).read()
-			except:
-				self.logger.error('Retrying #%d' % go)
-				go += 1
-				self.renew_connection()
-
+	def request(self,url):
+		r = self.http.request('GET',url)
+		if r.status == 200: return r.data
+		elif r.status==403: self.renew_connection()
+		else: self.logger.error('status %s'%r.status)
+		return ''
+		
 	def current_ip(self):
 		return self.request(self.ip_url)
 
@@ -240,7 +231,8 @@ def test(param):
 
 @shared_task
 def baidu_consumer(param):
-	http_agent = PlainUtility(http_manager)
+	#http_agent = PlainUtility(http_manager)
+	http_agent = TorUtility()
 	'The test task executed with argument "%s" ' % json.dumps(param)
 	crawler = MyBaiduCrawler(http_agent)
 	crawler.consumer(param)
