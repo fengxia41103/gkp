@@ -41,7 +41,12 @@
 			{% for label,schools in by_batch %}
 				<section>
 					<h5>{{label}}</h5>
-						{{ schools|join:"|" }}
+					{% for school in schools %}
+						<a href="{% url 'school_detail' school.id %}">{{ school }}</a>
+						{% if not forloop.last %}
+						/
+						{% endif %}
+					{% endfor %}
 				</section>
 			{% endfor %}
 
@@ -54,7 +59,10 @@
 		    	<section>
 		    	<h5>{{ type.grouper }}</h5>
 		    	{% for school in type.list %}
-		    		{{ school }}
+					<a href="{% url 'school_detail' school.id %}">{{ school }}</a>
+					{% if not forloop.last %}
+					/
+					{% endif %}
 		    	{% endfor %}
 		    	</section>
 		    {% endfor %}
