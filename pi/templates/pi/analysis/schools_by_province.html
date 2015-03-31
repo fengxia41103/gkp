@@ -9,8 +9,10 @@
     <div class="col-md-12">
         <div class="pull-right">
         {% regroup schools|dictsort:"city" by city as city_list %} 
-        {% for city in city_list %}  
+        {% for city in city_list %}
+            {% if city.grouper %}
             <a href="">{{city.grouper}}/</a>
+            {% endif %}
         {% endfor %}
         </div>
 
