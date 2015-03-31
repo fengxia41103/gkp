@@ -746,3 +746,53 @@ class MyRank(models.Model):
 		default = 0,
 		verbose_name = u'打分'
 	)
+
+class MyTrainStop(models.Model):
+	CATEGORY_CHOICES = (
+		('PK',u'普快'), # made up key
+		('MM',u'慢车'), # made up key
+		('G',u'高铁'),
+		('Z',u'直达特快'),
+		('C',u'城际'),		
+		('T',u'特快'), 
+		('K',u'快车'), 
+		('D',u'动车'), 
+	)	
+	train_id = models.CharField(
+		max_length=8,
+		verbose_name = u'车次'
+	)
+	category = models.CharField(
+		max_length = 4,
+		blank = True,
+		null = True,
+		verbose_name = u'类别',
+		choices = CATEGORY_CHOICES
+	)
+	stop_index = models.IntegerField(
+		verbose_name = u'停靠站序'
+	)
+	stop_name = models.CharField(
+		max_length=64,
+		verbose_name = u'站名'
+	)
+	province = models.ForeignKey(
+		'MyAddress',
+		blank = True,
+		null = True,
+		verbose_name = u'省份'
+	)
+	arrival =  models.DateTimeField(
+		blank = True,
+		null = True,
+		verbose_name = u'到站时间'
+	)
+	departure =  models.DateTimeField(
+		blank = True,
+		null = True,
+		verbose_name = u'发车时间'
+	)
+	seconds_since_initial = models.IntegerField(
+		default = 0,
+		verbose_name = u'运行时间'
+	)

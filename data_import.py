@@ -12,6 +12,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gaokao.settings")
 from django.conf import settings
 
 from django.utils import timezone
+
 # import models
 from pi.models import *
 
@@ -490,6 +491,13 @@ def cleanupSchoolName():
 		if s.description and s.name not in s.description:
 			print s.name
 
+from pi.tasks import train_consumer
+def crawl_train():
+	# 'G','D','Z','K','T','C'
+	for key in ['G','D','Z','K','T','C','']:
+		for index, train_id in enumerate(['%s%d'%(key,i) for i in range(1,9999)]):
+			train_consumer.delay(train_id)
+
 import googlemaps
 def main():
 	django.setup()
@@ -499,7 +507,7 @@ def main():
 	#baidu_geocoding()
 	#populate_school_geo()
 	#populate_school_province()
-	populate_hash()
+	#populate_hash()
 	#cleanup_school_name()
 	#cleanupSchoolAdmission()
 	#cleanupProvince()
@@ -512,7 +520,8 @@ def main():
 	#blanketRequest()
 	#populateRank()
 	#cleanupSchoolName()
-	populateOverallRank()
+	#populateOverallRank()
+	crawl_train()
 
 if __name__ == '__main__':
 	main()

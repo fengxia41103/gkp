@@ -4,18 +4,13 @@ from __future__ import absolute_import
 from celery import shared_task
 
 import lxml.html
-import urllib, urllib2
 import simplejson as json
 import pytz
-import socks
-import socket
 import logging
-from stem import Signal
-from stem.control import Controller
 from random import randint
 import time
 import hashlib
-from urllib3 import PoolManager, Retry, Timeout,ProxyManager
+import urllib, urllib2
 from tempfile import NamedTemporaryFile
 from django.core.files import File
 from pi.models import *
@@ -26,9 +21,11 @@ logger.setLevel(logging.DEBUG)
 # create file handler which logs even debug messages
 fh = logging.FileHandler('/tmp/gkp.log')
 fh.setLevel(logging.DEBUG)
+
 # create console handler with a higher log level
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
+
 # create formatter and add it to the handlers
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
@@ -37,80 +34,12 @@ ch.setFormatter(formatter)
 logger.addHandler(fh)
 logger.addHandler(ch)
 
-retries = Retry(connect=5, read=2, redirect=5)
-http_manager = PoolManager(10,retries=retries, timeout=Timeout(total=15.0))
-
-class PlainUtility():
-	def __init__(self, http):
-		user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7'
-		self.headers={'User-Agent':user_agent}
-		self.ip_url = 'http://icanhazip.com/'
-		self.logger = logging.getLogger('gkp')
-		self.http = http
-
-	def current_ip(self):
-		return self.request(self.ip_url)
-
-	def request(self,url):
-		r = self.http.request('GET',url)
-		if r.status == 200: return r.data
-		else: self.logger.error('status %s'%r.status)
-
-class TorUtility():
-	def __init__(self):
-		user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7'
-		self.headers={'User-Agent':user_agent}
-		self.ip_url = 'http://icanhazip.com/'
-		self.logger = logging.getLogger('gkp')
-		self.http = ProxyManager('http://localhost:8118/')
-
-	def renewTorIdentity(self,passAuth):
-	    try:
-	        s = socket.socket()
-	        s.connect(('localhost', 9051))
-	        s.send('AUTHENTICATE "{0}"\r\n'.format(passAuth))
-	        resp = s.recv(1024)
-
-	        if resp.startswith('250'):
-	            s.send("signal NEWNYM\r\n")
-	            resp = s.recv(1024)
-
-	            if resp.startswith('250'):
-	                self.logger.info("Identity renewed")
-	            else:
-	                self.logger.info("response 2:%s"%resp)
-
-	        else:
-	            self.logger.info("response 1:%s"%resp)
-
-	    except Exception as e:
-	        self.logger.error("Can't renew identity: %s"%e)
-
-	def renew_connection(self):
-		with Controller.from_port(port = 9051) as controller:
-	  		controller.authenticate('natalie')
-	  		controller.signal(Signal.NEWNYM)
-
-		self.logger.info('*'*50)
-		self.logger.info('\t'*6+'Renew TOR IP: %s'%self.request(self.ip_url))
-		self.logger.info('*'*50)
-
-	def request(self,url):
-		r = self.http.request('GET',url)
-		if r.status == 200: return r.data
-		elif r.status==403: self.renew_connection()
-		else: self.logger.error('status %s'%r.status)
-		return ''
-		
-	def current_ip(self):
-		return self.request(self.ip_url)
-
 class MyBaiduCrawler():
 	def __init__(self,handler):
 		self.http_handler = handler
 		self.logger = logging.getLogger('gkp')
 
-	def tieba(self,keyword):
+	def parse_tieba(self,keyword):
 		baidu_url = 'http://tieba.baidu.com/f?kw=%s&ie=utf-8'%urllib.quote(keyword.encode('utf-8'))
 		content = self.http_handler.request(baidu_url)
 		html = lxml.html.document_fromstring(content)
@@ -153,7 +82,9 @@ class MyBaiduCrawler():
 		try: # school name can be changed outside this request, so we take precaution here!
 			school = MySchool.objects.get(name=keyword)
 		except: return
-		results = self.tieba(keyword)
+
+		# parse retrieved html
+		results = self.parse_tieba(keyword)
 
 		# save results to DB
 		for t in results:
@@ -225,10 +156,8 @@ class MyBaiduCrawler():
 					# this will remove the tmp file from filesystem
 					tmp_file.close()
 
-@shared_task
-def test(param):
-    return 'The test task executed with argument "%s" ' % param
 
+from gaokao.tor_handler import TorUtility
 @shared_task
 def baidu_consumer(param):
 	#http_agent = PlainUtility(http_manager)
@@ -236,3 +165,73 @@ def baidu_consumer(param):
 	'The test task executed with argument "%s" ' % json.dumps(param)
 	crawler = MyBaiduCrawler(http_agent)
 	crawler.consumer(param)
+
+from itertools import izip_longest
+def grouper(iterable, n, padvalue=None):
+	# grouper('abcdefg', 3, 'x') --> ('a','b','c'), ('d','e','f'), ('g','x','x')
+	return list(izip_longest(*[iter(iterable)]*n, fillvalue=padvalue))
+
+from datetime import timedelta
+import re
+class MyTrainCrawler():
+	def __init__(self,handler):
+		self.http_handler = handler
+		self.logger = logging.getLogger('gkp')
+
+	def parse_time (self,time_string):
+		time_string = time_string.strip()
+		if time_string in [u'始发站',u'终点站']: return None
+		elif u'第' in time_string:
+			day_delta = int(time_string[:4].strip()[1])
+			timestamp = time_string[-5:].strip()
+			hour,minute = tuple(timestamp.split(':'))
+			timestamp = dt(2015,1,1+int(day_delta),int(hour),int(minute))
+		else:
+			hour,minute = tuple(time_string.split(':'))
+			timestamp = dt(2015,1,1,int(hour),int(minute))
+		return pytz.timezone(timezone.get_default_timezone_name()).localize(timestamp)		
+
+	def parse_train(self,train_id):
+		url = 'http://trains.ctrip.com/TrainSchedule/%s/'%train_id.upper()
+		content = self.http_handler.request(url)
+		html = lxml.html.document_fromstring(content)
+
+		if not html.xpath('//div[@class="s_hd"]/span'): return
+
+		ids = html.xpath('//div[@class="s_hd"]/span')[0].text_content().strip()
+		ids = ids.split('/')
+		#summary = html.xpath('//div[@class="s_bd"]/table')[0]
+		#summary = grouper([td.text_content().strip() for td in summary.xpath('.//td')],7)[0]
+		
+		#start = self.parse_time(summary[3])
+		#end = self.parse_time(summary[4])
+		for t_id in ids:
+			if not t_id: continue
+
+			pat = re.compile(u'(?P<hour>\d+)小时(?P<minute>\d+)分钟')
+			details = html.xpath('//div[@class="s_bd"]/table')[1]
+			for stop in grouper([td.text_content().strip() for td in details.xpath('.//td')],7):
+				tmp = pat.search(stop[5])
+				if tmp:
+					hour = int(tmp.group('hour'))
+					minute = int(tmp.group('minute'))
+					total_seconds = hour*3600+minute*60
+				else: total_seconds=0
+
+				if u'公里' in stop[6]: miles = int(stop[6][:-2])
+				else: miles=0
+				stop,created = MyTrainStop.objects.get_or_create(
+					train_id = t_id,
+					category = t_id[0],
+					stop_index = int(stop[1]),
+					stop_name = stop[2].strip(),
+					arrival = self.parse_time(stop[3]),
+					departure = self.parse_time(stop[4]),
+					seconds_since_initial = total_seconds
+				)
+
+@shared_task
+def train_consumer(train_id):
+	http_agent = TorUtility()
+	crawler = MyTrainCrawler(http_agent)
+	crawler.parse_train(train_id)

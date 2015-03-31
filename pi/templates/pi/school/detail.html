@@ -173,22 +173,24 @@
 
 {% block detail-sidebar %}
 	{# hot topics #}
-	<h4>
-		<i class="fa fa-fire"></i>
-		Hot topics
-	</h4>
-	<ul class="list-unstyled newsticker" style="min-height:300px;overflow:hidden;">
-		{% for topic in hot_topics %}
-			<li style="border-bottom:1px dashed #dedede;">
-			<h6 style="color:#89e;">
-				<i class="fa fa-bullhorn"></i>
-				{{ topic.author }}
-			</h6>
-			{{ topic.name }}
-			</li>
-		{% endfor %}
-	</ul>
-	
+	<section style="margin-bottom: 10px;">
+		<h4>
+			<i class="fa fa-fire"></i>
+			Hot topics
+		</h4>
+		<ul class="list-unstyled newsticker" style="min-height:300px;overflow:hidden;">
+			{% for topic in hot_topics %}
+				<li style="border-bottom:1px dashed #dedede;">
+				<h6 style="color:#89e;">
+					<i class="fa fa-bullhorn"></i>
+					{{ topic.author }}
+				</h6>
+				{{ topic.name }}
+				</li>
+			{% endfor %}
+		</ul>
+	</section>
+
 	{# google map of this school #}
 	<section>
 		<iframe
@@ -200,7 +202,7 @@
 	</section>
 
 	{# school related majors #}
-	<section id="school-major">
+	<section id="school-major" style="padding: 20px 10px;">
 		<ul class="list-inline">
 		{% regroup majors|dictsort:"student_type" by student_type as by_major_category_list %}
 		{% for student_type in by_major_category_list %}
@@ -220,18 +222,20 @@
 	</section>
 
 	{# float to right, related #}
-	<h4>
-		<i class="fa fa-map-marker"></i>
-		同城大学推荐
-	</h4>
-	<ol class="">
-		{% for s in related_schools %}
-			<li><a href="{% url 'school_detail' s.school.id %}">
-				{{ s.school }}</a>
-				<span class="pull-right">({{s.rank}})</span>
-			</li>
-		{% endfor %}
-	</ol>
+	<section>
+		<h4>
+			<i class="fa fa-map-marker"></i>
+			同城大学推荐
+		</h4>
+		<ol class="">
+			{% for s in related_schools %}
+				<li><a href="{% url 'school_detail' s.school.id %}">
+					{{ s.school }}</a>
+					<span class="pull-right">({{s.rank}})</span>
+				</li>
+			{% endfor %}
+		</ol>
+	</section>
 {% endblock %}
 
 {% block custom_js %}
