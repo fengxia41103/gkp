@@ -1,0 +1,100 @@
+{% extends 'pi/common/detail.html' %}
+
+{% load staticfiles %}
+{% block page-header %}
+	{{ major }}
+{% endblock %}
+
+{% block detail-navbar %}
+<ul class="nav navbar-nav">
+    <li class="">
+        <a href="{% url 'school_detail' school.id %}">专业概述
+		<span class="pull-right"><i class="fa fa-angle-right"></i></span>
+		</a>
+    </li>
+
+    <li class="dropdown">
+		<a href="#major-admission">
+			往年录取分数线
+			<span class="pull-right"><i class="fa fa-angle-right"></i></span>
+		</a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block breadcrumb %}
+<ol class="breadcrumb">
+	<li>
+		<a href="{% url 'school_detail' school.id %}">{{school}}</a>
+	</li>
+	<li>
+		<a href="{% url 'major_detail' major.id %}">{{major}}专业</a>
+	</li>
+</ol>
+{% endblock %}
+
+{% block detail-content %}
+	<section id="major-intro">
+		<h2 class="my-h2-border">专业概述</h2>
+		{{ major.description|default:"暂无信息" }}
+	</section>
+
+	<section>
+		<h2>往年专业录取分数线</h2>
+		{% if admissions %}
+			{% regroup admissions by year as by_year_list %}
+			<ul id="myTab" class="nav nav-tabs">
+			{% for year in by_year_list %}
+				<li><a href="#school-admission-{{year.grouper}}" data-toggle="tab">
+					{{year.grouper}}年
+				</a></li>			
+			{% endfor %}
+			</ul>
+
+			<div id="myTabContent" class="tab-content">
+				{% for year in by_year_list %}
+				<div class="tab-pane" id="school-admission-{{year.grouper}}">
+
+				{# major admissions #}
+				<table class="table table-condensed table-striped table-hover">
+					<thead><tr>
+						<th>招生地区</th>
+						<th>考生类别</th>
+						<th>录取批次</th>
+						<th>最高分</th>
+						<th>平均分</th>
+					</tr></thead>
+					<tbody>
+						{% for s in year.list %}
+							<tr>
+								<td>{{ s.province|default:"暂无信息" }}</td>
+								<td>{{ s.category|default:"暂无信息" }}</td>
+								<td>{{ s.batch|default:"暂无信息" }}</td>
+								<td>{{ s.max_score|default:"&mdash;" }}</td>
+								<td>{{ s.avg_score|default:"&mdash;" }}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				</div>
+			{%endfor%}<!-- end year loop-->
+		</div><!-- end of tab content -->	
+		{% else %}
+			暂无信息
+		{% endif %}			
+	</section>
+{% endblock %}
+
+{% block detail-sidebar %}
+	<section id="school-major" style="padding: 20px 10px;">
+		<h4>
+			<i class="fa fa-graduation-cap"></i>
+			该校的其他专业
+		</h4>	
+		<ul class="list-inline my-multicol-2">
+		{% for major in other_majors %}
+			<li><a href="{%url 'major_school_detail' school.id major.id %}">{{ major }}</a></li>
+		{% endfor %}
+		</ul>
+	</section>
+{% endblock %}

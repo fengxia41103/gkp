@@ -507,6 +507,22 @@ class MyMajorDetail(DetailView):
 		# return to client
 		return HttpResponse(json.dumps(result), content_type='application/javascript')			
 
+class MyMajorSchoolDetail(TemplateView):
+	template_name = 'pi/major/school_detail.html'
+	def get_context_data(self, **kwargs):
+		context = super(MyMajorSchoolDetail, self).get_context_data(**kwargs)
+		user_profile = MyUserProfile.objects.get(owner=self.request.user)
+		school = MySchool.objects.get(id=int(kwargs['school_pk']))
+		major = MyMajor.objects.get(id=int(kwargs['major_pk']))
+		major_admissions = MyAdmissionByMajor.objects.filter(school=school,major=major).order_by('-year','province')
+
+		context['school']=school
+		context['major']=major
+		context['admissions']=major_admissions
+		context['other_majors'] = filter(lambda x: x.degree_type == user_profile.degree_type,school.majors.all())
+
+		return context
+
 ###################################################
 #
 #	MySchool views

@@ -2,49 +2,49 @@
 
 {% load staticfiles %}
 {% block page-header %}
-	<div>
-		{{ object.name }}
+<div>
+{{ object.name }}
 
-		<div class="btn-group pull-right"> 
-		    <button
-		    	{% if object in user.myuserprofile.school_bookmarks.all %} 
-		    		class="btn btn-small ladda-button btn-primary"
-		    	{% else %}
-		    		class="btn btn-small ladda-button" 
-		    	{% endif %}
+<div class="btn-group pull-right"> 
+    <button
+    	{% if object in user.myuserprofile.school_bookmarks.all %} 
+    		class="btn btn-small ladda-button btn-primary"
+    	{% else %}
+    		class="btn btn-small ladda-button" 
+    	{% endif %}
 
-		    	id="btn-school-bookmark" 
-		    	style="border-right:1px solid #fefefe;margin-right:1px;" 
-		    	data-style="expand-left" 
-				data-size="l" 
-				data-spinner-color="#333" 
-				data-toggle="tooltip" 
-				title="添加到我的收藏中"
-			>
-				<span class="ladda-label"></span>			
-		    	<i class="fa fa-heart-o"></i>
-		    	Bookmark
-		    </button>
-		    <button 
-		    	{% if object in user.myuserprofile.school_xouts.all %} 
-		    		class="btn btn-small ladda-button btn-primary"
-		    	{% else %}
-		    		class="btn btn-small ladda-button" 
-		    	{% endif %}
-		    	
-				data-style="expand-right" 
-				data-size="l" 
-				data-spinner-color="#333" 		    
-		    	data-toggle="tooltip" 
-		    	title="我再也不想看见这个学校啦 >_<" 
-		    	id="btn-school-xout"
-		    >
-				<span class="ladda-label"></span>			    
-		    	<i class="fa fa-thumbs-o-down"></i>
-		    	X-OUT
-		    </button>
-	  	</div>
-  	</div>
+    	id="btn-school-bookmark" 
+    	style="border-right:1px solid #fefefe;margin-right:1px;" 
+    	data-style="expand-left" 
+		data-size="l" 
+		data-spinner-color="#333" 
+		data-toggle="tooltip" 
+		title="添加到我的收藏中"
+	>
+		<span class="ladda-label"></span>			
+    	<i class="fa fa-heart-o"></i>
+    	Bookmark
+    </button>
+    <button 
+    	{% if object in user.myuserprofile.school_xouts.all %} 
+    		class="btn btn-small ladda-button btn-primary"
+    	{% else %}
+    		class="btn btn-small ladda-button" 
+    	{% endif %}
+    	
+		data-style="expand-right" 
+		data-size="l" 
+		data-spinner-color="#333" 		    
+    	data-toggle="tooltip" 
+    	title="我再也不想看见这个学校啦 >_<" 
+    	id="btn-school-xout"
+    >
+		<span class="ladda-label"></span>			    
+    	<i class="fa fa-thumbs-o-down"></i>
+    	X-OUT
+    </button>
+	</div>
+</div>
 {% endblock %}
 
 {% block detail-navbar %}
@@ -214,7 +214,7 @@
 			</li>
 			<ul class="list-inline my-multicol-2">
 			{% for ad in student_type.list %}
-				<li><a href="{%url 'major_detail' ad.id %}">{{ ad }}</a></li>
+				<li><a href="{%url 'major_school_detail' object.id ad.id %}">{{ ad }}</a></li>
 			{% endfor %}
 			</ul>
 		{% endfor %}
