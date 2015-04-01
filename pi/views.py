@@ -480,14 +480,12 @@ class MyMajorDetail(DetailView):
 	model = MyMajor
 	template_name = 'pi/major/detail.html'
 
-	def get_context_data(self, **kwargs):
-		context = super(MyMajorDetail, self).get_context_data(**kwargs)
-		context['list_url'] = reverse_lazy('major_list')
-		return context
-
 	def post(self,request,pk):
 		# all related schools
 		related_schools = self.get_object().schools.all()
+
+		# filtered by user profile
+		related_schools = MySchool.objects.filter_by_user_profile(self.request.user).filter(id__in =[s.id for s in related_schools])
 
 		# client request
 		draw = int(request.POST['draw'])
@@ -522,6 +520,23 @@ class MyMajorSchoolDetail(TemplateView):
 		context['other_majors'] = filter(lambda x: x.degree_type == user_profile.degree_type,school.majors.all())
 
 		return context
+
+class MyMajorRelatedSchools(TemplateView):
+	template_name = 'pi/major/related_schools.html'
+	def post(self,request):
+		major = MyMajor.objects.get(id=int(request.POST['obj_id']))
+
+		# all related schools
+		related_schools = major.schools.all()
+
+		# filtered by user profile
+		related_schools = MySchool.objects.filter_by_user_profile(self.request.user).filter(id__in =[s.id for s in related_schools]).order_by('province')
+
+		content = loader.get_template(self.template_name)
+		html= content.render(Context({'objs':related_schools}))
+
+		return HttpResponse(json.dumps({'html':html}), 
+			content_type='application/javascript')
 
 ###################################################
 #
