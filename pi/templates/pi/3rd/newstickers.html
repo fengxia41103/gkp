@@ -1,0 +1,14 @@
+<ul class="list-unstyled newsticker" style="min-height:300px;overflow:hidden;">
+	{% for topic in objs %}
+		<li style="border-bottom:1px dashed #dedede;">
+		<h6 style="color:#89e;">
+			<i class="fa fa-bullhorn"></i>
+			<a href="#feed-{{topic.id}}">{{ topic.author }}</a>
+			{% if topic.attachments.all %}
+				<a href="#feed-{{topic.id}}"><small class="pull-right">有图哦，亲！</small></a>
+			{%  endif %}
+		</h6>
+		{{ topic.name }}
+		</li>
+	{% endfor %}
+</ul>

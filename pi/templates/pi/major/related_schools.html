@@ -1,0 +1,29 @@
+{% regroup objs by province as by_province_list %}
+<ul id="myTab" class="nav nav-tabs">
+	{% for province in by_province_list %}
+		<li>
+			<a href="#{{province.grouper}}-list" data-toggle="tab">{{province.grouper}}({{province.list|length}})</a>
+		</li> 
+	{% endfor %}
+</ul>
+
+<div class="tab-content">
+{% for province in by_province_list %}
+	<div class="tab-pane fade in" id="{{province.grouper}}-list">	
+		<table class="table table-condensed table-striped table-hover">
+			{% for school in province.list %}
+			<tr><td>
+				<a href="{% url 'school_detail' school.id %}">{{ school }}</a>
+			</td><td>{{school.city}}
+			</td><td>
+			</td></tr>
+			{% endfor %}
+		</table>
+	</div>
+{% endfor %}
+</div>
+
+<script type="text/javascript">
+	// starting first tab
+    j$('[data-toggle="tab"]:first').tab('show');
+</script>
