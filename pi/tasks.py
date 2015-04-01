@@ -147,11 +147,13 @@ class MyBaiduCrawler():
 				if img_data:
 					tmp_file = NamedTemporaryFile(suffix='.jpg',delete=False)
 					tmp_file.write(img_data)
-					attchment = Attachment(	
-						source_url = img_url,
-						content_object=data,
-						file=File(tmp_file)
-					).save()
+					if Attachment.objects.filter(source_url=img_url).exists(): continue
+					else:
+						attchment = Attachment(	
+							source_url = img_url,
+							content_object=data,
+							file=File(tmp_file)
+						).save()
 
 					# this will remove the tmp file from filesystem
 					tmp_file.close()
