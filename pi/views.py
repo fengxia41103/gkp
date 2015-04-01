@@ -611,16 +611,17 @@ class MySchoolDetail(DetailView):
 	def get_context_data(self, **kwargs):
 		context = super(MySchoolDetail, self).get_context_data(**kwargs)
 		context['list_url'] = reverse_lazy('school_list')
+		school = self.get_object()
 		user_profile=MyUserProfile.objects.get(owner=self.request.user)
 
 		# related list
-		my_rank = MyRank.objects.get(rank_index=-1,school=self.get_object())
+		my_rank = MyRank.objects.get(rank_index=-1,school=school)
 		schools_with_similar_rank = MyRank.objects.filter(rank_index=-1,rank__gte=(my_rank.rank-50),rank__lte=(my_rank.rank+50))
 		tmp = [rank for rank in schools_with_similar_rank if self.get_object().city == rank.school.city]
 		context['related_schools']=[a for a in reversed(sorted(tmp,lambda x,y:cmp(x.rank,y.rank)))]
 
 		# admission history
-		school_admission = MyAdmissionBySchool.objects.filter_by_user_profile_and_school(self.request.user, self.get_object().id)
+		school_admission = MyAdmissionBySchool.objects.filter_by_user_profile_and_school(self.request.user, school.id)
 		school_admission_by_year = {}
 		for year,admission_by_year_list in groupby(school_admission,lambda x:x.year):
 			school_admission_by_year[year]=sorted(list(admission_by_year_list),lambda x,y:cmp(x.category,y.category))
@@ -629,6 +630,8 @@ class MySchoolDetail(DetailView):
 		# school majors
 		context['majors'] = filter(lambda x: x.degree_type == user_profile.degree_type,self.get_object().majors.all())
 
+		# trains
+		context['trains'] = MyTrainStop.objects.filter(stop_name__icontains = school.city)
 		return context
 
 @class_view_decorator(login_required)
@@ -920,6 +923,8 @@ class AnalysisSchoolByProvince(TemplateView):
 #
 ###################################################
 from tasks import baidu_consumer
+import pynlpir # http://pynlpir.readthedocs.org/en/latest/api.html#module-pynlpir.nlpir
+
 class IntegrationBaiduTiebaAJAX(TemplateView):
 	'''
 		AJAX post view
@@ -946,9 +951,12 @@ class IntegrationBaiduTiebaAJAX(TemplateView):
 		# read saved feeds
 		feeds = MyBaiduStream.objects.filter(school=school).order_by('-last_updated')[:100]
 		content = loader.get_template(self.template_name)
+		pynlpir.open()
+
 		tieba_html= content.render(Context({
 			'obj':school,
-			'feeds': feeds
+			'feeds': feeds,
+			'keywords': pynlpir.get_key_words(''.join([f.name+f.description for f in feeds]), weighted=True)
 			}))
 
 		# hot topics

@@ -14,7 +14,7 @@
 			<label for="province" class="control-label">
 				你会在哪儿参加高考呢？
 			</label>
-			<input name="province" type="text" class="form-control" placeholder="写上你参加高考的省份吧" value="{{ user.myuserprofile.province|default_if_none:'' }}">
+			<input name="province" type="text" class="form-control" placeholder="写上你参加高考的省份吧，例如江苏南京" value="{{ user.myuserprofile.province|default_if_none:'' }}">
 		</div><div class="form-group">
 			<label for="student_type" class="control-label">
 				你在高中学文还是学理？

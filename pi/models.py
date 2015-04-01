@@ -796,3 +796,6 @@ class MyTrainStop(models.Model):
 		default = 0,
 		verbose_name = u'运行时间'
 	)
+
+	def __unicode__(self):
+		return self.train_id
