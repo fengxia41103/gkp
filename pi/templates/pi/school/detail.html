@@ -178,17 +178,7 @@
 			<i class="fa fa-fire"></i>
 			Hot topics
 		</h4>
-		<ul class="list-unstyled newsticker" style="min-height:300px;overflow:hidden;">
-			{% for topic in hot_topics %}
-				<li style="border-bottom:1px dashed #dedede;">
-				<h6 style="color:#89e;">
-					<i class="fa fa-bullhorn"></i>
-					{{ topic.author }}
-				</h6>
-				{{ topic.name }}
-				</li>
-			{% endfor %}
-		</ul>
+		<div id="school-newsticker"></div>
 	</section>
 
 	{# google map of this school #}
@@ -251,7 +241,19 @@
                 'obj_id':{{ object.id }},
             }, 
             function(resp) { // success callback
-                j$('#school-tieba').html(resp['html']);             
+                j$('#school-tieba').html(resp['bd_html']);             
+                j$('#school-newsticker').html(resp['news_html']);             
+
+				// start news ticker
+				j$('.newsticker').newsTicker({
+					//row_height: 48,
+					max_rows: 5,
+					speed: 600,
+					direction: 'up',
+					duration: 4000,
+					autostart: 1,
+					pauseOnHover: 0			
+				});
                 setTimeout(get_bd_tb, 30000); // refresh every 30 seconds
             },'json'
         ).always(function(){
@@ -267,17 +269,6 @@
 		    e.preventDefault();
 		    j$(this).ekkoLightbox();
 		}); 
-
-		// start news ticker
-		j$('.newsticker').newsTicker({
-			//row_height: 48,
-			max_rows: 5,
-			speed: 600,
-			direction: 'up',
-			duration: 4000,
-			autostart: 1,
-			pauseOnHover: 0			
-		});
 
 		j$('#btn-school-bookmark').click(function(){
 			var l = Ladda.create(this);

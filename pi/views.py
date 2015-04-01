@@ -530,7 +530,7 @@ class MyMajorRelatedSchools(TemplateView):
 		related_schools = major.schools.all()
 
 		# filtered by user profile
-		related_schools = MySchool.objects.filter_by_user_profile(self.request.user).filter(id__in =[s.id for s in related_schools]).order_by('province')
+		related_schools = MySchool.objects.filter_by_user_profile(self.request.user).filter(id__in =[s.id for s in related_schools]).order_by('province','city')
 
 		content = loader.get_template(self.template_name)
 		html= content.render(Context({'objs':related_schools}))
@@ -618,10 +618,6 @@ class MySchoolDetail(DetailView):
 		schools_with_similar_rank = MyRank.objects.filter(rank_index=-1,rank__gte=(my_rank.rank-50),rank__lte=(my_rank.rank+50))
 		tmp = [rank for rank in schools_with_similar_rank if self.get_object().city == rank.school.city]
 		context['related_schools']=[a for a in reversed(sorted(tmp,lambda x,y:cmp(x.rank,y.rank)))]
-
-		# hot topics
-		topics = MyBaiduStream.objects.filter(school=self.get_object()).order_by('-last_updated')[:20]
-		context['hot_topics'] = topics
 
 		# admission history
 		school_admission = MyAdmissionBySchool.objects.filter_by_user_profile_and_school(self.request.user, self.get_object().id)
@@ -929,7 +925,7 @@ class IntegrationBaiduTiebaAJAX(TemplateView):
 		AJAX post view
 	'''
 	template_name = 'pi/3rd/school_baidu_tieba.html'
-
+	newsticker_template_name = 'pi/3rd/newstickers.html'
 	def post(self,request):
 		obj_id = request.POST['obj_id']
 		school = MySchool.objects.get(id=int(obj_id))
@@ -947,12 +943,20 @@ class IntegrationBaiduTiebaAJAX(TemplateView):
 		# send a 3rd party service request
 		baidu_consumer.delay(params)
 
+		# read saved feeds
 		feeds = MyBaiduStream.objects.filter(school=school).order_by('-last_updated')[:100]
 		content = loader.get_template(self.template_name)
-		html= content.render(Context({
+		tieba_html= content.render(Context({
 			'obj':school,
 			'feeds': feeds
 			}))
 
-		return HttpResponse(json.dumps({'html':html}), 
+		# hot topics
+		topics = feeds[:20]
+		content = loader.get_template(self.newsticker_template_name)
+		newsticker_html= content.render(Context({
+			'objs':topics,
+			}))
+
+		return HttpResponse(json.dumps({'bd_html':tieba_html,'news_html':newsticker_html}), 
 			content_type='application/javascript')
