@@ -173,23 +173,7 @@
 
 {% block detail-sidebar %}
 	{# hot topics #}
-	<section style="margin-bottom: 10px;">
-		<h4>
-			<i class="fa fa-fire"></i>
-			Hot topics
-		</h4>
-		<div id="school-newsticker"></div>
-	</section>
-
-	{# google map of this school #}
-	<section>
-		<iframe
-		  width="100%"
-		  height="250"
-		  frameborder="0" style="border:0"
-		  src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBs9Lh9SBeGg8azzB5h50y8DDjxFO4SLwA&q={{ object.name }}&language=zh-cn">
-		</iframe>
-	</section>
+	<section style="margin-bottom: 10px;" id="school-newsticker"></section>
 
 	{# school related majors #}
 	<section id="school-major" style="padding: 20px 10px;">
@@ -199,7 +183,7 @@
 			<li>
 				<h4>
 					<i class="fa fa-graduation-cap"></i>			
-					{{ student_type.grouper }}
+					专业: {{ student_type.grouper }}
 				</h4>
 			</li>
 			<ul class="list-inline my-multicol-2">
@@ -230,7 +214,8 @@
 	{# train who stops at this city #}
 	<section>
 		<h4>
-			Train Stops
+			<i class="fa fa-train"></i>
+			{{ object.city }}火车时刻表
 		</h4>
 		<ul class="list-inline">
 			{% for train in trains %}

@@ -1,3 +1,13 @@
+<h4>
+	<i class="fa fa-fire"></i>
+	热门话题
+</h4>
+<div id="my-canvas" style="width:100%; min-height: 350px;margin-bottom:20px;margin-top:10px;"></div>
+
+<h4>
+	<i class="fa fa-forumbee"></i>
+	实时校园
+</h4>
 <ul class="list-unstyled newsticker" style="min-height:300px;overflow:hidden;">
 	{% for topic in objs %}
 		<li style="border-bottom:1px dashed #dedede;">
@@ -12,3 +22,16 @@
 		</li>
 	{% endfor %}
 </ul>
+
+<script type="text/javascript">
+	var word_array = [
+		{% for keyword, weight in keywords %}
+		{text: "{{keyword}}", weight: Math.round({{weight}})},
+		{% endfor %}
+	];
+	
+	j$("#my-canvas").jQCloud(word_array,{
+		delayedMode: true,
+		//shape: 'rectangular'
+	});
+</script>
