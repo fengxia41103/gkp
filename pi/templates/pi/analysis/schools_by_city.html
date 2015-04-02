@@ -1,0 +1,23 @@
+{% extends 'pi/common/detail.html' %}
+
+{% block page-header %}
+	{{ city }}
+{% endblock %}
+
+{% block detail-content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="pull-right">
+        {% for school in schools %}
+            {{ school }}
+        {% endfor %}
+        </div>
+
+        <div id="analysis-detail"></div>        
+    </div>
+</div>
+{% endblock %}
+
+{% block detail-sidebar %}
+	{{ city.wiki_intro|safe }}
+{% endblock %}

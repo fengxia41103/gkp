@@ -154,7 +154,12 @@ class MyCity (models.Model):
 	city_en = models.CharField (
 		max_length = 32,
 		verbose_name = u'in English'
-	)	
+	)
+	wiki_intro = models.TextField(
+		blank = True,
+		null = True,
+		verbose_name = u'Wiki'
+	)
 	def __unicode__(self):
 		return self.city
 

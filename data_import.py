@@ -508,6 +508,11 @@ def cleanup_city():
 		else:
 			print 'not complete: ',s.name
 
+from pi.tasks import city_wiki_consumer
+def crawl_city_wiki():
+	for c in MyCity.objects.all():
+		city_wiki_consumer.delay(c.city, c.province.id)
+
 import googlemaps
 def main():
 	django.setup()
@@ -532,7 +537,8 @@ def main():
 	#cleanupSchoolName()
 	#populateOverallRank()
 	#crawl_train()
-	cleanup_city()
+	#cleanup_city()
+	crawl_city_wiki()
 
 if __name__ == '__main__':
 	main()

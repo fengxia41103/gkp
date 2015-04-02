@@ -73,7 +73,7 @@ class MyBaiduCrawler():
 
 		return threads
 
-	def consumer(self, params):
+	def parser(self, params):
 		'''
 			read 3rd party content		
 		'''
@@ -166,7 +166,7 @@ def baidu_consumer(param):
 	http_agent = TorUtility()
 	'The test task executed with argument "%s" ' % json.dumps(param)
 	crawler = MyBaiduCrawler(http_agent)
-	crawler.consumer(param)
+	crawler.parser(param)
 
 from itertools import izip_longest
 def grouper(iterable, n, padvalue=None):
@@ -193,7 +193,7 @@ class MyTrainCrawler():
 			timestamp = dt(2015,1,1,int(hour),int(minute))
 		return pytz.timezone(timezone.get_default_timezone_name()).localize(timestamp)		
 
-	def parse_train(self,train_id):
+	def parser(self,train_id):
 		url = 'http://trains.ctrip.com/TrainSchedule/%s/'%train_id.upper()
 		content = self.http_handler.request(url)
 		html = lxml.html.document_fromstring(content)
@@ -231,9 +231,44 @@ class MyTrainCrawler():
 					departure = self.parse_time(stop[4]),
 					seconds_since_initial = total_seconds
 				)
-
 @shared_task
 def train_consumer(train_id):
 	http_agent = TorUtility()
 	crawler = MyTrainCrawler(http_agent)
-	crawler.parse_train(train_id)
+	crawler.parser(train_id)
+
+from lxml.html.clean import Cleaner
+from lxml.html.clean import clean_html
+class MyCityWikiCrawler():
+	def __init__(self,handler):
+		self.http_handler = handler
+		self.logger = logging.getLogger('gkp')
+
+	def parser(self,city, province_id):
+		# cleaner = Cleaner(style=True, links=True, add_nofollow=True,page_structure=False, safe_attrs_only=False)
+		url = 'http://zh.wikipedia.org/wiki/%s'%city.encode('utf-8')
+		content = self.http_handler.request(url)
+		html = lxml.html.document_fromstring(content)
+		wiki = html.xpath('//table[contains(@class, "infobox")]')
+		if wiki:
+			# remove all relative links that are linking back to wiki source
+			for element, attribute, link, pos in wiki[0].iterlinks():
+				if attribute == "href": element.set('href', 'http://zh.wikipedia.org'+element.get('href'))
+
+			# reset img width
+			for img in wiki[0].iter('img'):
+				img.set('width','100%')
+
+			html = clean_html(lxml.html.tostring(wiki[0]))
+			city_obj = MyCity.objects.get(city = city, province = province_id)
+			city_obj.wiki_intro = html
+			city_obj.save()
+			self.logger.info(city_obj.city+ ' saved')
+		else: self.logger.info('Found nothing: '+city)
+
+@shared_task
+def city_wiki_consumer(city, province_id):
+	http_agent = TorUtility()
+	crawler = MyCityWikiCrawler(http_agent)
+	crawler.parser(city, province_id)
+
