@@ -1,9 +1,12 @@
+{% if keywords %}
 <h4>
 	<i class="fa fa-fire"></i>
 	热门话题
 </h4>
 <div id="my-canvas" style="width:100%; min-height: 350px;margin-bottom:20px;margin-top:10px;"></div>
+{% endif %}
 
+{% if objs %}
 <h4>
 	<i class="fa fa-forumbee"></i>
 	实时校园
@@ -22,6 +25,7 @@
 		</li>
 	{% endfor %}
 </ul>
+{% endif %}
 
 <script type="text/javascript">
 	var word_array = [

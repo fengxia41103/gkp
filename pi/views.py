@@ -137,7 +137,7 @@ class UserRegisterView(FormView):
 class UserProfileView(TemplateView):
 	template_name='pi/user/profile.html'
 	def get_context_data(self, **kwargs):
-		context = super(UserProfileView, self).get_context_data(**kwargs)
+		context = super(TemplateView, self).get_context_data(**kwargs)
 		user_profile,created = MyUserProfile.objects.get_or_create(owner=self.request.user)
 		context['schools']=user_profile.school_bookmarks.all()
 		return context
@@ -154,7 +154,7 @@ class UserProfileView(TemplateView):
 
 		if not province.strip(): user_profile.province=None
 		else:
-			p = MyAddress.objects.filter(province = province.strip())
+			p = MyProvince.objects.filter(province = province.strip())
 			if len(p) == 1: user_profile.province = p[0]
 
 		if student_type: user_profile.student_type = student_type
@@ -182,7 +182,7 @@ class UserProfileView(TemplateView):
 class UserBookmark(TemplateView):
 	template_name = 'pi/user/bookmark.html'
 	def get_context_data(self, **kwargs):
-		context = super(UserBookmark, self).get_context_data(**kwargs)
+		context = super(TemplateView, self).get_context_data(**kwargs)
 		user_profile,created = MyUserProfile.objects.get_or_create(owner=self.request.user)
 		context['schools']=user_profile.school_bookmarks.all()
 		return context	
@@ -508,7 +508,7 @@ class MyMajorDetail(DetailView):
 class MyMajorSchoolDetail(TemplateView):
 	template_name = 'pi/major/school_detail.html'
 	def get_context_data(self, **kwargs):
-		context = super(MyMajorSchoolDetail, self).get_context_data(**kwargs)
+		context = super(TemplateView, self).get_context_data(**kwargs)
 		user_profile = MyUserProfile.objects.get(owner=self.request.user)
 		school = MySchool.objects.get(id=int(kwargs['school_pk']))
 		major = MyMajor.objects.get(id=int(kwargs['major_pk']))
@@ -659,7 +659,7 @@ class MySchoolEchartMapFilter(TemplateView):
 		# echart data, group by province
 		result = {}
 		schools = MySchool.objects.filter_by_user_profile(self.request.user)
-		context['schools'] =  schools.order_by('province')
+		context['schools'] =  schools.order_by('province','city')
 
 		# echart data
 		for s in schools:
@@ -696,10 +696,6 @@ class MySchoolMajorsFilterByTags(TemplateView):
 		AJAX post view
 	'''	
 	template_name = 'pi/school/majors_filter_by_tags.html'
-	def get_context_data(self, **kwargs):
-		context = super(MySchoolMajorsFilterByTags, self).get_context_data(**kwargs)
-		return context	
-
 	def post(self,request):		
 		# user profile and profile tags to get tag linked majors
 		user_profile = MyUserProfile.objects.get(owner=self.request.user)
@@ -911,11 +907,20 @@ class AnalysisSchoolByProvince(TemplateView):
 	template_name = 'pi/analysis/schools_by_province.html'
 	def get_context_data(self, **kwargs):
 		context = super(TemplateView, self).get_context_data(**kwargs)
-		province = MyAddress.objects.get(id=int(kwargs['pk']))
+		province = MyProvince.objects.get(id=int(kwargs['pk']))
 		context['province'] = province 
 
 		context['schools'] = MySchool.objects.filter(province=province)
 		return context
+
+class AnalysisSchoolByCity(TemplateView):
+	template_name = 'pi/analysis/schools_by_city.html'
+	def get_context_data(self, **kwargs):
+		context = super(TemplateView, self).get_context_data(**kwargs)
+		context['schools'] = MySchool.objects.filter(city=int(kwargs['pk']))
+		context['city'] = MyCity.objects.get(id=int(kwargs['pk']))
+
+		return context	
 
 ###################################################
 #

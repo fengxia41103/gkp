@@ -85,7 +85,7 @@
 		<a href="{% url 'analysis_school_by_province' object.province.id %}">{{object.province}}</a>
 	</li>
 	<li>
-		<a href="{% url 'analysis_school_by_province' 1 %}">{{ object.city }}</a>
+		<a href="{% url 'analysis_school_by_city' object.city.id %}">{{ object.city }}</a>
 	</li>
 	<li class="active">{{ object.name }}</li>
 </ol>
@@ -173,7 +173,7 @@
 
 {% block detail-sidebar %}
 	{# hot topics #}
-	<section style="margin-bottom: 10px;" id="school-newsticker"></section>
+	<section style="margin-bottom: 10px;" id="school-newsticker">暂无信息</section>
 
 	{# school related majors #}
 	<section id="school-major" style="padding: 20px 10px;">

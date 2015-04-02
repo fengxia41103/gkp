@@ -5,8 +5,9 @@ from pi.models import *
 class MySchoolAdmin(admin.ModelAdmin):
 	list_filter=['name']
 	list_display=('name','city','province')
-
 admin.site.register(MySchool,MySchoolAdmin)
 
+
+admin.site.register(MyCity)
 
 admin.site.register(MyMajor)

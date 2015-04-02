@@ -498,6 +498,16 @@ def crawl_train():
 		for index, train_id in enumerate(['%s%d'%(key,i) for i in range(1,9999)]):
 			train_consumer.delay(train_id)
 
+def cleanup_city():
+	for s in MySchool.objects.all():
+		if s.province and s.city2:
+			city,created = MyCity.objects.get_or_create(city=s.city2,province=s.province)
+			s.city = city
+			s.save()
+			print s.name
+		else:
+			print 'not complete: ',s.name
+
 import googlemaps
 def main():
 	django.setup()
@@ -521,7 +531,8 @@ def main():
 	#populateRank()
 	#cleanupSchoolName()
 	#populateOverallRank()
-	crawl_train()
+	#crawl_train()
+	cleanup_city()
 
 if __name__ == '__main__':
 	main()

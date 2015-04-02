@@ -11,7 +11,7 @@
         {% regroup schools|dictsort:"city" by city as city_list %} 
         {% for city in city_list %}
             {% if city.grouper %}
-            <a href="">{{city.grouper}}/</a>
+            <a href="{% url 'analysis_school_by_city' city.grouper %}">{{city.grouper}}/</a>
             {% endif %}
         {% endfor %}
         </div>

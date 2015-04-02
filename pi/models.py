@@ -127,7 +127,7 @@ class AttachmentForm(ModelForm):
 #	App specific models
 #
 #####################################################
-class MyAddress (models.Model):
+class MyProvince (models.Model):
 	province = models.CharField (
 			max_length = 8,
 			verbose_name = u'省份',
@@ -139,6 +139,24 @@ class MyAddress (models.Model):
 
 	def __unicode__(self):
 		return self.province
+
+class MyCity (models.Model):
+	province = models.ForeignKey (
+		'MyProvince',
+		blank = True,
+		null = True,
+		verbose_name = u'Province'
+	)
+	city = models.CharField (
+		max_length = 32,
+		verbose_name = u'City',
+	)
+	city_en = models.CharField (
+		max_length = 32,
+		verbose_name = u'in English'
+	)	
+	def __unicode__(self):
+		return self.city
 
 class MyMajorCategory (models.Model):
 	name = models.CharField(
@@ -283,7 +301,7 @@ class MyAdmissionBySchool (models.Model):
 			verbose_name = u'高校名称'
 		)
 	province = models.ForeignKey (
-			MyAddress,
+			MyProvince,
 			verbose_name = u'招生地区'	
 		)
 	category = models.CharField (
@@ -334,7 +352,7 @@ class MyAdmissionByMajor (models.Model):
 			verbose_name = u'专业名称'
 		)
 	province = models.ForeignKey (
-			MyAddress,
+			MyProvince,
 			verbose_name = u'招生地区'	
 		)
 	category = models.CharField (
@@ -510,16 +528,21 @@ class MySchool (MyBaseModel):
 			verbose_name = u'Address lng'
 		)	
 	province = models.ForeignKey (
-			'MyAddress',
+			'MyProvince',
 			null = True,
 			blank = True,
 			verbose_name = u'所处省'			
 		)
-	city = models.CharField (
-			max_length=64,
+	city2 = models.CharField (
+			max_length = 64,
 			null = True,
 			blank = True,
-			default = '',
+			verbose_name = u'所处城市'			
+		)	
+	city = models.ForeignKey (
+			'MyCity',
+			null = True,
+			blank = True,
 			verbose_name = u'所处城市'			
 		)
 	en_name = models.CharField (
@@ -619,7 +642,7 @@ class MySchool (MyBaseModel):
 			verbose_name = u'招收本科三批'		
 		)
 	accepting_province=models.ManyToManyField(
-			'MyAddress',
+			'MyProvince',
 			related_name='accepting_schools',
 			verbose_name=u'招生学校'
 		)
@@ -649,7 +672,7 @@ class MyUserProfile(models.Model):
 			help_text = ''
 		)
 	province = models.ForeignKey (
-			'MyAddress',
+			'MyProvince',
 			null = True,
 			blank = True,
 			verbose_name = u'入考省份',
@@ -777,7 +800,7 @@ class MyTrainStop(models.Model):
 		verbose_name = u'站名'
 	)
 	province = models.ForeignKey(
-		'MyAddress',
+		'MyProvince',
 		blank = True,
 		null = True,
 		verbose_name = u'省份'
