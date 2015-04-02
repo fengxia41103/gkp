@@ -1,23 +1,53 @@
 {% extends 'pi/common/detail.html' %}
 
 {% block page-header %}
-	{{ city }}
+	{{ obj }}
 {% endblock %}
+
+{% block breadcrumb %}
+<ol class="breadcrumb">
+	<li>
+		<a href="{% url 'school_echart_map_filter' %}">全国</a>
+	</li>
+	<li>
+		<a href="{% url 'analysis_school_by_province' obj.province.id %}">{{obj.province}}</a>
+	</li>
+	<li class="active">{{ obj }}</li>
+</ol>
+{% endblock %}
+
 
 {% block detail-content %}
 <div class="row">
     <div class="col-md-12">
         <div class="pull-right">
-        {% for school in schools %}
+        {% for school in obj.myschool_set.all %}
             {{ school }}
         {% endfor %}
         </div>
 
         <div id="analysis-detail"></div>        
     </div>
+
+    {# train who stops at this city #}
+    <div class="col-md-12">
+		<h3>
+			<i class="fa fa-train"></i>
+			{{ obj }}火车时刻表
+		</h3>    
+		<ul class="list-inline">
+			{% for train in trains %}
+				{{ train }}
+			{% endfor %}
+		</ul>
+    </div>
 </div>
 {% endblock %}
 
 {% block detail-sidebar %}
-	{{ city.wiki_intro|safe }}
+	<h4 class="my-h2-border">
+		<i class="fa fa-book"></i>
+		城市wiki
+	</h4>
+	{{ obj.wiki_intro|safe }}
 {% endblock %}

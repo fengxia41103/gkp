@@ -210,19 +210,6 @@
 			{% endfor %}
 		</ol>
 	</section>
-
-	{# train who stops at this city #}
-	<section>
-		<h4>
-			<i class="fa fa-train"></i>
-			{{ object.city }}火车时刻表
-		</h4>
-		<ul class="list-inline">
-			{% for train in trains %}
-				{{ train }}
-			{% endfor %}
-		</ul>
-	</section>
 {% endblock %}
 
 {% block custom_js %}

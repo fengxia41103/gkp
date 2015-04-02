@@ -8,7 +8,7 @@
 <div class="row">
     <div class="col-md-12">
         <div class="pull-right">
-        {% regroup schools|dictsort:"city" by city as city_list %} 
+        {% regroup schools|dictsort:"city.city" by city as city_list %} 
         {% for city in city_list %}
             {% if city.grouper %}
             <a href="{% url 'analysis_school_by_city' city.grouper.id %}">{{city.grouper}}/</a>

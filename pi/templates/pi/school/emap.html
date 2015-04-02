@@ -121,7 +121,7 @@
                 <h4 class="my-section-header text-right">{{province.grouper}}的学校
                 <span class="my-huge-font">{{ province.list|length }}</span>个</h4>
 
-                {% regroup province.list|dictsort:"city" by city as by_city_list %}
+                {% regroup province.list|dictsort:"city.city" by city as by_city_list %}
                 {% for city in by_city_list %}
                 <div class="panel panel-default" id="province-{{province.grouper.id}}">                    
                     <div class="panel-heading">

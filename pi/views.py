@@ -630,8 +630,6 @@ class MySchoolDetail(DetailView):
 		# school majors
 		context['majors'] = filter(lambda x: x.degree_type == user_profile.degree_type,self.get_object().majors.all())
 
-		# trains
-		context['trains'] = MyTrainStop.objects.filter(stop_name__icontains = school.city)
 		return context
 
 @class_view_decorator(login_required)
@@ -917,8 +915,11 @@ class AnalysisSchoolByCity(TemplateView):
 	template_name = 'pi/analysis/schools_by_city.html'
 	def get_context_data(self, **kwargs):
 		context = super(TemplateView, self).get_context_data(**kwargs)
-		context['schools'] = MySchool.objects.filter(city=int(kwargs['pk']))
-		context['city'] = MyCity.objects.get(id=int(kwargs['pk']))
+		city = MyCity.objects.get(id=int(kwargs['pk']))
+		context['obj'] = city
+
+		# trains
+		context['trains'] = MyTrainStop.objects.filter(stop_name__icontains = city.city)
 
 		return context	
 

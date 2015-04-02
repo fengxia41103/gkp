@@ -237,7 +237,6 @@ def train_consumer(train_id):
 	crawler = MyTrainCrawler(http_agent)
 	crawler.parser(train_id)
 
-from lxml.html.clean import Cleaner
 from lxml.html.clean import clean_html
 class MyCityWikiCrawler():
 	def __init__(self,handler):
