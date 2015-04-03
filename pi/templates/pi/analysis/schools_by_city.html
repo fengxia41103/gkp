@@ -33,7 +33,7 @@
     {# train who stops at this city #}
 	<h3>
 		<i class="fa fa-train"></i>
-		我来啦亲！
+		{{obj}}, 我来啦亲！
 	</h3>
 
 	<div class="col-md-6">
@@ -49,16 +49,24 @@
 			<span class="input-group-addon" id="basic-addon1">出发地（市）</span>	
 			<input type="search" class="form-control" placeholder="Departure from City" aria-describedby="basic-addon2" 
 			value="{{ user.myuserprofile.city.city }}" id="input-dept-city">  
-			<span class="input-group-addon btn btn-default" id="btn-search-train">咋坐车啊亲</span>
+			<span class="input-group-addon btn btn-info ladda-button" id="btn-search-train"
+			data-style="expand-left" 
+			data-size="l" data-spinner-color="#333"			
+			>
+				<span class="ladda-label">
+					咋坐车啊亲
+				</span>
+			</span>
 		</div>
 	</div>
-
-	<div id="trains">
-	</div>
+</div>
+<div id="trains" class='rows'>
 </div>
 
 <script type="text/javascript">
-	var j$ = jQuery.noConflict();
+var j$ = jQuery.noConflict();
+j$(document).ready(function(){
+	// register click event
 	j$('#btn-search-train').click(function(){
 		var l = Ladda.create(this);
  		l.start();
@@ -76,7 +84,11 @@
         ).always(function(){  
         	l.stop();     	
         });			
-	});	
+	});
+
+	// click
+	j$('#btn-search-train').trigger('click');
+});
 </script>
 {% endblock %}
 

@@ -1,5 +1,6 @@
+<section class="section">
 {% if objs %}
-<h4>{{dept.city}} &rarr; {{dest.city}}</h4>
+<h4>{{start.city}} &rarr; {{dest.city}}</h4>
 <ul id="myTab" class="nav nav-tabs">
 {% for category,trains in group_by_category.iteritems %}
 	{% if trains %}
@@ -14,33 +15,55 @@
 	{% for category, trains in group_by_category.iteritems %}
 	{% if trains %}
 	<div class="tab-pane" id="train-{{category}}">
-		<table class="table table-stripped">
-			{% for train in trains %}
-			<tr><td>
-				{{ train.0.train_id }}
-				</td><td>
-				{% for stop in train %}
-					<span data-type="stop" data-toggle="tooltip" title="{{stop.arrival_time}}, 已运行{{stop.in_route_duration}}">
-					{{ stop.stop_name }}
-					</span>
-					{% if not forloop.last %}
-						&rarr;
-					{% endif %}
+		<table class="table table-responsive table-condensed table-striped">
+			<thead>
+				<th class="col-sm-1">车次</th>
+				<th class="col-sm-2">出发</th>
+				<th class="col-sm-2">到达</th>
+				<th class="col-sm-1">时长</th>
+				<th class="col-sm-6">列车经停站</th>
+			</thead>
+			<tbody>
+				{% for train in trains %}
+				<tr><td>
+					{{ train.train_id }}
+					</td><td>
+						<span class="label label-default">{{train.start.stop_name}}</span>
+						<br />
+						{{ train.start.departure_time }}开车
+					</td><td>
+						<span class="label label-default">{{train.dest.stop_name}}</span>				
+						<br />
+						{{ train.dest.arrival_time }}到站
+					</td><td>
+						{{ train.segment_duration_hours|floatformat:"0" }}小时
+						{{train.segment_duration_minutes|floatformat:"0"}}分钟
+					</td><td>
+					{% for stop in train.stops %}
+						<span data-type="stop" data-toggle="tooltip" 
+						title="{{stop.arrival_time}}到站, 
+						已运行{{stop.in_route_duration}}"
+						>
+						{{ stop.stop_name }}
+						</span>
+						{% if not forloop.last %}
+							&rarr; 
+						{% endif %}
+					{% endfor %}
+				</td></tr>
 				{% endfor %}
-			</td></tr>
-			{% endfor %}
+			</tbody>
 		</table>		
 	</div>
 	{% endif %}
 	{% endfor %}
 </div>
-
-
 {% else %}
-	<p>真抱歉，没查到从{{dept.city}}到{{dest.city}}的直达车 ::&gt;_&lt;::</p>
+	<p>真抱歉，没查到从{{start.city}}到{{dest.city}}的直达车 ::&gt;_&lt;::</p>
 
 	<p>记得出发地的省、市都要填写哦!</p>
 {% endif %}
+<section>
 
 <script type="text/javascript">
 j$(document).ready(function(){
@@ -54,8 +77,8 @@ j$(document).ready(function(){
 
 	j$('span[data-type="stop"]').each(function(){
 		var label = j$(this).text();
-		if ((label.indexOf("{{dept.city}}") >=0) || (label.indexOf("{{dest.city}}")>=0)) {
-			j$(this).addClass('btn btn-xs btn-default active');
+		if ((label.indexOf("{{start.city}}") >=0) || (label.indexOf("{{dest.city}}")>=0)) {
+			j$(this).addClass('label label-info active');
 		}
 	});		
 });

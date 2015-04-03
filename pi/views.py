@@ -991,27 +991,26 @@ class IntegrationBaiduTiebaAJAX(TemplateView):
 class MyTrainRoute(TemplateView):
 	template_name = 'pi/train/route.html'
 	def post(self,request):
-		dest_province = request.POST['p'].strip()
-		dest_city = request.POST['c'].strip()
+		start_province = request.POST['p'].strip()
+		start_city = request.POST['c'].strip()
 
 		# get starting point data
-		here = MyCity.objects.get(id=int(request.POST['h']))
-		trains_pass_here = MyTrainStop.objects.filter(stop_name__icontains=here.city).values_list('train_id',flat=True)
+		dest = MyCity.objects.get(id=int(request.POST['h']))
 
 		# get destination data
-		if dest_province: province = MyProvince.objects.filter(province__icontains=dest_province)
+		if start_province: province = MyProvince.objects.filter(province__icontains=start_province)
 		else: province = None
 
-		if province and len(province) and dest_city: dest = MyCity.objects.filter(city__icontains=dest_city, province=province[0])
-		elif dest_city: dest = MyCity.objects.filter(city__icontains=dest_city)
-		else: dest = None
+		if province and len(province) and start_city: start = MyCity.objects.filter(city__icontains=start_city, province=province[0])
+		elif start_city: start = MyCity.objects.filter(city__icontains=start_city)
+		else: start = None
 
 		# get train that connects these starting point - dest
 		trains = []
 		group_by_category={}		
-		if dest and len(dest):
-			dest = dest[0]
-			all_stops = MyTrainStop.objects.filter_by_start_end(dest.city, here.city)
+		if start and len(start):
+			start = start[0]
+			all_stops = MyTrainStop.objects.filter_by_start_end(start.city, dest.city)
 			train_ids = set(all_stops.all().values_list('train_id',flat=True))
 
 			# group train for display
@@ -1019,13 +1018,25 @@ class MyTrainRoute(TemplateView):
 			group_by_category = {'G':[],'D':[],'Z':[],'T':[],'K':[],'MISC':[]}
 			categories = group_by_category.keys()
 			for train in trains:
-				if train[0].category in categories: group_by_category[train[0].category].append(train)
-				else: group_by_category['MISC'].append(train)
+				if train[0].category in categories: key = train[0].category
+				else: key = 'MISC'
+
+				tmp = {'stops': train}
+				for stop in train:
+					if start.city in stop.stop_name: tmp['start'] = stop
+					elif dest.city in stop.stop_name: tmp['dest'] = stop
+				segment = (tmp['dest'].arrival - tmp['start'].arrival).total_seconds()
+				tmp['segment_duration_hours'], remain = divmod(segment,3600) 
+				tmp['segment_duration_minutes'], remain = divmod(remain,60) 
+
+				tmp['duration'] = list(train)[-1].arrival - train[0].arrival
+				tmp['train_id'] = train[0].train_id
+				group_by_category['MISC'].append(tmp)
 
 		content = loader.get_template(self.template_name)
 		html= content.render(Context({
 			'objs':trains,
-			'dept': here,
+			'start': start,
 			'dest': dest,
 			'group_by_category': group_by_category
 		}))
