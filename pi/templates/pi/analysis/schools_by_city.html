@@ -28,20 +28,56 @@
 
         <div id="analysis-detail"></div>        
     </div>
-
-    {# train who stops at this city #}
-    <div class="col-md-12">
-		<h3>
-			<i class="fa fa-train"></i>
-			{{ obj }}火车时刻表
-		</h3>    
-		<ul class="list-inline">
-			{% for train in trains %}
-				{{ train }}
-			{% endfor %}
-		</ul>
-    </div>
 </div>
+<div class="row">
+    {# train who stops at this city #}
+	<h3>
+		<i class="fa fa-train"></i>
+		我来啦亲！
+	</h3>
+
+	<div class="col-md-6">
+		<div class="input-group left-inner-addon">
+			<span class="input-group-addon" id="basic-addon1">所在省</span>
+			<input type="search" class="form-control" placeholder="Departure from State" aria-describedby="basic-addon2"
+			value="{{ user.myuserprofile.province.province }}" id="input-dept-state">
+		</div>
+	</div>
+
+	<div class="col-md-6">
+		<div class="input-group left-inner-addon">	
+			<span class="input-group-addon" id="basic-addon1">所在城市</span>	
+			<input type="search" class="form-control" placeholder="Departure from City" aria-describedby="basic-addon2" 
+			value="{{ user.myuserprofile.city.city }}" id="input-dept-city">  
+			<span class="input-group-addon btn btn-default" id="btn-search-train">咋坐车啊亲</span>
+		</div>
+	</div>
+
+	<div id="trains">
+	</div>
+</div>
+
+<script type="text/javascript">
+	var j$ = jQuery.noConflict();
+	j$('#btn-search-train').click(function(){
+		var l = Ladda.create(this);
+ 		l.start();
+
+        // ajax to server to get a list of columns:4"markers that are within the viewport
+        j$.post("{% url 'train_route' %}", // passed in from view
+            { 
+            	'h': {{obj.id}},
+                'p':j$('#input-dept-state').val(),
+                'c':j$('#input-dept-city').val(),
+            }, 
+            function(resp) { // success callback
+            	j$('#trains').html(resp['html']);
+            },'json'
+        ).always(function(){  
+        	l.stop();     	
+        });			
+	});	
+</script>
 {% endblock %}
 
 {% block detail-sidebar %}

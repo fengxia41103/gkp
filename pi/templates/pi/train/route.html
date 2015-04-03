@@ -1,0 +1,34 @@
+{% if objs %}
+<ul id="myTab" class="nav nav-tabs">
+{% for category,trains in group_by_category.iteritems %}
+	<li><a href="#train-{{category}}" data-toggle="tab">
+		{{category}}({{trains|length}})
+	</a></li>			
+{% endfor %}
+</ul>
+
+<div id="myTabContent" class="tab-content">
+	{% for category, trains in group_by_category.iteritems %}
+	<div class="tab-pane" id="train-{{category}}">
+		<table class="table table-stripped">
+			{% for train in trains %}
+			<tr><td>
+				{{ train.0.train_id }}
+				</td><td>
+				{% for stop in train %}
+						{{ stop.stop_name }} 
+						{% if not forloop.last %}
+							&mdash;
+						{% endif %}
+				{% endfor %}
+			</td></tr>
+			{% endfor %}
+		</table>		
+	</div>
+	{% endfor %}
+</div>
+
+
+{% else %}
+	真抱歉，没查到到这个地方的车 ::>_<:: 记得出发地的省、市都要填写
+{% endif %}

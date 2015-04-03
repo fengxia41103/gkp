@@ -143,19 +143,24 @@ class UserProfileView(TemplateView):
 		return context
 
 	def post(self,request):
-		province = request.POST['province']
-		student_type = request.POST['student_type']
-		score = request.POST['score']
-		degree_type = request.POST['degree_type']
-		tags = request.POST['tags']
+		province = request.POST['province'].strip()
+		student_type = request.POST['student_type'].strip()
+		score = request.POST['score'].strip()
+		degree_type = request.POST['degree_type'].strip()
+		tags = request.POST['tags'].strip()
 
 		# get user property obj
 		user_profile,created = MyUserProfile.objects.get_or_create(owner=request.user)
 
-		if not province.strip(): user_profile.province=None
+		if not province: user_profile.province=None
 		else:
-			p = MyProvince.objects.filter(province = province.strip())
-			if len(p) == 1: user_profile.province = p[0]
+			for p in MyProvince.objects.all():
+				if p.province in province: 
+					user_profile.province = p
+					city = province.replace(p.province,'')
+					city_obj = MyCity.objects.filter(city = city, province=p)
+					if city_obj: user_profile.city = city_obj[0]
+					break
 
 		if student_type: user_profile.student_type = student_type
 		if score: user_profile.estimated_score = int(score)
@@ -974,3 +979,54 @@ class IntegrationBaiduTiebaAJAX(TemplateView):
 
 		return HttpResponse(json.dumps({'bd_html':tieba_html,'news_html':newsticker_html}), 
 			content_type='application/javascript')
+
+
+###################################################
+#
+#	Train views
+#
+###################################################		
+class MyTrainRoute(TemplateView):
+	template_name = 'pi/train/route.html'
+	def post(self,request):
+		dest_province = request.POST['p'].strip()
+		dest_city = request.POST['c'].strip()
+
+		# user profile and profile tags to get tag linked majors
+		user_profile = MyUserProfile.objects.get(owner=self.request.user)
+
+		# get starting point data
+		here = MyCity.objects.get(id=int(request.POST['h']))
+		trains_pass_here = MyTrainStop.objects.filter(stop_name__icontains=here.city).values_list('train_id',flat=True)
+
+		# get destination data
+		province = MyProvince.objects.filter(province__icontains=dest_province)
+		if province and dest_city: dest = MyCity.objects.filter(city__icontains=dest_city, province=province[0])
+		elif dest_city: dest = MyCity.objects.filter(city__icontains=request.POST['c'].strip())
+		else: dest = None
+
+		# get train that connects these starting point - dest
+		trains = []
+		group_by_category={}		
+		if dest:
+			trains_pass_dest = MyTrainStop.objects.filter(stop_name__icontains = dest[0].city).values_list('train_id',flat=True)
+			
+			# trains that pass through both starting point and dest
+			train_ids = list(set(trains_pass_here).intersection(set(trains_pass_dest)))
+			train_ids.sort()
+
+			# separate trains by train_id
+			all_stops = MyTrainStop.objects.filter(train_id__in = train_ids)
+
+			trains = [all_stops.filter(train_id=id).order_by('stop_index') for id in train_ids]
+			group_by_category = {'G':[],'D':[],'Z':[],'T':[],'K':[]}
+			for train in trains: group_by_category[train[0].category].append(train)
+
+		content = loader.get_template(self.template_name)
+		html= content.render(Context({
+			'objs':trains,
+			'group_by_category': group_by_category
+		}))
+
+		return HttpResponse(json.dumps({'html':html}), 
+			content_type='application/javascript')	

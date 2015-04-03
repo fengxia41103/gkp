@@ -671,35 +671,41 @@ class MyUserProfile(models.Model):
 		(u'理科', u'理科'),
 	)	
 	owner = models.OneToOneField (
-			User,
-			default = None,
-			verbose_name = u'用户',
-			help_text = ''
-		)
+		User,
+		default = None,
+		verbose_name = u'用户',
+		help_text = ''
+	)
 	province = models.ForeignKey (
-			'MyProvince',
-			null = True,
-			blank = True,
-			verbose_name = u'入考省份',
-		)
+		'MyProvince',
+		null = True,
+		blank = True,
+		verbose_name = u'入考省份',
+	)
+	city = models.ForeignKey (
+		'MyCity',
+		null = True,
+		blank = True,
+		verbose_name = u'City'
+	)
 	estimated_score = models.IntegerField(
-			default = 200, # -1 means no filter applied based on score
-			verbose_name = u'分数',		
-		)
+		default = 200, # -1 means no filter applied based on score
+		verbose_name = u'分数',		
+	)
 	student_type = models.CharField(
-			max_length = 8,
-			null = True,
-			blank = True,
-			verbose_name = u'考生类别',
-			choices = STUDENT_TYPE_CHOICES		
-		)
+		max_length = 8,
+		null = True,
+		blank = True,
+		verbose_name = u'考生类别',
+		choices = STUDENT_TYPE_CHOICES		
+	)
 	degree_type = models.CharField(
-			max_length = 8,
-			null = True,
-			blank = True,
-			verbose_name = u'学位类别',
-			choices = DEGREE_TYPE_CHOICES		
-		)
+		max_length = 8,
+		null = True,
+		blank = True,
+		verbose_name = u'学位类别',
+		choices = DEGREE_TYPE_CHOICES		
+	)
 	school_bookmarks = models.ManyToManyField('MySchool', related_name='bookmarks')
 	school_xouts = models.ManyToManyField('MySchool',related_name='xouts')
 
