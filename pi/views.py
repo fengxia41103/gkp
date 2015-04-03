@@ -927,8 +927,7 @@ class AnalysisSchoolByCity(TemplateView):
 
 		# trains
 		context['trains'] = MyTrainStop.objects.filter(stop_name__icontains = city.city)
-
-		return context	
+		return context
 
 ###################################################
 #

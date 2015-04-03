@@ -16,53 +16,95 @@
 </ol>
 {% endblock %}
 
+{% block detail-navbar %}
+<ul class="nav navbar-nav">
+    <li class="">
+        <a href="#city-school-list">学校列表
+		<span class="pull-right"><i class="fa fa-angle-right"></i></span>
+		</a>
+    </li>
+
+    <li class="">
+    	<a href="#school-major">学校专业
+		<span class="pull-right"><i class="fa fa-angle-right"></i></span>    	
+    	</a>
+    </li>   
+</ul>
+{% endblock %}
+
 
 {% block detail-content %}
-<div class="row">
-    <div class="col-md-12">
-        <div class="pull-right">
-        {% for school in obj.myschool_set.all %}
-            {{ school }}
-        {% endfor %}
-        </div>
 
-        <div id="analysis-detail"></div>        
-    </div>
-</div>
-<div class="row">
-    {# train who stops at this city #}
-	<h3>
+{# city's school list #}
+<section>
+	<h4>
+	<i class="fa fa-university"></i>
+	学校列表
+	</h4>
+	<div class="row">
+	    <div class="col-md-12">
+	 		<table class="table table-condensed table-striped table-hover" id="city-school-list">
+	 		<thead>
+	 			<th class="col-sm-4"></th>
+	 			<th class="col-sm-8"></th>
+	 		</thead>
+	 		<tbody>
+		        {% for school in obj.myschool_set.all %}
+		            <tr><td>
+		            	<h5>{{ school }}</h5>
+		            </td><td>
+		            	{{ school.description|safe|truncatechars:"100"}}
+		            	<br />
+		            	<span class="pull-right text-right">
+		            	<a href="{%url 'school_detail' school.id %}">查看学校详情</a>
+		            	<i class="fa fa-external-link"></i>
+		            	</span>
+		            </td></tr>
+		        {% endfor %} 			
+	        </tbody>
+	 		</table>
+
+	        <div id="analysis-detail"></div>        
+	    </div>
+	</div>
+</section>
+
+{# train schedules #}
+<section>
+	<h4>
 		<i class="fa fa-train"></i>
 		{{obj}}, 我来啦亲！
-	</h3>
-
-	<div class="col-md-4">
-		<div class="input-group left-inner-addon">
-			<span class="input-group-addon" id="basic-addon1">出发地（省）</span>
-			<input type="search" class="form-control" placeholder="Departure from State" aria-describedby="basic-addon2"
-			value="{{ user.myuserprofile.province.province }}" id="input-dept-state">
+	</h4>
+	<div class="row">
+	    {# train who stops at this city #}
+		<div class="col-md-4">
+			<div class="input-group left-inner-addon">
+				<span class="input-group-addon" id="basic-addon1">出发地（省）</span>
+				<input type="search" class="form-control" placeholder="Departure from State" aria-describedby="basic-addon2"
+				value="{{ user.myuserprofile.province.province }}" id="input-dept-state">
+			</div>
 		</div>
-	</div>
 
-	<div class="col-md-8">
-		<div class="input-group left-inner-addon">	
-			<span class="input-group-addon" id="basic-addon1">出发地（市）</span>	
-			<input type="search" class="form-control" placeholder="Departure from City" aria-describedby="basic-addon2" 
-			value="{{ user.myuserprofile.city.city }}" id="input-dept-city">  
-			<span class="input-group-addon btn btn-info ladda-button" id="btn-search-train"
-			data-style="expand-right" 
-			data-size="l" data-spinner-color="#333"			
-			>
-				<span class="ladda-label">
-				<i class="fa fa-search"></i>
-					咋坐车啊亲
+		<div class="col-md-8">
+			<div class="input-group left-inner-addon">	
+				<span class="input-group-addon" id="basic-addon1">出发地（市）</span>	
+				<input type="search" class="form-control" placeholder="Departure from City" aria-describedby="basic-addon2" 
+				value="{{ user.myuserprofile.city.city }}" id="input-dept-city">  
+				<span class="input-group-addon btn btn-info ladda-button" id="btn-search-train"
+				data-style="expand-right" 
+				data-size="l" data-spinner-color="#333"			
+				>
+					<span class="ladda-label">
+					<i class="fa fa-search"></i>
+						咋坐车啊亲
+					</span>
 				</span>
-			</span>
+			</div>
 		</div>
 	</div>
-</div>
-<div id="trains" class='rows'>
-</div>
+	<div id="trains" class='rows'>
+	</div>
+</section>
 
 <script type="text/javascript">
 var j$ = jQuery.noConflict();
@@ -86,6 +128,9 @@ j$(document).ready(function(){
         	l.stop();     	
         });			
 	});
+
+	// school list
+	j$('#city-school-list').DataTable();
 
 	// click
 	j$('#btn-search-train').trigger('click');
