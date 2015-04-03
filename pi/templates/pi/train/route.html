@@ -59,9 +59,10 @@
 	{% endfor %}
 </div>
 {% else %}
-	<p>真抱歉，没查到从{{start.city}}到{{dest.city}}的直达车 ::&gt;_&lt;::</p>
+	<p>真抱歉，没查到从{{req_start_province}}{{req_start_city}}到{{dest.city}}的直达车 ::&gt;_&lt;::</p>
 
 	<p>记得出发地的省、市都要填写哦!</p>
+	<a href="">重新再找</a>
 {% endif %}
 <section>
 
@@ -75,12 +76,20 @@ j$(document).ready(function(){
 		'placement': 'bottom'
 	});
 
+	// highlight relevant stops
 	j$('span[data-type="stop"]').each(function(){
 		var label = j$(this).text();
 		if ((label.indexOf("{{start.city}}") >=0) || (label.indexOf("{{dest.city}}")>=0)) {
 			j$(this).addClass('label label-info active');
 		}
-	});		
+	});
+
+	// register stop event
+	j$('span[data-type="stop"]').click(function(){
+		var stop = j$.trim(j$(this).text());
+		j$('#input-dept-state').val('');
+		j$('#input-dept-city').val(stop);
+	});
 });
 
 </script>

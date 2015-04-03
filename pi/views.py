@@ -1031,13 +1031,17 @@ class MyTrainRoute(TemplateView):
 
 				tmp['duration'] = list(train)[-1].arrival - train[0].arrival
 				tmp['train_id'] = train[0].train_id
-				group_by_category['MISC'].append(tmp)
+
+				# add to grouping
+				group_by_category[key].append(tmp)
 
 		content = loader.get_template(self.template_name)
 		html= content.render(Context({
 			'objs':trains,
 			'start': start,
 			'dest': dest,
+			'req_start_province': start_province,
+			'req_start_city': start_city,
 			'group_by_category': group_by_category
 		}))
 
