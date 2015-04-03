@@ -513,6 +513,21 @@ def crawl_city_wiki():
 	for c in MyCity.objects.all():
 		city_wiki_consumer.delay(c.city, c.province.id)
 
+from datetime import date, timedelta
+def cleanup_stop_time():
+	ids = MyTrainStop.objects.all().values_list('id',flat=True)
+	for id in ids:
+		stop = MyTrainStop.objects.get(id=id)
+		if stop.arrival.day > 1:
+			stop.arrival += timedelta(-1)
+			stop.save()
+			print stop.train_id, stop.stop_name
+
+		if stop.departure and stop.departure.day > 1:
+			stop.departure += timedelta(-1)
+			stop.save()
+			print stop.train_id, stop.stop_name
+
 import googlemaps
 def main():
 	django.setup()
@@ -538,7 +553,8 @@ def main():
 	#populateOverallRank()
 	#crawl_train()
 	#cleanup_city()
-	crawl_city_wiki()
+	#crawl_city_wiki()
+	cleanup_stop_time()
 
 if __name__ == '__main__':
 	main()

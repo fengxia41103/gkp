@@ -158,7 +158,9 @@ class UserProfileView(TemplateView):
 				if p.province in province: 
 					user_profile.province = p
 					city = province.replace(p.province,'')
-					city_obj = MyCity.objects.filter(city = city, province=p)
+					if city: city_obj = MyCity.objects.filter(city = city, province=p)
+					else: city_obj = MyCity.objects.filter(city = p.province, province=p)
+
 					if city_obj: user_profile.city = city_obj[0]
 					break
 
@@ -992,39 +994,39 @@ class MyTrainRoute(TemplateView):
 		dest_province = request.POST['p'].strip()
 		dest_city = request.POST['c'].strip()
 
-		# user profile and profile tags to get tag linked majors
-		user_profile = MyUserProfile.objects.get(owner=self.request.user)
-
 		# get starting point data
 		here = MyCity.objects.get(id=int(request.POST['h']))
 		trains_pass_here = MyTrainStop.objects.filter(stop_name__icontains=here.city).values_list('train_id',flat=True)
 
 		# get destination data
-		province = MyProvince.objects.filter(province__icontains=dest_province)
-		if province and dest_city: dest = MyCity.objects.filter(city__icontains=dest_city, province=province[0])
-		elif dest_city: dest = MyCity.objects.filter(city__icontains=request.POST['c'].strip())
+		if dest_province: province = MyProvince.objects.filter(province__icontains=dest_province)
+		else: province = None
+
+		if province and len(province) and dest_city: dest = MyCity.objects.filter(city__icontains=dest_city, province=province[0])
+		elif dest_city: dest = MyCity.objects.filter(city__icontains=dest_city)
 		else: dest = None
 
 		# get train that connects these starting point - dest
 		trains = []
 		group_by_category={}		
-		if dest:
-			trains_pass_dest = MyTrainStop.objects.filter(stop_name__icontains = dest[0].city).values_list('train_id',flat=True)
-			
-			# trains that pass through both starting point and dest
-			train_ids = list(set(trains_pass_here).intersection(set(trains_pass_dest)))
-			train_ids.sort()
+		if dest and len(dest):
+			dest = dest[0]
+			all_stops = MyTrainStop.objects.filter_by_start_end(dest.city, here.city)
+			train_ids = set(all_stops.all().values_list('train_id',flat=True))
 
-			# separate trains by train_id
-			all_stops = MyTrainStop.objects.filter(train_id__in = train_ids)
-
+			# group train for display
 			trains = [all_stops.filter(train_id=id).order_by('stop_index') for id in train_ids]
-			group_by_category = {'G':[],'D':[],'Z':[],'T':[],'K':[]}
-			for train in trains: group_by_category[train[0].category].append(train)
+			group_by_category = {'G':[],'D':[],'Z':[],'T':[],'K':[],'MISC':[]}
+			categories = group_by_category.keys()
+			for train in trains:
+				if train[0].category in categories: group_by_category[train[0].category].append(train)
+				else: group_by_category['MISC'].append(train)
 
 		content = loader.get_template(self.template_name)
 		html= content.render(Context({
 			'objs':trains,
+			'dept': here,
+			'dest': dest,
 			'group_by_category': group_by_category
 		}))
 

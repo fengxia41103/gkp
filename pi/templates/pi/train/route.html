@@ -1,14 +1,18 @@
 {% if objs %}
+<h4>{{dept.city}} &rarr; {{dest.city}}</h4>
 <ul id="myTab" class="nav nav-tabs">
 {% for category,trains in group_by_category.iteritems %}
+	{% if trains %}
 	<li><a href="#train-{{category}}" data-toggle="tab">
 		{{category}}({{trains|length}})
-	</a></li>			
+	</a></li>
+	{% endif %}		
 {% endfor %}
 </ul>
 
 <div id="myTabContent" class="tab-content">
 	{% for category, trains in group_by_category.iteritems %}
+	{% if trains %}
 	<div class="tab-pane" id="train-{{category}}">
 		<table class="table table-stripped">
 			{% for train in trains %}
@@ -16,19 +20,44 @@
 				{{ train.0.train_id }}
 				</td><td>
 				{% for stop in train %}
-						{{ stop.stop_name }} 
-						{% if not forloop.last %}
-							&mdash;
-						{% endif %}
+					<span data-type="stop" data-toggle="tooltip" title="{{stop.arrival_time}}, 已运行{{stop.in_route_duration}}">
+					{{ stop.stop_name }}
+					</span>
+					{% if not forloop.last %}
+						&rarr;
+					{% endif %}
 				{% endfor %}
 			</td></tr>
 			{% endfor %}
 		</table>		
 	</div>
+	{% endif %}
 	{% endfor %}
 </div>
 
 
 {% else %}
-	真抱歉，没查到到这个地方的车 ::>_<:: 记得出发地的省、市都要填写
+	<p>真抱歉，没查到从{{dept.city}}到{{dest.city}}的直达车 ::&gt;_&lt;::</p>
+
+	<p>记得出发地的省、市都要填写哦!</p>
 {% endif %}
+
+<script type="text/javascript">
+j$(document).ready(function(){
+	// starting first tab
+	j$('[data-toggle="tab"]:first').tab('show');
+
+	// initialize all tooltips
+	j$("[data-toggle='tooltip']").tooltip({
+		'placement': 'bottom'
+	});
+
+	j$('span[data-type="stop"]').each(function(){
+		var label = j$(this).text();
+		if ((label.indexOf("{{dept.city}}") >=0) || (label.indexOf("{{dest.city}}")>=0)) {
+			j$(this).addClass('btn btn-xs btn-default active');
+		}
+	});		
+});
+
+</script>

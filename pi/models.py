@@ -781,7 +781,38 @@ class MyRank(models.Model):
 		verbose_name = u'打分'
 	)
 
+class MyTrainStopCustomManager(models.Manager):
+	def get_queryset(self):
+		'''
+			Only school with province is visible (and useful), ever!
+		'''
+		return super(MyTrainStopCustomManager, self).get_queryset().filter(category__isnull=False)
+
+	def filter_by_start_end (self,start_stop,end_stop):
+		data = self.get_queryset()
+
+		trains_pass_start = data.filter(stop_name__icontains = start_stop).values_list('train_id',flat=True)
+		trains_pass_end = data.filter(stop_name__icontains = end_stop).values_list('train_id',flat=True)
+		
+		# trains that pass through both starting point and dest
+		train_ids = list(set(trains_pass_start).intersection(set(trains_pass_end)))
+		train_ids.sort()
+
+		# separate trains by train_id
+		all_stops = data.filter(train_id__in = train_ids)
+		ids = []
+		for stops in [all_stops.filter(train_id=id).order_by('stop_index') for id in train_ids]:
+			# which direction? we want here -> dest only!
+			tmp = ''.join([s.stop_name for s in stops])
+			if tmp.find(start_stop)>tmp.find(end_stop): continue
+			ids += [s.id for s in stops]
+		return data.filter(id__in = ids)
+
 class MyTrainStop(models.Model):
+	objects = MyTrainStopCustomManager()
+	def __unicode__(self):
+		return self.train_id
+
 	CATEGORY_CHOICES = (
 		('PK',u'普快'), # made up key
 		('MM',u'慢车'), # made up key
@@ -791,7 +822,7 @@ class MyTrainStop(models.Model):
 		('T',u'特快'), 
 		('K',u'快车'), 
 		('D',u'动车'), 
-	)	
+	)
 	train_id = models.CharField(
 		max_length=8,
 		verbose_name = u'车次'
@@ -830,6 +861,26 @@ class MyTrainStop(models.Model):
 		default = 0,
 		verbose_name = u'运行时间'
 	)
+	def _arrival_time(self):
+		time_string = '%s:%s'%(str(self.arrival.hour).zfill(2),str(self.arrival.minute).zfill(2))
+		if self.arrival.day == 2: time_string = '第二天 %s' % time_string
+		if self.arrival.day == 3: time_string = '第三天 %s' % time_string
+		return time_string
+	arrival_time = property(_arrival_time)
+	
+	def _departure_time(self):
+		time_string = '%s:%s'%(str(self.departure.hour).zfill(2),str(self.departure.minute).zfill(2))
+		if self.departure.day == 2: time_string = '第二天 %s' % time_string
+		if self.departure.day == 3: time_string = '第三天 %s' % time_string
+		return time_string
+	departure_time = property(_departure_time)
 
-	def __unicode__(self):
-		return self.train_id
+	def _in_station_duration(self):
+		return int(self.departure-self.arrival.total_seconds()/60)
+	in_station_duration = property(_in_station_duration)
+
+	def _in_route_duration(self):
+		hours, tmp = divmod(self.seconds_since_initial,3600)
+		minutes, tmp = divmod(tmp, 60)
+		return u'%d小时%d分钟'%(hours,minutes)
+	in_route_duration = property(_in_route_duration)
