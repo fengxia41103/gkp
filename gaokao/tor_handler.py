@@ -75,3 +75,30 @@ class TorUtility():
 		
 	def current_ip(self):
 		return self.request(self.ip_url)
+
+from selenium import webdriver
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+class SeleniumUtility():
+	def __init__(self):
+		self.ip_url = 'http://icanhazip.com/'
+		self.logger = logging.getLogger('gkp')
+
+		dcap = dict(DesiredCapabilities.PHANTOMJS)
+		dcap["phantomjs.page.settings.userAgent"] = (
+		    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53 "
+		    "(KHTML, like Gecko) Chrome/15.0.87"
+		)
+		# DesiredCapabilities.PHANTOMJS['phantomjs.page.settings.userAgent'] = user_agent
+		service_args = [
+			'--proxy=127.0.0.1:8118', # provixy proxy 
+			'--proxy-type=http',
+		]		
+		self.http = webdriver.PhantomJS('phantomjs', service_args=service_args, desired_capabilities=dcap)
+		#self.http = webdriver.PhantomJS('phantomjs')
+
+	def request(self,url):
+		self.http.get(url)
+		return self.http.page_source
+
+	def __del__(self):
+		self.http.close()

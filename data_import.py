@@ -528,6 +528,18 @@ def cleanup_stop_time():
 			stop.save()
 			print stop.train_id, stop.stop_name
 
+from pi.tasks import baidu_consumer
+def populate_school_tieba():
+	for school in MySchool.objects.all():
+		if len(school.mybaidustream_set.all()) == 0:
+			baidu_consumer.delay({'keyword':school.name})
+			print school.name
+
+from pi.tasks import job_consumer
+def crawl_job():
+	for major in MyMajor.objects.all()[:1]:
+		job_consumer.delay(major.name)
+
 import googlemaps
 def main():
 	django.setup()
@@ -554,7 +566,9 @@ def main():
 	#crawl_train()
 	#cleanup_city()
 	#crawl_city_wiki()
-	cleanup_stop_time()
+	#cleanup_stop_time()
+	#populate_school_tieba()
+	crawl_job()
 
 if __name__ == '__main__':
 	main()

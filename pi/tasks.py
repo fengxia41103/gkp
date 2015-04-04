@@ -187,7 +187,7 @@ class MyTrainCrawler():
 			day_delta = int(time_string[:4].strip()[1])
 			timestamp = time_string[-5:].strip()
 			hour,minute = tuple(timestamp.split(':'))
-			timestamp = dt(2015,1,1+int(day_delta),int(hour),int(minute))
+			timestamp = dt(2015,1,int(day_delta),int(hour),int(minute))
 		else:
 			hour,minute = tuple(time_string.split(':'))
 			timestamp = dt(2015,1,1,int(hour),int(minute))
@@ -271,3 +271,30 @@ def city_wiki_consumer(city, province_id):
 	crawler = MyCityWikiCrawler(http_agent)
 	crawler.parser(city, province_id)
 
+class MyJobCrawler():
+	def __init__(self,handler):
+		self.http_handler = handler
+		self.logger = logging.getLogger('gkp')
+
+	def parser(self,keyword):
+		url = 'http://search.51job.com/jobsearch/search_result.php?fromJs=1&jobarea=000000,00&funtype=0000&industrytype=00&keyword=%s&keywordtype=2&lang=c&stype=1&postchannel=0000&fromType=1' % urllib.quote(keyword.encode('utf-8'))	
+		content = self.http_handler.request(url)			
+		html = lxml.html.document_fromstring(clean_html(content))
+		summary = html.xpath('//table[contains(@class, "resultNav")]')
+		total_count = 0
+		if summary:
+			summary = summary[0]
+			for td in summary.xpath('.//td'):
+				text = td.text_content()
+				self.logger.info(text)
+				if '/' in text and '-' in text: 
+					total_count = int(text.split('/')[1])
+					break
+		self.logger.info(total_count)
+
+from gaokao.tor_handler import SeleniumUtility
+@shared_task
+def job_consumer(major):
+	http_agent = SeleniumUtility()
+	crawler = MyJobCrawler(http_agent)
+	crawler.parser(major)

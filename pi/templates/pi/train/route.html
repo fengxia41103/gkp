@@ -18,8 +18,8 @@
 		<table class="table table-responsive table-condensed table-striped">
 			<thead>
 				<th class="col-sm-1">车次</th>
-				<th class="col-sm-2">出发</th>
-				<th class="col-sm-2">到达</th>
+				<th class="col-sm-2">出发站</th>
+				<th class="col-sm-2">到达站</th>
 				<th class="col-sm-1">时长</th>
 				<th class="col-sm-6">列车经停站</th>
 			</thead>
@@ -36,7 +36,7 @@
 						<br />
 						{{ train.dest.arrival_time }}到站
 					</td><td>
-						{{ train.segment_duration_hours|floatformat:"0" }}小时
+						{{ train.segment_duration_hours|floatformat:"0" }}小时<br />
 						{{train.segment_duration_minutes|floatformat:"0"}}分钟
 					</td><td>
 					{% for stop in train.stops %}

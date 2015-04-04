@@ -25,7 +25,7 @@
     </li>
 
     <li class="">
-    	<a href="#school-major">学校专业
+    	<a href="#trains">{{obj}}火车时刻表
 		<span class="pull-right"><i class="fa fa-angle-right"></i></span>    	
     	</a>
     </li>   
@@ -51,14 +51,15 @@
 	 		<tbody>
 		        {% for school in obj.myschool_set.all %}
 		            <tr><td>
-		            	<h5>{{ school }}</h5>
+		            	<h5>{{ school }}</h5>		            	
 		            </td><td>
 		            	{{ school.description|safe|truncatechars:"100"}}
-		            	<br />
-		            	<span class="pull-right text-right">
+
+		            	<p>
+		            	<small class="pull-left text-left">
 		            	<a href="{%url 'school_detail' school.id %}">查看学校详情</a>
-		            	<i class="fa fa-external-link"></i>
-		            	</span>
+		            	</small>
+		            	</p>	            	
 		            </td></tr>
 		        {% endfor %} 			
 	        </tbody>
@@ -130,7 +131,11 @@ j$(document).ready(function(){
 	});
 
 	// school list
-	j$('#city-school-list').DataTable();
+	j$('#city-school-list').DataTable({
+		"lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+		"info": false,
+		'pagingType': 'simple'
+	});
 
 	// click
 	j$('#btn-search-train').trigger('click');
