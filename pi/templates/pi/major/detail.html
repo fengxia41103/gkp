@@ -127,10 +127,9 @@
 	j$(document).ready(function(){
 		get_related_schools();
 
-		{% regroup jobs|dictsort:"title" by title as by_title_list %}
 		var word_array = [
-			{% for title in by_title_list %}
-			{text: "{{title.grouper}}", weight: {{title.list|length}}},
+			{% for keyword, weight in keywords %}
+			{text: "{{keyword}}", weight: Math.round({{weight}})},
 			{% endfor %}
 		];
 		

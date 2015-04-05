@@ -488,9 +488,17 @@ class MyMajorDetail(DetailView):
 	template_name = 'pi/major/detail.html'
 	def get_context_data(self, **kwargs):
 		context = super(DetailView, self).get_context_data(**kwargs)
-		context['jobs'] = self.get_object().jobs.all()
-		return context
+		jobs = self.get_object().jobs.all()
 
+		context['jobs'] = jobs
+
+		pynlpir.open() # must have this line!
+		keywords = ','.join([''.join([j.title,j.location,j.req_degree]) for j in jobs])
+		context['keywords']= pynlpir.get_key_words(keywords, max_words=25, weighted=True)
+		pynlpir.close()
+
+
+		return context
 	def post(self,request,pk):
 		# all related schools
 		related_schools = self.get_object().schools.all()
