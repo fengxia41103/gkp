@@ -39,8 +39,11 @@
 		<blockquote>
 		最新的招聘信息显示需要"{{object.name}}"专业的职位共<span class="my-huge-font">{{jobs.0.total_count}}</span>个。
 		</blockquote>
-最新的50个招聘职位:
-		<div id="my-canvas" style="width:100%; min-height: 250px;margin-bottom:20px;margin-top:10px;"></div>
+
+		<h4>就业热门</h4>
+		<div id="my-canvas" style="width:100%; min-height: 200px;margin-bottom:20px;margin-top:10px;">
+		</div>
+		<h4>最新的50个招聘职位</h4>
 
 		{% regroup jobs|dictsort:"location" by location as by_location_list %}
 		<ul id="myTab" class="nav nav-tabs">
