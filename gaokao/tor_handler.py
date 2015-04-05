@@ -94,7 +94,7 @@ class SeleniumUtility():
 			'--proxy-type=http',
 		]		
 		self.http = webdriver.PhantomJS('phantomjs', service_args=service_args, desired_capabilities=dcap)
-		#self.http = webdriver.PhantomJS('phantomjs')
+		#self.http = webdriver.PhantomJS('phantomjs',desired_capabilities=dcap)
 
 	def request(self,url):
 		self.http.get(url)

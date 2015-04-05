@@ -537,7 +537,7 @@ def populate_school_tieba():
 
 from pi.tasks import job_consumer
 def crawl_job():
-	for major in MyMajor.objects.all()[:1]:
+	for major in MyMajor.objects.all():
 		job_consumer.delay(major.name)
 
 import googlemaps

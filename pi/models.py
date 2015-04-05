@@ -884,3 +884,67 @@ class MyTrainStop(models.Model):
 		minutes, tmp = divmod(tmp, 60)
 		return u'%d小时%d分钟'%(hours,minutes)
 	in_route_duration = property(_in_route_duration)
+
+class MyJob (models.Model):
+	created = models.DateTimeField(
+		auto_now_add=True,
+		verbose_name=u'Using crawler machine timestamp'
+	)
+	source_url = models.URLField(
+		max_length=512,
+		verbose_name = u'Job post source URL'
+	)			
+	majors = models.ManyToManyField (
+		'MyMajor',
+		verbose_name =u'Related major',
+		related_name = 'jobs'
+	)
+	total_count = models.IntegerField (
+		default = 0,
+		verbose_name = u'Found total job post count'
+	)
+	co_name = models.CharField (
+		max_length = 128,
+		blank = True,
+		null = True,
+		verbose_name = u'Employer name'
+	)
+	co_type = models.CharField (
+		max_length = 16,
+		blank = True,
+		null = True,
+		verbose_name = u'Employer type'
+	)
+	co_size = models.CharField (
+		max_length = 64,
+		blank = True,
+		null = True,
+		verbose_name = u'Employer size'
+	)	
+	title = models.CharField(
+		max_length = 64,
+		blank = True,
+		null = True,
+		verbose_name = u'Job title'
+	)
+
+	# we are not to use ForeignKey('MyCity')!
+	# since we are NOT to track all jobs. They are just informational.
+	location = models.CharField (
+		max_length = 32,
+		blank = True,
+		null = True,
+		verbose_name = u'Job location'
+	)
+	req_degree = models.CharField(
+		max_length = 8,
+		blank = True,
+		null = True,
+		verbose_name = u'Degree requirement'
+	)
+	req_experience = models.CharField (
+		max_length = 16,
+		blank = True,
+		null = True,
+		verbose_name = u'Experience requirement'
+	)

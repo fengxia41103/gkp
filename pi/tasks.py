@@ -277,7 +277,7 @@ class MyJobCrawler():
 		self.logger = logging.getLogger('gkp')
 
 	def parser(self,keyword):
-		url = 'http://search.51job.com/jobsearch/search_result.php?fromJs=1&jobarea=000000,00&funtype=0000&industrytype=00&keyword=%s&keywordtype=2&lang=c&stype=1&postchannel=0000&fromType=1' % urllib.quote(keyword.encode('utf-8'))	
+		url = 'http://search.51job.com/jobsearch/search_result.php?fromJs=1&jobarea=000000,00&funtype=0000&industrytype=00&keyword=%s&keywordtype=2&lang=c&stype=1&postchannel=0000&fromType=3' % urllib.quote(keyword.encode('utf-8'))
 		content = self.http_handler.request(url)			
 		html = lxml.html.document_fromstring(clean_html(content))
 		summary = html.xpath('//table[contains(@class, "resultNav")]')
@@ -286,11 +286,49 @@ class MyJobCrawler():
 			summary = summary[0]
 			for td in summary.xpath('.//td'):
 				text = td.text_content()
-				self.logger.info(text)
 				if '/' in text and '-' in text: 
 					total_count = int(text.split('/')[1])
 					break
 		self.logger.info(total_count)
+
+		result_list = html.xpath('//table[contains(@class,"resultList")]')
+		jobs = []
+		for result in result_list:
+			for job_name in html.xpath('.//a[contains(@class,"jobname")]'):
+				# the comma is significant since we are defining a tuple!
+				jobs.append((job_name.text_content().strip(),job_name.get('href')))
+			for index, co_name in enumerate(html.xpath('.//a[contains(@class,"coname")]')):
+				jobs[index] += (co_name.text_content().strip(),)
+			for index, location in enumerate(html.xpath('.//tr[contains(@class,"tr0")]/td[contains(@class,"td3")]')):
+				tmp = location.text_content().strip()
+				if '-' in tmp: tmp=tmp[:tmp.find('-')]
+				jobs[index] += (tmp,)
+			for index, attributes in enumerate(html.xpath('.//tr[contains(@class,"tr1")]/td[contains(@class,"td1234")]')):
+				req_degree = req_experience = co_type = co_size = ''
+				for tmp in [t.strip() for t in attributes.text_content().strip().split('|')]:
+					if tmp.startswith(u'学历要求'): req_degree = tmp[5:].strip()
+					elif tmp.startswith(u'工作经验'): req_experience = tmp[5:].strip()
+					elif tmp.startswith(u'公司性质'): co_type = tmp[5:].strip()
+					elif tmp.startswith(u'公司规模'): co_size = tmp[4:].strip()
+				jobs[index] += (req_degree,req_experience,co_type,co_size)
+
+		major = MyMajor.objects.get(name = keyword)
+		for jobname, job_url, coname, location,req_degree,req_experience,co_type,co_size in jobs:
+			job, created = MyJob.objects.get_or_create(source_url = job_url)
+			job.total_count = total_count
+			job.co_name = coname
+			job.co_type = co_type
+			job.co_size = co_size
+			job.title = jobname
+			job.location = location
+			job.req_degree = req_degree
+			job.req_experience = req_experience
+			job.save()
+			job.majors.add(major)
+
+			self.logger.info(','.join([jobname,coname]))
+			self.logger.info(job_url)
+			self.logger.info(','.join([coname,location,req_degree,req_experience,co_type,co_size]))
 
 from gaokao.tor_handler import SeleniumUtility
 @shared_task
