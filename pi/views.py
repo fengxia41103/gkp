@@ -486,6 +486,10 @@ class MyMajorDelete (DeleteView):
 class MyMajorDetail(DetailView):
 	model = MyMajor
 	template_name = 'pi/major/detail.html'
+	def get_context_data(self, **kwargs):
+		context = super(DetailView, self).get_context_data(**kwargs)
+		context['jobs'] = self.get_object().jobs.all()
+		return context
 
 	def post(self,request,pk):
 		# all related schools

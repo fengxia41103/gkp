@@ -20,6 +20,12 @@
     </li>
 
     <li class="">
+        <a href="#jobs">工作招聘
+        <span class="pull-right"><i class="fa fa-angle-right"></i></span>
+        </a>
+    </li>
+
+    <li class="">
         <a href="#related-schools">开设院校
         <span class="pull-right"><i class="fa fa-angle-right"></i></span>
         </a>
@@ -28,14 +34,56 @@
 {% endblock %}
 
 {% block detail-content %}
-	<section id="major-intro">
-		<h2 class="my-h2-border">专业简介</h2>
-		{{ object.description|default:"暂无信息" }}
-	</section>
+	<section id="jobs">
+		<h2 class="my-h2-border">工作招聘</h2>
+		<blockquote>
+		最新的招聘信息显示需要"{{object.name}}"专业的职位共<span class="my-huge-font">{{jobs.0.total_count}}</span>个。
+		</blockquote>
+最新的50个招聘职位:
+		<div id="my-canvas" style="width:100%; min-height: 250px;margin-bottom:20px;margin-top:10px;"></div>
 
-	<section id="course">
-		<h2 class="my-h2-border">专业课程</h2>
-		{{ object.course|default:"暂无信息" }}
+		{% regroup jobs|dictsort:"location" by location as by_location_list %}
+		<ul id="myTab" class="nav nav-tabs">
+		{% for location in by_location_list %}
+			<li><a href="#job-{{location.grouper}}" data-toggle="tab">
+				{{location.grouper}}({{location.list|length}})
+			</a></li>	
+		{% endfor %}
+		</ul>
+
+		<div id="myTabContent" class="tab-content">
+			{% for location in by_location_list %}
+			<div class="tab-pane" id="job-{{location.grouper}}">
+				<table class='table table-condensed table-striped'>
+					<tbody>
+					{% for job in location.list %}
+						<tr><td>
+							<div class="row">
+								<div class="col-sm-6">
+									<a href="{{job.source_url}}">
+										<i class="fa fa-external-link"></i>
+									</a>								
+									<strong>{{job.title}}</strong>
+								</div>
+								<div class="col-sm-6 text-right">
+									{{job.co_name}}
+								</div>
+							</div>
+
+							<small class="">
+								<i class="fa fa-check-square-o"></i>学历要求: {{job.req_degree}}<br />
+								<i class="fa fa-check-square-o"></i>期望的工作经验: {{job.req_experience}}
+							</small><small class="pull-right">
+								<i class="fa fa-check-square-o"></i>公司种类: {{job.co_type}}
+								<i class="fa fa-check-square-o"></i>公司规模: {{job.co_size}}
+							</small>
+						</td></tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			{% endfor %}
+		</div>
 	</section>
 
 	<section id="related-schools">
@@ -47,7 +95,7 @@
 		开设院校
 		</h2>
 		<blockquote>
-			根据你的私人订制中设置的条件，我们搜索到以下学校供你参考。
+			根据你的私人订制中设置的条件，我们搜索到以下学校配有"{{object}}"专业，可以重点参考。
 		</blockquote>
 		<div id="related-school-list"></div>
 	</section>
@@ -75,7 +123,19 @@
 
 	j$(document).ready(function(){
 		get_related_schools();
-	});
+
+		{% regroup jobs|dictsort:"title" by title as by_title_list %}
+		var word_array = [
+			{% for title in by_title_list %}
+			{text: "{{title.grouper}}", weight: {{title.list|length}}},
+			{% endfor %}
+		];
+		
+		j$("#my-canvas").jQCloud(word_array,{
+			delayedMode: true,
+			// shape: 'rectangular'
+		});		
+		});
 </script>	
 {% endblock %}
 
@@ -108,6 +168,22 @@
 			</dd>				
 		</dl>
 	</section>
+
+	<section id="major-intro">
+		<h4 class="my-h2-border">
+			<i class="fa fa-book"></i>
+			专业简介
+		</h4>
+		{{ object.description|default:"暂无信息" }}
+	</section>
+
+	<section id="course">
+		<h4 class="my-h2-border">
+			<i class="fa fa-pencil"></i>
+			专业课程
+		</h4>
+		{{ object.course|default:"暂无信息" }}
+	</section>	
 
 	<section id="related-majors">
 		<h4>
