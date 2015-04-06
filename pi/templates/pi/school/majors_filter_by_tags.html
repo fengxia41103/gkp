@@ -3,7 +3,7 @@
 		<li>可重点关注:</li>
 	{% for obj in objs %}
 		<li>
-			<a href="{% url 'major_detail' obj.id %}">{{ obj }}</a>
+			<a href="{%url 'major_detail' obj.id %}">{{ obj }}</a>
 		</li>
 	{% endfor %}
 	</ul>

@@ -18,7 +18,7 @@ urlpatterns = patterns(
 		# user related
 		url(r'^user/profile/$', views.UserProfileView.as_view(), name='user_profile'),
 		url(r'^user/bookmark/$', views.UserBookmark.as_view(), name='user_bookmark'),
-		url(r'^user/tags/$', views.UserTags.as_view(), name='user_tags'),
+		url(r'^user/tags/delete/$', views.UserTagsDelete.as_view(), name='user_delete_tags'),
 
 		# file import/export
 		url(r'^import/admission/school/$',views.import_admission_by_school, name='import_admission_school'),

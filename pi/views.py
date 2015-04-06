@@ -220,7 +220,7 @@ class UserBookmark(TemplateView):
 			content_type='application/javascript')
 
 @class_view_decorator(login_required)
-class UserTags(TemplateView):
+class UserTagsDelete(TemplateView):
 	template_name = ''
 	def post(self,request):
 		'''
@@ -973,7 +973,7 @@ class AnalysisMajorBySubcategory(TemplateView):
 		context['obj'] = cat
 
 		jobs = [job for major in cat.mymajor_set.all() for job in major.jobs.all()]
-		context['jobs'] = random.sample(jobs,50)
+		context['jobs'] = random.sample(jobs,100)
 		return context
 
 ###################################################

@@ -36,7 +36,8 @@
 			<i class="fa fa-cny"></i>
 			 最新对口招聘
 		</h4>	
-		<ul class="list-unstyled newsticker" style="min-height:768px;overflow:hidden;">
+		<ul class="list-unstyled newsticker" 
+		style="min-height:{% widthratio obj.mymajor_set.all|length 1 75 %}px;overflow:hidden;">
 			{% for job in jobs %}
 				<li style="border-bottom:1px dashed #dedede;">
 				<h6 style="color:#89e;">
@@ -64,7 +65,8 @@
 {{ obj }}下设<span class="my-huge-font">{{obj.mymajor_set.all|length}}</span>个专业。
 </blockquote>
 
-<div id="{{major.name}}-canvas" style="min-height:400px;width:100%;"></div>
+<div id="{{major.name}}-canvas" 
+style="min-height:{% widthratio obj.mymajor_set.all|length 1 30 %}px;width:100%;"></div>
 <ul class="">
 {% for major in obj.mymajor_set.all %}
 	<li>

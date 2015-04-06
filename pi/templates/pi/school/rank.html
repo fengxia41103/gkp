@@ -11,7 +11,7 @@
 	综合评分排名由高到低
 </div>
 {% if user.myuserprofile.tags.all %}
-	<ul class="list-inline">
+	<ul class="list-inline" id="tag-list">
 		<li class="">私人订制的关键字：</li>
 		{% for tag in user.myuserprofile.tags.all %}
 			<li data-type="remove-tag" data-toggle="tooltip" 
@@ -126,7 +126,7 @@
 			var this_obj = j$(this);
 			var obj_id = j$(this).attr('obj-id');
 		 	// ajax to server to get a list of columns:4"markers that are within the viewport
-		    j$.post("{% url 'user_tags' %}", // passed in from view
+		    j$.post("{% url 'user_delete_tags' %}", // passed in from view
 		        { 
 		            'obj_id':obj_id
 		        }, 
@@ -147,7 +147,7 @@
 		    ).always(function(){       	
 		    	l.stop();
 		    });		
-		});		
+		});				
 	});
 </script>
 {% endblock %}
