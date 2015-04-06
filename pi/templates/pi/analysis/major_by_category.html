@@ -1,0 +1,110 @@
+{% extends 'pi/common/detail.html' %}
+
+{% block page-header %}
+	{{ obj }}(代码：{{obj.code}})
+{% endblock %}
+
+{% block detail-navbar %}
+<ul class="nav navbar-nav">
+{% for subcat in obj.subs.all %}
+    <li class="">
+        <a href="#subcat-{{subcat.id}}">
+        	{{subcat}}
+		<span class="pull-right"><i class="fa fa-angle-right"></i></span>
+		</a>
+    </li>
+{% endfor %}
+</ul>
+{% endblock %}
+
+{% block detail-content %}
+<blockquote>
+{{ obj }}下设<span class="my-huge-font">{{total_subcats}}</span>个专业类，共
+<span class="my-huge-font">{{total_majors}}</span>个专业。
+</blockquote>
+{% for subcat in obj.subs.all %}
+	<section id="subcat-{{subcat.id}}">
+		<h2 class="page-header">
+		{{ subcat }}(代码：
+		<a href="{%url 'analysis_major_by_subcategory' subcat.id %}">{{subcat.code}}</a>)
+		</h2>
+		<div id="{{subcat.code}}-canvas" style="min-height:230px;width:100%;"></div>
+
+		下设<span class="my-huge-font">{{subcat.mymajor_set.all|length}}</span>个专业:
+		<br />
+		<ul class="">
+		{% for major in subcat.mymajor_set.all %}
+			<li>
+				<a href="{% url 'major_detail' major.id %}">{{major}}/</a>
+				<ul>
+				{% for school in major.schools.all|slice:"5" %}
+					{{ school }} /
+				{% endfor %}
+					<a href="{% url 'major_detail' major.id %}">and more...</a>
+				</ul>
+			</li>
+		{% endfor %}
+		</ul>
+	</section>
+
+<script type="text/javascript">
+	var j$ = jQuery.noConflict();
+	j$(document).ready(function(){
+		var options = {
+		    title : {
+		        text: '对口学校的数量',
+		        subtext: '数据来自网络'
+		    },
+		    tooltip : {
+		        trigger: 'axis'
+		    },
+		    legend: {
+		        data:['2011年', '2012年'],
+		        show:false,
+		    },
+		    toolbox: {
+		        show : true,
+		        feature : {
+		            mark : {show: true},
+		            dataView : {show: true, readOnly: false},
+		            magicType: {show: true, type: ['bar']},
+		            restore : {show: true},
+		            saveAsImage : {show: true}
+		        }
+		    },
+		    calculable : true,
+		    xAxis : [
+		        {
+		            type : 'value',
+		            boundaryGap : [0, 0.01]
+		        }
+		    ],
+		    yAxis : [
+		        {
+		            type : 'category',
+		            data : [
+		            {% for major in subcat.mymajor_set.all %}
+		            	'{{major.name}}',
+		            {% endfor %}
+		            ]
+		        }
+		    ],
+		    series : [
+		        {
+		            name:'',
+		            type:'bar',
+		            data:[
+			            {% for major in subcat.mymajor_set.all %}
+			            	{{major.schools.all|length}},
+			            {% endfor %}
+		            ]
+		        }
+		    ]
+		};
+		var myChart = echarts.init(document.getElementById('{{subcat.code}}-canvas'),'gray');
+		myChart.setOption(options);
+	});
+
+	</script>
+{% endfor %}
+{% endblock %}

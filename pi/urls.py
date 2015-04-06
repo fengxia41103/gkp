@@ -42,8 +42,8 @@ urlpatterns = patterns(
 		url(r'^major/(?P<pk>\d+)/delete/$', views.MyMajorDelete.as_view(), name='major_delete'),
 		url(r'^major/(?P<pk>\d+)/detail/$', views.MyMajorDetail.as_view(), name='major_detail'),			
 		url(r'^major/school/(?P<school_pk>\d+)/(?P<major_pk>\d+)/$', views.MyMajorSchoolDetail.as_view(), name='major_school_detail'),			
-		url(r'^major/related/schools/$', ensure_csrf_cookie(views.MyMajorRelatedSchools.as_view()), name='major_related_schools'),		
-
+		url(r'^major/related/schools/$', ensure_csrf_cookie(views.MyMajorRelatedSchools.as_view()), name='major_related_schools'),
+		url(r'^major/rank/(?P<rank>\d+)/$', views.MyMajorRank.as_view(), name='major_rank'),
 
 		# school
 		url(r'^school/$', views.MySchoolList.as_view(), name='school_list'),
@@ -63,6 +63,8 @@ urlpatterns = patterns(
 		url(r'^analysis/school/detail/ajax/$', views.AnalysisSchoolDetailAJAX.as_view(), name='analysis_school_detail_ajax'),		
 		url(r'^analysis/school/province/(?P<pk>\d+)/$', views.AnalysisSchoolByProvince.as_view(), name='analysis_school_by_province'),
 		url(r'^analysis/school/city/(?P<pk>\d+)/$', views.AnalysisSchoolByCity.as_view(), name='analysis_school_by_city'),
+		url(r'^analysis/major/category/(?P<pk>\d+)/$', views.AnalysisMajorByCategory.as_view(), name='analysis_major_by_category'),			
+		url(r'^analysis/major/subcategory/(?P<pk>\d+)/$', views.AnalysisMajorBySubcategory.as_view(), name='analysis_major_by_subcategory'),			
 
 		# 3rd party data stream integration, all AJAX!
 		url(r'^baidu/tieba/ajax/$', ensure_csrf_cookie(views.IntegrationBaiduTiebaAJAX.as_view()), name='integration_baidu_tieba_ajax'),

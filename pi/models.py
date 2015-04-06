@@ -174,7 +174,7 @@ class MyMajorCategory (models.Model):
 		verbose_name = u'代码'
 	)
 	def __unicode__(self):
-		return '%s (%s)' %(self.name, self.code)
+		return self.name
 
 class MyMajorSubcategory (models.Model):
 	name = models.CharField(
@@ -187,13 +187,14 @@ class MyMajorSubcategory (models.Model):
 		verbose_name = u'代码'
 	)
 	category = models.ForeignKey (
-			MyMajorCategory,
+			'MyMajorCategory',
 			null = True,
 			blank = True,
-			verbose_name = u'学科门类'
+			verbose_name = u'学科门类',
+			related_name = 'subs'
 		)
 	def __unicode__(self):
-		return u'%s (%s)' %(self.name,self.code)
+		return self.name
 
 class MyMajorCustomManager(models.Manager):
 	def link_tag (self,tag):
@@ -214,10 +215,10 @@ class MyMajor (MyBaseModel):
 			verbose_name = u'专业代码',
 		)
 	subcategory = models.ForeignKey (
-			MyMajorSubcategory,
+			'MyMajorSubcategory',
 			null = True,
 			blank = True,
-			verbose_name = u'专业类'
+			verbose_name = u'专业类',
 		)
 	degree_type = models.CharField (
 			max_length = 8,
@@ -258,6 +259,11 @@ class MyMajor (MyBaseModel):
 			blank = True,
 			verbose_name = u'文理科',
 		)
+	job_stat = models.IntegerField(
+		default = 0,
+		verbose_name = u'Job count'
+	)
+
 	# related models
 	schools = models.ManyToManyField ('MySchool', related_name='majors')
 	related_majors = models.ManyToManyField('MyMajor')
@@ -898,10 +904,6 @@ class MyJob (models.Model):
 		'MyMajor',
 		verbose_name =u'Related major',
 		related_name = 'jobs'
-	)
-	total_count = models.IntegerField (
-		default = 0,
-		verbose_name = u'Found total job post count'
 	)
 	co_name = models.CharField (
 		max_length = 128,

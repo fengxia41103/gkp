@@ -277,7 +277,9 @@ class MyJobCrawler():
 		self.logger = logging.getLogger('gkp')
 
 	def parser(self,keyword):
-		url = 'http://search.51job.com/jobsearch/search_result.php?fromJs=1&jobarea=000000,00&funtype=0000&industrytype=00&keyword=%s&keywordtype=2&lang=c&stype=1&postchannel=0000&fromType=3' % urllib.quote(keyword.encode('utf-8'))
+		major = MyMajor.objects.get(id = keyword)
+		
+		url = 'http://search.51job.com/jobsearch/search_result.php?fromJs=1&jobarea=000000,00&funtype=0000&industrytype=00&keyword=%s&keywordtype=2&lang=c&stype=1&postchannel=0000&fromType=3' % urllib.quote(major.name.encode('utf-8'))
 		content = self.http_handler.request(url)			
 		html = lxml.html.document_fromstring(clean_html(content))
 		summary = html.xpath('//table[contains(@class, "resultNav")]')
@@ -290,6 +292,8 @@ class MyJobCrawler():
 					total_count = int(text.split('/')[1])
 					break
 		self.logger.info(total_count)
+		major.job_stat = total_count
+		major.save()
 
 		result_list = html.xpath('//table[contains(@class,"resultList")]')
 		jobs = []
@@ -312,10 +316,8 @@ class MyJobCrawler():
 					elif tmp.startswith(u'公司规模'): co_size = tmp[4:].strip()
 				jobs[index] += (req_degree,req_experience,co_type,co_size)
 
-		major = MyMajor.objects.get(name = keyword)
 		for jobname, job_url, coname, location,req_degree,req_experience,co_type,co_size in jobs:
 			job, created = MyJob.objects.get_or_create(source_url = job_url)
-			job.total_count = total_count
 			job.co_name = coname
 			job.co_type = co_type
 			job.co_size = co_size

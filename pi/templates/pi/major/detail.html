@@ -2,7 +2,7 @@
 
 {% load staticfiles %}
 {% block page-header %}
-	{{ object.name }}	
+	{{ object.name }}
 {% endblock %}
 
 {% block detail-navbar %}
@@ -33,17 +33,35 @@
 </ul>
 {% endblock %}
 
+{% block breadcrumb %}
+<ol class="breadcrumb">
+	<li>
+		<a href="{% url 'analysis_major_by_category' object.subcategory.category.id %}">
+			{{object.subcategory.category}}
+		</a>
+	</li>
+	<li>
+		<a href="{% url 'analysis_major_by_subcategory' object.subcategory.id %}">{{object.subcategory}}</a>
+	</li>
+	<li>{{object}}</li>
+</ol>
+{% endblock %}
+
 {% block detail-content %}
 	<section id="jobs">
-		<h2 class="my-h2-border">工作招聘</h2>
+		<h2 class="page-header">工作招聘</h2>
 		<blockquote>
-		最新的招聘信息显示需要"{{object.name}}"专业的职位共<span class="my-huge-font">{{jobs.0.total_count}}</span>个。
+		最新的招聘信息显示需要"<span class="my-huge-font">{{object.name}}</span>"专业的职位共<span class="my-huge-font">{{object.job_stat}}</span>个。
 		</blockquote>
 
-		<h4>就业热门</h4>
+		<section>
+		<h4 class="">就业热门:</h4>
 		<div id="my-canvas" style="width:100%; min-height: 200px;margin-bottom:20px;margin-top:10px;">
 		</div>
-		<h4>最新的50个招聘职位</h4>
+		</section>
+
+		<section>
+		<h4>最新的50个招聘职位及其工作地点:</h4>
 
 		{% regroup jobs|dictsort:"location" by location as by_location_list %}
 		<ul id="myTab" class="nav nav-tabs">
@@ -65,10 +83,10 @@
 								<div class="col-sm-6">
 									<a href="{{job.source_url}}">
 										<i class="fa fa-external-link"></i>
+										{{job.title}}
 									</a>								
-									<strong>{{job.title}}</strong>
 								</div>
-								<div class="col-sm-6 text-right">
+								<div class="col-sm-6 text-right" style="color:#8199f7;">
 									{{job.co_name}}
 								</div>
 							</div>
@@ -87,25 +105,29 @@
 			</div>
 			{% endfor %}
 		</div>
+		</section>
 	</section>
 
 	<section id="related-schools">
-		<h2 class="my-h2-border ladda-button"
+		<h2 class="page-header ladda-button"
 			data-style="expand-right" 
 			data-size="l" data-spinner-color="#333"			
 		>
 		<span class="ladda-label"></span>		
 		开设院校
 		</h2>
-		<blockquote>
-			根据你的私人订制中设置的条件，我们搜索到以下学校配有"{{object}}"专业，可以重点参考。
-		</blockquote>
+		<div>
+			<label class="checkbox-inline">
+				<input type="checkbox" id="filtered-by-profile" checked value="1">根据私人订制条件过滤
+			</label>
+		</div>
+
 		<div id="related-school-list"></div>
 	</section>
 <script type="text/javascript">
 	var j$ = jQuery.noConflict();
 
-	function get_related_schools(){
+	function get_related_schools(profiled){
 		// loading spinner
 		var l = Ladda.create(j$('.ladda-button')[0]);
 	 	l.start();
@@ -114,6 +136,7 @@
         j$.post("{% url 'major_related_schools' %}", // passed in from view
             { 
                 'obj_id':{{ object.id }},
+                'profiled': profiled
             }, 
             function(resp) { // success callback
                 j$('#related-school-list').html(resp['html']);             
@@ -125,7 +148,7 @@
 	}
 
 	j$(document).ready(function(){
-		get_related_schools();
+		setTimeout(get_related_schools(1),1000);
 
 		var word_array = [
 			{% for keyword, weight in keywords %}
@@ -137,7 +160,13 @@
 			delayedMode: true,
 			// shape: 'rectangular'
 		});		
+
+		// profile filter toggle
+		j$('#filtered-by-profile').click(function(){
+			var profiled = j$(this).is(':checked') ? 1 : 0;
+			get_related_schools(profiled);
 		});
+	});
 </script>	
 {% endblock %}
 

@@ -544,18 +544,31 @@ class MyMajorRelatedSchools(TemplateView):
 	template_name = 'pi/major/related_schools.html'
 	def post(self,request):
 		major = MyMajor.objects.get(id=int(request.POST['obj_id']))
+		filtered_by_profile = int(request.POST['profiled'])
 
 		# all related schools
 		related_schools = major.schools.all()
 
 		# filtered by user profile
-		related_schools = MySchool.objects.filter_by_user_profile(self.request.user).filter(id__in =[s.id for s in related_schools]).order_by('province','city')
+		if filtered_by_profile: related_schools = MySchool.objects.filter_by_user_profile(self.request.user).filter(id__in =[s.id for s in related_schools]).order_by('province','city')
+		else: related_schools = MySchool.objects.filter(id__in =[s.id for s in related_schools]).order_by('province','city')
 
 		content = loader.get_template(self.template_name)
 		html= content.render(Context({'objs':related_schools}))
 
 		return HttpResponse(json.dumps({'html':html}), 
 			content_type='application/javascript')
+
+from django.db.models import Count
+@class_view_decorator(login_required)
+class MyMajorRank(TemplateView):
+	template_name = 'pi/major/rank.html'
+
+	def get_context_data(self, **kwargs):
+		context = super(TemplateView, self).get_context_data(**kwargs)		
+		top_count = int(context['rank'])
+		context['ranks'] = MyMajor.objects.all().order_by('-job_stat')[:top_count]
+		return context
 
 ###################################################
 #
@@ -695,7 +708,7 @@ class MySchoolRank(TemplateView):
 	template_name = 'pi/school/rank.html'
 
 	def get_context_data(self, **kwargs):
-		context = super(MySchoolRank, self).get_context_data(**kwargs)		
+		context = super(TemplateView, self).get_context_data(**kwargs)		
 		top_count = int(context['rank'])
 		schools = MySchool.objects.filter_by_user_profile(self.request.user)
 
@@ -939,6 +952,23 @@ class AnalysisSchoolByCity(TemplateView):
 
 		# trains
 		context['trains'] = MyTrainStop.objects.filter(stop_name__icontains = city.city)
+		return context
+
+class AnalysisMajorByCategory(TemplateView):
+	template_name = 'pi/analysis/major_by_category.html'
+	def get_context_data(self, **kwargs):
+		context = super(TemplateView, self).get_context_data(**kwargs)
+		cat = MyMajorCategory.objects.get(id=int(kwargs['pk']))
+		context['obj'] = cat
+		context['total_subcats'] = len(cat.subs.all())
+		context['total_majors'] = MyMajor.objects.filter(subcategory__in = cat.subs.all()).count()
+		return context
+
+class AnalysisMajorBySubcategory(TemplateView):
+	template_name = 'pi/analysis/major_by_subcategory.html'
+	def get_context_data(self, **kwargs):
+		context = super(TemplateView, self).get_context_data(**kwargs)
+		context['obj'] = MyMajorSubcategory.objects.get(id=int(kwargs['pk']))
 		return context
 
 ###################################################
