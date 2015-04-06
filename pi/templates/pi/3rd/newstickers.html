@@ -28,14 +28,29 @@
 {% endif %}
 
 <script type="text/javascript">
+	var j$ = jQuery.noConflict();
+
 	var word_array = [
 		{% for keyword, weight in keywords %}
 		{text: "{{keyword}}", weight: Math.round({{weight}})},
 		{% endfor %}
 	];
 	
-	j$("#my-canvas").jQCloud(word_array,{
-		delayedMode: true,
-		//shape: 'rectangular'
+	j$(document).ready(function(){
+		j$("#my-canvas").jQCloud(word_array,{
+			delayedMode: true,
+			//shape: 'rectangular'
+		});
+
+		// start news ticker
+		j$('.newsticker').newsTicker({
+			//row_height: 48,
+			max_rows: 5,
+			speed: 600,
+			direction: 'up',
+			duration: 4000,
+			autostart: 1,
+			pauseOnHover: 0			
+		});		
 	});
 </script>

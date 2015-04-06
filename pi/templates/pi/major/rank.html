@@ -1,0 +1,41 @@
+{% extends 'pi/common/base.html' %}
+
+{% block page-header %}
+	Top {{rank}}Major排行榜
+{% endblock %}
+
+{% block content %}
+
+<div class="pull-right">
+	<i class="fa fa-sort-amount-desc"></i>
+	综合评分排名由高到低
+</div>
+
+{{ jobs }}
+<div id="rank-by-min-score">
+	{% for major in ranks %}
+	<section class="page-header">
+		<div class="row">
+			<div class="col-md-1"><span class="btn btn-default">{{ forloop.counter }}</span></div>
+			<div class="col-md-3" style="">
+				<span class="my-logo">
+				<a href="{% url 'major_detail' major.id %}">{{ major }}</a>
+				</span>
+			</div>
+			
+			<div class="col-md-4"
+			data-type="filtered-majors">
+			</div>
+
+			<div class="col-md-2" style="border-right:1px solid #ccc;border-left:1px solid #ccc;">				
+			</div>
+
+			<div class="col-md-1">
+				<span class="my-huge-font">{{ major.job_stat }}</span>
+			</div>
+		</div>
+	</section>
+	{% endfor %}
+</div>
+
+{% endblock %}

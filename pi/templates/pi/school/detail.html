@@ -226,18 +226,7 @@
             }, 
             function(resp) { // success callback
                 j$('#school-tieba').html(resp['bd_html']);             
-                j$('#school-newsticker').html(resp['news_html']);             
-
-				// start news ticker
-				j$('.newsticker').newsTicker({
-					//row_height: 48,
-					max_rows: 5,
-					speed: 600,
-					direction: 'up',
-					duration: 4000,
-					autostart: 1,
-					pauseOnHover: 0			
-				});
+                j$('#school-newsticker').html(resp['news_html']);
                 setTimeout(get_bd_tb, 30000); // refresh every 30 seconds
             },'json'
         ).always(function(){

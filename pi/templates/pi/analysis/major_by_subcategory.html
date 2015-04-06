@@ -28,6 +28,37 @@
 </ol>
 {% endblock %}
 
+
+{% block detail-sidebar %}
+	{# jobs #}
+	<section>
+		<h4>
+			<i class="fa fa-cny"></i>
+			 最新对口招聘
+		</h4>	
+		<ul class="list-unstyled newsticker" style="min-height:768px;overflow:hidden;">
+			{% for job in jobs %}
+				<li style="border-bottom:1px dashed #dedede;">
+				<h6 style="color:#89e;">
+					<i class="fa fa-cny"></i>
+					{{ job.location }}:
+					<a href="{{job.source_url}}">{{ job.title }}</a>
+				</h6>
+				<p>{{job.co_name}}</p>
+
+
+				所需专业：
+					<ul>
+						{% for major in job.majors.all %}
+							<li><a href="{% url 'major_detail' major.id %}">{{major}}</a></li>
+						{% endfor %}
+					</ul>
+				</li>
+			{% endfor %}
+		</ul>
+	</section>
+{% endblock %}
+
 {% block detail-content %}
 <blockquote>
 {{ obj }}下设<span class="my-huge-font">{{obj.mymajor_set.all|length}}</span>个专业。
@@ -51,6 +82,18 @@
 <script type="text/javascript">
 	var j$ = jQuery.noConflict();
 	j$(document).ready(function(){
+		// start news ticker
+		j$('.newsticker').newsTicker({
+			//row_height: 48,
+			max_rows: 10,
+			speed: 600,
+			direction: 'up',
+			duration: 2000,
+			autostart: 1,
+			pauseOnHover: 0			
+		});	
+
+		// draw graph		
 		var options = {
 		    title : {
 		        text: '对口学校的数量',
@@ -103,7 +146,7 @@
 		    ]
 		};
 		var myChart = echarts.init(document.getElementById('{{major.name}}-canvas'),'gray');
-		myChart.setOption(options);
+		myChart.setOption(options);		
 	});
 
 	</script>

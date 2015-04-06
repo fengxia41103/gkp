@@ -964,11 +964,16 @@ class AnalysisMajorByCategory(TemplateView):
 		context['total_majors'] = MyMajor.objects.filter(subcategory__in = cat.subs.all()).count()
 		return context
 
+import random
 class AnalysisMajorBySubcategory(TemplateView):
 	template_name = 'pi/analysis/major_by_subcategory.html'
 	def get_context_data(self, **kwargs):
 		context = super(TemplateView, self).get_context_data(**kwargs)
-		context['obj'] = MyMajorSubcategory.objects.get(id=int(kwargs['pk']))
+		cat = MyMajorSubcategory.objects.get(id=int(kwargs['pk']))
+		context['obj'] = cat
+
+		jobs = [job for major in cat.mymajor_set.all() for job in major.jobs.all()]
+		context['jobs'] = random.sample(jobs,50)
 		return context
 
 ###################################################
