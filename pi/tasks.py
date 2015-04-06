@@ -278,7 +278,7 @@ class MyJobCrawler():
 
 	def parser(self,keyword):
 		major = MyMajor.objects.get(id = keyword)
-		
+
 		url = 'http://search.51job.com/jobsearch/search_result.php?fromJs=1&jobarea=000000,00&funtype=0000&industrytype=00&keyword=%s&keywordtype=2&lang=c&stype=1&postchannel=0000&fromType=3' % urllib.quote(major.name.encode('utf-8'))
 		content = self.http_handler.request(url)			
 		html = lxml.html.document_fromstring(clean_html(content))
