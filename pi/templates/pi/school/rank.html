@@ -1,7 +1,7 @@
 {% extends 'pi/common/base.html' %}
 
 {% block page-header %}
-	Top {{rank}}院校排行榜
+	Top {{rank}} &mdash; 院校排行榜
 {% endblock %}
 
 {% block content %}
@@ -39,9 +39,14 @@
 				</span>
 			</div>
 			
-			<div class="col-md-4" rank-id="{{s.id}}" 
-			data-type="filtered-majors" 
+			<div class="col-md-4 ladda-button" rank-id="{{s.id}}" 
+			data-type="filtered-majors" 			
 			id="{{s.rank_index}}-{{s.id}}">
+				<span class="ladda-button" data-style="expand-right" 
+				data-size="l" data-spinner-color="#333">
+				正在努力搜索你喜欢的专业 ^_^
+					<span class="ladda-label"></span>
+				</span>
 			</div>
 
 			<div class="col-md-2" style="border-right:1px solid #ccc;border-left:1px solid #ccc;">

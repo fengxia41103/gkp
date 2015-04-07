@@ -10,7 +10,6 @@
 	<section>
 	<table class="table table-striped table-hover">
 	<thead>
-		<th></th>
 		<th>Major</th>
 		<th>高校名称</th>
 		<th>招生地区</th>
@@ -19,17 +18,11 @@
 		<th>录取批次</th>
 		<th>最高分</th>
 		<th>平均分</th>
+		<th></th>		
 	</thead>
 	<tbody>
 		{% for obj in object_list %}
 		<tr><td>
-     			<a href="{% url 'admission_major_edit' obj.id %}" class="">
-     				Edit
-				</a>
-     			<a href="{% url 'admission_major_delete' obj.id %}" class="">
-					Delete
-				</a>
-			</td><td>
      			{{ obj.major }}				
 			</td><td>
      			{{ obj.school }}
@@ -45,7 +38,11 @@
      			{{ obj.max_score }}
      		</td><td>
      			{{ obj.avg_score }}
-     		</td>
+     		</td><td>
+     			<a href="{% url 'major_school_detail' obj.school.id obj.id %}" class="">
+     				查看详情
+				</a>
+			</td>
     	</tr>	
     	{% endfor %}
 	</tbody>

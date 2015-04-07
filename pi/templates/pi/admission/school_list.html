@@ -18,7 +18,6 @@
 		<th>最低分</th>
 		<th>最高分</th>
 		<th>平均分</th>
-		<th>省控线</th>
 	</thead>
 	<tbody>
 		{% for obj in object_list %}
@@ -39,7 +38,9 @@
      		</td><td>
      			{{ obj.avg_score }}
      		</td><td>
-     			{{ obj.province_score }}
+     			<a href="{% url 'school_detail' obj.school.id %}" class="">
+     				查看详情
+				</a>
      		</td>
     	</tr>	
     	{% endfor %}
