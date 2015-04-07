@@ -344,3 +344,45 @@ def job_consumer(major):
 	crawler = MyJobCrawler(http_agent)
 	crawler.parser(major)
 	del crawler
+
+import codecs
+from selenium.webdriver.support.ui import WebDriverWait # available since 2.4.0
+from selenium.webdriver.support import expected_conditions as EC # available since 2.26.0
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+
+class MySogouCrawler():
+	def __init__(self,handler):
+		self.http_handler = handler
+		self.logger = logging.getLogger('gkp')
+		
+	def parser(self,keyword):
+		url = "http://weixin.sogou.com/weixin?type=2&query=%s&fr=sgsearch&ie=utf8&tsn=2&interation=1" % urllib.quote(keyword.encode('utf-8'))
+		# WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.&interation=1ID,'searchinput')))
+
+		# WARNING: must decode here!
+		content = self.http_handler.request(url).decode('utf-8')
+
+		#self.logger.info('Ready to parse')
+		html = lxml.html.document_fromstring(clean_html(content))
+		for result in html.xpath('//div[@class="results"]/div'):
+			tweet_title = ''
+			tweet_url = ''
+			title = result.xpath('.//h4/a')
+			if title:
+				tweet_title = title[0].text_content()
+				tweet_url = title[0].get('href')
+
+			tweet_summary = result.xpath('.//p')
+			if tweet_summary: tweet_summary = tweet_summary[0].text_content()
+			
+			img_url = ''
+			img = result.xpath('.//div[@class="img_box2"]//img')
+			if img: img_url = 'http://'+img[0].get('src').split('http://')[-1]
+			print img_url
+
+@shared_task
+def sogou_consumer(keyword):
+	http_agent = TorUtility()
+	crawler = MySogouCrawler(http_agent)
+	crawler.parser(keyword)

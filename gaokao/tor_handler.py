@@ -93,13 +93,13 @@ class SeleniumUtility():
 			'--proxy=127.0.0.1:8118', # provixy proxy 
 			'--proxy-type=http',
 		]		
-		self.http = webdriver.PhantomJS('phantomjs', service_args=service_args, desired_capabilities=dcap)
-		self.http.set_page_load_timeout(60)
-		#self.http = webdriver.PhantomJS('phantomjs',desired_capabilities=dcap)
+		#self.http = webdriver.PhantomJS('phantomjs', service_args=service_args, desired_capabilities=dcap)
+		self.http = webdriver.PhantomJS('phantomjs',desired_capabilities=dcap)
+		self.http.set_page_load_timeout(120)
 
 	def request(self,url):
 		self.http.get(url)
 		return self.http.page_source
 
 	def __del__(self):
-		self.http.close()
+		self.http.quit()

@@ -540,6 +540,15 @@ def crawl_job():
 	for id in MyMajor.objects.exclude(Q(code__isnull=True) | Q(code__exact='')).values_list('id',flat=True):
 		job_consumer.delay(id)
 
+from pi.tasks import sogou_consumer
+from random import sample
+def crawl_weibo():
+	ids = MySchool.objects.all().values_list('id',flat=True)
+	#for id in sample(ids,1):
+	for id in ids[:1]:
+		school = MySchool.objects.get(id=id)
+		sogou_consumer.delay(school.name)
+
 import googlemaps
 def main():
 	django.setup()
@@ -568,7 +577,8 @@ def main():
 	#crawl_city_wiki()
 	#cleanup_stop_time()
 	#populate_school_tieba()
-	crawl_job()
+	#crawl_job()
+	crawl_weibo()
 
 if __name__ == '__main__':
 	main()
