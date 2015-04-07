@@ -68,6 +68,7 @@ urlpatterns = patterns(
 
 		# 3rd party data stream integration, all AJAX!
 		url(r'^baidu/tieba/ajax/$', ensure_csrf_cookie(views.IntegrationBaiduTiebaAJAX.as_view()), name='integration_baidu_tieba_ajax'),
+		url(r'^baidu/images/ajax/$', ensure_csrf_cookie(views.BaiduImages.as_view()), name='baidu_images_ajax'),
 
 		# train route
 		url(r'^train/route/$', views.MyTrainRoute.as_view(), name='train_route'),	

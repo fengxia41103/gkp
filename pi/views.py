@@ -1029,6 +1029,19 @@ class IntegrationBaiduTiebaAJAX(TemplateView):
 		return HttpResponse(json.dumps({'bd_html':tieba_html,'news_html':newsticker_html}), 
 			content_type='application/javascript')
 
+class BaiduImages(TemplateView):
+	template_name = 'pi/3rd/baidu_images.html'
+	def post(self,request):
+		obj_id = request.POST['obj_id']
+		school = MySchool.objects.get(id=int(obj_id))
+		imgs = []
+		for feeds in school.mybaidustream_set.all():
+			imgs += [img.file.url for img in feeds.attachments.all()]
+
+		content = loader.get_template(self.template_name)
+		html= content.render(Context({'objs':imgs}))
+		return HttpResponse(json.dumps({'html':html}), 
+			content_type='application/javascript')
 
 ###################################################
 #

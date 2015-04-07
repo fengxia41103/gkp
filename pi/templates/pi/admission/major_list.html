@@ -39,9 +39,12 @@
      		</td><td>
      			{{ obj.avg_score }}
      		</td><td>
+     			<div class="pull-right">
      			<a href="{% url 'major_school_detail' obj.school.id obj.id %}" class="">
      				查看详情
+     				<i class="fa fa-external-link"></i>
 				</a>
+				</div>
 			</td>
     	</tr>	
     	{% endfor %}
