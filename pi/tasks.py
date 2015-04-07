@@ -357,11 +357,23 @@ class MySogouCrawler():
 		self.logger = logging.getLogger('gkp')
 		
 	def parser(self,keyword):
-		url = "http://weixin.sogou.com/weixin?type=2&query=%s&fr=sgsearch&ie=utf8&tsn=2&interation=1" % urllib.quote(keyword.encode('utf-8'))
+		'''
+			type=1: webchat account search
+			type=2: webchat article search
+
+			tsn=1: in 1 day
+			tsn=2: in 1 week
+			tsn=3: in 1 month
+			tsn=4: in 1 year
+		'''
+
+		# STEP 1: get articles
+		url = "http://weixin.sogou.com/weixin?type=2&query=%s&fr=sgsearch&ie=utf8&tsn=2&interation=" % urllib.quote(keyword.encode('utf-8'))
 		# WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.&interation=1ID,'searchinput')))
 
-		# WARNING: must decode here!
-		content = self.http_handler.request(url).decode('utf-8')
+		# WARNING: if using TorUtility, must decode here!
+		# content = self.http_handler.request(url).decode('utf-8')
+		content = self.http_handler.request(url)
 
 		#self.logger.info('Ready to parse')
 		html = lxml.html.document_fromstring(clean_html(content))
@@ -375,14 +387,26 @@ class MySogouCrawler():
 
 			tweet_summary = result.xpath('.//p')
 			if tweet_summary: tweet_summary = tweet_summary[0].text_content()
-			
+
 			img_url = ''
 			img = result.xpath('.//div[@class="img_box2"]//img')
 			if img: img_url = 'http://'+img[0].get('src').split('http://')[-1]
-			print img_url
+
+			author_id = ''
+			author = result.xpath('.//a[@id="weixin_account"]')
+			if author: 
+				author_id = author[0].get('title')
+			self.logger.info(author_id)
+
+			timestamp = ''
+			t = result.xpath('.//div[contains(@class,"s-p")]')
+			if t: 
+				timestamp = t[0].text_content().strip()
+			self.logger.info(timestamp[len(author_id):])
+
 
 @shared_task
 def sogou_consumer(keyword):
-	http_agent = TorUtility()
+	http_agent = SeleniumUtility()
 	crawler = MySogouCrawler(http_agent)
 	crawler.parser(keyword)
