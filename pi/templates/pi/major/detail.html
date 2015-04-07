@@ -135,7 +135,7 @@
         // ajax to server to get a list of columns:4"markers that are within the viewport
         j$.post("{% url 'major_related_schools' %}", // passed in from view
             { 
-                'obj_id':{{ object.id }},
+                'object_id':{{ object.id }},
                 'profiled': profiled
             }, 
             function(resp) { // success callback

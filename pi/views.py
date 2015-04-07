@@ -567,7 +567,7 @@ class MyMajorRank(TemplateView):
 	def get_context_data(self, **kwargs):
 		context = super(TemplateView, self).get_context_data(**kwargs)		
 		top_count = int(context['rank'])
-		context['ranks'] = MyMajor.objects.all().order_by('-job_stat')[:top_count]
+		context['ranks'] = MyMajor.objects.exclude(Q(code__isnull=True) | Q(code__exact='')).order_by('-job_stat')[:top_count]
 		return context
 
 ###################################################
@@ -690,7 +690,8 @@ class MySchoolEchartMapFilter(TemplateView):
 		result = {}
 		schools = MySchool.objects.filter_by_user_profile(self.request.user)
 		context['schools'] =  schools.order_by('province','city')
-
+		context['provinces'] = MyProvince.objects.all()
+		
 		# echart data
 		for s in schools:
 			result.setdefault(s.province, []).append(s.id)

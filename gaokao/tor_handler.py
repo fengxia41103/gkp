@@ -94,6 +94,7 @@ class SeleniumUtility():
 			'--proxy-type=http',
 		]		
 		self.http = webdriver.PhantomJS('phantomjs', service_args=service_args, desired_capabilities=dcap)
+		self.http.set_page_load_timeout(60)
 		#self.http = webdriver.PhantomJS('phantomjs',desired_capabilities=dcap)
 
 	def request(self,url):

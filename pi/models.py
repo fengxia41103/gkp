@@ -950,3 +950,10 @@ class MyJob (models.Model):
 		null = True,
 		verbose_name = u'Experience requirement'
 	)
+	def _age(self):
+		'''
+			Calculate object age based on NOW and its creation timestamp
+		'''
+		return (dt.now()-self.created).total_seconds()
+	age = property(_age)
+	

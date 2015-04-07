@@ -276,6 +276,9 @@ class MyJobCrawler():
 		self.http_handler = handler
 		self.logger = logging.getLogger('gkp')
 
+	def __del__(self):
+		del self.http_handler
+		
 	def parser(self,keyword):
 		major = MyMajor.objects.get(id = keyword)
 
@@ -290,10 +293,11 @@ class MyJobCrawler():
 				text = td.text_content()
 				if '/' in text and '-' in text: 
 					total_count = int(text.split('/')[1])
+					major.job_stat = total_count
+					major.save()					
 					break
 		self.logger.info(total_count)
-		major.job_stat = total_count
-		major.save()
+
 
 		result_list = html.xpath('//table[contains(@class,"resultList")]')
 		jobs = []
@@ -318,19 +322,20 @@ class MyJobCrawler():
 
 		for jobname, job_url, coname, location,req_degree,req_experience,co_type,co_size in jobs:
 			job, created = MyJob.objects.get_or_create(source_url = job_url)
-			job.co_name = coname
-			job.co_type = co_type
-			job.co_size = co_size
-			job.title = jobname
-			job.location = location
-			job.req_degree = req_degree
-			job.req_experience = req_experience
-			job.save()
+			if created:
+				job.co_name = coname
+				job.co_type = co_type
+				job.co_size = co_size
+				job.title = jobname
+				job.location = location
+				job.req_degree = req_degree
+				job.req_experience = req_experience
+				job.save()
 			job.majors.add(major)
 
-			self.logger.info(','.join([jobname,coname]))
-			self.logger.info(job_url)
-			self.logger.info(','.join([coname,location,req_degree,req_experience,co_type,co_size]))
+			#self.logger.info(','.join([jobname,coname]))
+			#self.logger.info(job_url)
+			#self.logger.info(','.join([coname,location,req_degree,req_experience,co_type,co_size]))
 
 from gaokao.tor_handler import SeleniumUtility
 @shared_task
@@ -338,3 +343,4 @@ def job_consumer(major):
 	http_agent = SeleniumUtility()
 	crawler = MyJobCrawler(http_agent)
 	crawler.parser(major)
+	del crawler
