@@ -17,7 +17,7 @@ class PlainUtility():
 		self.headers={'User-Agent':user_agent}
 		self.ip_url = 'http://icanhazip.com/'
 		self.logger = logging.getLogger('gkp')
-		self.http = http
+		self.http = http_manager
 
 	def current_ip(self):
 		return self.request(self.ip_url)
@@ -93,8 +93,8 @@ class SeleniumUtility():
 			'--proxy=127.0.0.1:8118', # provixy proxy 
 			'--proxy-type=http',
 		]		
-		#self.http = webdriver.PhantomJS('phantomjs', service_args=service_args, desired_capabilities=dcap)
-		self.http = webdriver.PhantomJS('phantomjs',desired_capabilities=dcap)
+		self.http = webdriver.PhantomJS('phantomjs', service_args=service_args, desired_capabilities=dcap)
+		#self.http = webdriver.PhantomJS('phantomjs',desired_capabilities=dcap)
 		self.http.set_page_load_timeout(120)
 
 	def request(self,url):

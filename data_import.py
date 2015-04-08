@@ -545,9 +545,8 @@ from random import sample
 def crawl_weibo():
 	ids = MySchool.objects.all().values_list('id',flat=True)
 	#for id in sample(ids,1):
-	for id in ids[:1]:
-		school = MySchool.objects.get(id=id)
-		sogou_consumer.delay(school.name)
+	for id in ids[1:]:
+		sogou_consumer.delay(id)
 
 import googlemaps
 def main():

@@ -356,7 +356,7 @@ class MySogouCrawler():
 		self.http_handler = handler
 		self.logger = logging.getLogger('gkp')
 		
-	def parser(self,keyword):
+	def parser(self,id):
 		'''
 			type=1: webchat account search
 			type=2: webchat article search
@@ -366,9 +366,69 @@ class MySogouCrawler():
 			tsn=3: in 1 month
 			tsn=4: in 1 year
 		'''
+		school = MySchool.objects.get(id=id)
 
-		# STEP 1: get articles
-		url = "http://weixin.sogou.com/weixin?type=2&query=%s&fr=sgsearch&ie=utf8&tsn=2&interation=" % urllib.quote(keyword.encode('utf-8'))
+		# STEP 1: get weixin account
+		url = "http://weixin.sogou.com/weixin?type=1&query=%s&fr=sgsearch&ie=utf8" % urllib.quote(school.name.encode('utf-8'))
+		#content = self.http_handler.request(url)
+		content = self.http_handler.request(url).decode('utf-8')
+		html = lxml.html.document_fromstring(clean_html(content))
+
+		total_page = html.xpath('//div[@id="pagebar_container"]/a')
+		total_page = len(total_page)
+		print total_page
+
+		for page in range(1,total_page):
+			url = "http://weixin.sogou.com/weixin?type=1&query=%s&fr=sgsearch&ie=utf8&page=%d" % (urllib.quote(school.name.encode('utf-8')),page)
+			#content = self.http_handler.request(url)
+			content = self.http_handler.request(url).decode('utf-8')
+			html = lxml.html.document_fromstring(clean_html(content))
+
+			for result in html.xpath('//div[contains(@class,"results")]/div'):
+				name = result.xpath('.//h3')[0].text_content().strip()
+				
+				# we only save ones that have full school name in it
+				if school.name not in name: continue
+
+				source_url = result.get('href')
+				account_id = result.xpath('.//h4')[0].text_content().strip().split(u'：')[1]
+				description = result.xpath('.//span[contains(@class,"sp-txt")]')[0].text_content().strip()
+				wx, created = MyWeixinAccount.objects.get_or_create(account = account_id,name=name)
+				wx.school = school
+				wx.description = description
+				wx.sg_url = 'http://weixin.sogou.com%s'%source_url
+				wx.save()
+
+				# images
+				icon_url = result.xpath('.//div[contains(@class,"img-box")]/img')[0].get('src')
+				img_data = None
+				try: img_data = self.http_handler.request(icon_url)
+				except: self.logger.error('retrieve img failed: %s' % icon_url)
+				if img_data:
+					print 'writing icon image data'
+					tmp_file = NamedTemporaryFile(suffix='.jpg',delete=False)
+					tmp_file.write(img_data)
+					wx.icon = File(tmp_file)
+					wx.save()
+					tmp_file.close()
+
+				barcode_url = 'http://www.vchale.com/uploads/ewm/%s.jpg'%account_id
+				img_data = None
+				try: img_data = self.http_handler.request(barcode_url)
+				except: self.logger.error('retrieve img failed: %s' % icon_url)
+				if img_data:
+					print 'writing barcode image data'				
+					tmp_file = NamedTemporaryFile(suffix='.jpg',delete=False)
+					tmp_file.write(img_data)
+					wx.barcode = File(tmp_file)
+					wx.save()
+					tmp_file.close()
+
+				print wx.name, 'done'
+		return
+
+		# STEP 2: get articles
+		url = "http://weixin.sogou.com/weixin?type=2&query=%s&fr=sgsearch&ie=utf8&tsn=2&interation=" % urllib.quote(school.name.encode('utf-8'))
 		# WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.&interation=1ID,'searchinput')))
 
 		# WARNING: if using TorUtility, must decode here!
@@ -396,17 +456,16 @@ class MySogouCrawler():
 			author = result.xpath('.//a[@id="weixin_account"]')
 			if author: 
 				author_id = author[0].get('title')
-			self.logger.info(author_id)
 
 			timestamp = ''
 			t = result.xpath('.//div[contains(@class,"s-p")]')
 			if t: 
 				timestamp = t[0].text_content().strip()
-			self.logger.info(timestamp[len(author_id):])
+				timestamp = timestamp[len(author_id):]
 
 
 @shared_task
 def sogou_consumer(keyword):
-	http_agent = SeleniumUtility()
+	http_agent = TorUtility()
 	crawler = MySogouCrawler(http_agent)
 	crawler.parser(keyword)

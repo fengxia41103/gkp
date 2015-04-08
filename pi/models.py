@@ -956,4 +956,75 @@ class MyJob (models.Model):
 		'''
 		return (dt.now()-self.created).total_seconds()
 	age = property(_age)
+
+class MyWeixinAccount(MyBaseModel):
+	school = models.ForeignKey(
+		'MySchool',
+		blank = True,
+		null = True,
+		verbose_name=u'Related 学校'
+	)
+	account = models.CharField(
+		max_length=32,
+		verbose_name = u'Account ID'
+	)
+	icon = models.FileField (
+		null = True,
+		blank = True,
+		upload_to = 'weixin/icon',
+		verbose_name = u'icon',
+	)		
+	barcode = models.FileField (
+		null = True,
+		blank = True,
+		upload_to = 'weixin/barcode',
+		verbose_name = u'barcode',
+	)
+	sg_url = models.URLField(
+		max_length=512,
+		blank = True,
+		null = True,
+		verbose_name = u'Sogou URL'
+	)	
+
+class MySogouStream(MyBaseModel):
+	school = models.ForeignKey(
+		MySchool,
+		blank = True,
+		null = True,
+		verbose_name=u'所属学校'
+	)
+	created = models.DateTimeField(
+		auto_now_add=True,
+		verbose_name=u'Using crawler machine timestamp'
+	)
+	author = models.CharField(
+		max_length=64,
+		blank = True,
+		null = True,
+		verbose_name = u'作者'
+	)
+	author_id = models.CharField(
+		max_length=64,
+		blank = True,
+		null = True,
+		verbose_name = u'作者ID'
+	)
+	url_original = models.URLField(
+		max_length=512,
+		default = '',
+		verbose_name = u'Data source original link'
+	)
+	last_updated = models.DateTimeField(
+		blank = True,
+		null = True,
+		verbose_name = u'Posted timestamp read from the source site'
+	)
+	
+	def _age(self):
+		'''
+			Calculate object age based on NOW and its creation timestamp
+		'''
+		return (dt.now()-self.created).total_seconds()
+	age = property(_age)
 	

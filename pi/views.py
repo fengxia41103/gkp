@@ -662,6 +662,9 @@ class MySchoolDetail(DetailView):
 		# school majors
 		context['majors'] = filter(lambda x: x.degree_type == user_profile.degree_type,self.get_object().majors.all())
 
+		# weixin accounts
+		context['weixins'] = MyWeixinAccount.objects.filter(school=school)
+		
 		return context
 
 @class_view_decorator(login_required)
@@ -742,6 +745,17 @@ class MySchoolMajorsFilterByTags(TemplateView):
 
 		return HttpResponse(json.dumps({'html':html}), 
 			content_type='application/javascript')		
+
+@class_view_decorator(login_required)
+class MySchoolWeixin(TemplateView):
+	template_name = 'pi/school/weixin.html'	
+	def get_context_data(self, **kwargs):
+		context = super(TemplateView, self).get_context_data(**kwargs)
+		school = MySchool.objects.get(id=int(kwargs['pk']))
+		context['object']=school
+		context['objs'] = MyWeixinAccount.objects.filter(school=school)
+
+		return context
 
 ###################################################
 #

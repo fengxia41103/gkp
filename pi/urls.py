@@ -57,6 +57,8 @@ urlpatterns = patterns(
 		url(r'^school/e/map/filter/$', views.MySchoolEchartMapFilter.as_view(),name='school_echart_map_filter'),
 		url(r'^school/rank/(?P<rank>\d+)/$', views.MySchoolRank.as_view(), name='school_rank'),
 		url(r'^school/majors/filter/tags/$', ensure_csrf_cookie(views.MySchoolMajorsFilterByTags.as_view()), name='school_majors_filter_by_tags'),
+		url(r'^school/weixin/(?P<pk>\d+)/$', views.MySchoolWeixin.as_view(), name='school_weixin'),
+
 
 		# analysis
 		url(r'^analysis/school/summary/ajax/$', views.AnalysisSchoolSummaryAJAX.as_view(), name='analysis_school_summary_ajax'),
@@ -69,6 +71,7 @@ urlpatterns = patterns(
 		# 3rd party data stream integration, all AJAX!
 		url(r'^baidu/tieba/ajax/$', ensure_csrf_cookie(views.IntegrationBaiduTiebaAJAX.as_view()), name='integration_baidu_tieba_ajax'),
 		url(r'^baidu/images/ajax/$', ensure_csrf_cookie(views.BaiduImages.as_view()), name='baidu_images_ajax'),
+
 
 		# train route
 		url(r'^train/route/$', views.MyTrainRoute.as_view(), name='train_route'),	
