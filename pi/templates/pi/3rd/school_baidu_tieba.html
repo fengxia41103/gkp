@@ -17,7 +17,8 @@
 		<div class="" style="padding:0px 0;">
 			{% if t.attachments.all|length %}
 			<a href="{{ t.attachments.all.0.file.url }}" data-toggle="lightbox" data-gallery="multiimages" data-parent data-title="{{t.name}}" data-footer="{{t.description}}">
-				<img src="{{t.attachments.all.0.file.url}}" class="img-responsive center-block">
+				<img src="{{t.attachments.all.0.file.url}}" class="img-responsive center-block"
+				style="margin-bottom:20px;">
 			</a>			
 			{% endif %}
 			<p>{{ t.description }}</p>

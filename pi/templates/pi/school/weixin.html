@@ -56,30 +56,36 @@
 
 {% block detail-content %}
 	{% if objs %}
+	<h4 class="my-h2-border"><i class="fa fa-tencent-weibo"></i>我的微信圈</h4>
 	<div class="my-multicol-3">
 		{% for wx in objs %}
 			<section class="pin-card" style=""
 			id="wx-{{wx.id}}">
 			<div class="page-header">
 				<h5>
-					<a href="http://www.vchale.com/{{ wx.account }}">
+					<a href="{{ wx.sg_url }}">
 						{{wx.name}}
 					</a>
 				</h5>
 			</div>
 
 			<div class="" style="padding:0px 0;">
-				<a href="{{ wx.icon.url }}" data-toggle="lightbox" data-gallery="multiimages" data-parent data-title="{{wx.name}}" data-footer="{{wx.description}}">
-					<img src="{{wx.icon.url}}" class="img-responsive center-block">
+				<a href="{{ wx.icon.url }}">
+					<img src="{{wx.icon.url}}" class="img-responsive center-block"
+					style="margin-bottom:20px;">
 				</a>			
 				<p>{{ wx.description }}</p>
 			</div>
 
 			<div class="" style="border-top: 1px solid #dddddd;padding:10px 0;">
-				<img src="{{wx.barcode.url}}" 
-				data-type="attachment-thumbnail" class="img-responsive img-thumbnail" width="40px">
+				<a href="{{ wx.barcode.url }}" data-toggle="lightbox" data-gallery="multiimages" data-parent data-title="{{wx.name}} / {{wx.account}}" data-footer="{{wx.description}}">
+					<img src="{{wx.barcode.url}}" 
+					data-type="attachment-thumbnail" class="img-responsive img-thumbnail" width="40px">
 
-				by <span style="color:#89e;">{{ object }}</span>		
+					<span style="color:#89e;" data-toggle="tooltip" title="点击扫描微信号二维码">
+						{{ wx.account }}
+					</span>	
+				</a>	
 			</div>
 
 			</section>
@@ -98,11 +104,10 @@ j$(document).ready(function(){
 	    j$(this).ekkoLightbox();
 	}); 
 
-	j$('[data-type="attachment-thumbnail"]').click(function(){
-		var url = j$(this).attr('src');
-		j$(this).closest('section').find('[data-toggle="lightbox"]').attr('href',url);
-		j$(this).closest('section').find('[data-toggle="lightbox"]').find('img:first-child').attr('src',url);
-	});		
+	// initialize all tooltips
+	j$("[data-toggle='tooltip']").tooltip({
+		'placement': 'bottom'
+	});	
 });
 </script>
 </script>	
