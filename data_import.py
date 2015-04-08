@@ -575,9 +575,9 @@ def main():
 	#cleanup_city()
 	#crawl_city_wiki()
 	#cleanup_stop_time()
-	#populate_school_tieba()
+	populate_school_tieba()
 	#crawl_job()
-	crawl_weibo()
+	#crawl_weibo()
 
 if __name__ == '__main__':
 	main()
