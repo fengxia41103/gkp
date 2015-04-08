@@ -75,7 +75,7 @@
 	j$(document).ready(function(){
 		j$.each(j$('[data-type="school-streams"]'),function(index,value){
 			var obj_id = j$(value).attr('school-id');
-			get_school_streams(this,obj_id);
+			setTimeout(get_school_streams(this,obj_id),500+index*500);
 		});
 	});
 </script>

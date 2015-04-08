@@ -432,8 +432,8 @@ class MySogouCrawler():
 		# WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.&interation=1ID,'searchinput')))
 
 		# WARNING: if using TorUtility, must decode here!
-		# content = self.http_handler.request(url).decode('utf-8')
-		content = self.http_handler.request(url)
+		content = self.http_handler.request(url).decode('utf-8')
+		#content = self.http_handler.request(url)
 
 		#self.logger.info('Ready to parse')
 		html = lxml.html.document_fromstring(clean_html(content))
