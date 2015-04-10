@@ -432,7 +432,6 @@ class MyMajorListFilter (FilterSet):
 				'course':['contains'],
 				}
 
-@class_view_decorator(login_required)
 class MyMajorList (FilterView):
 	template_name = 'pi/major/list.html'
 	paginate_by = 10
@@ -585,7 +584,6 @@ class MySchoolListFilter (FilterSet):
 				'take_bachelor':['exact'],
 				}
 
-@class_view_decorator(login_required)
 class MySchoolList (FilterView):
 	template_name = 'pi/school/list.html'
 	paginate_by = 10
@@ -683,7 +681,6 @@ class MySchoolMapDetail(TemplateView):
 		return HttpResponse(json.dumps({'html':html}), 
 			content_type='application/javascript')	
 
-@class_view_decorator(login_required)
 class MySchoolEchartMapFilter(TemplateView):
 	template_name = 'pi/school/emap.html'
 	def get_context_data(self, **kwargs):
@@ -691,7 +688,9 @@ class MySchoolEchartMapFilter(TemplateView):
 
 		# echart data, group by province
 		result = {}
-		schools = MySchool.objects.filter_by_user_profile(self.request.user)
+		try: schools = MySchool.objects.filter_by_user_profile(self.request.user)
+		except: schools = MySchool.objects.all() # this is when browsing anonymously
+
 		context['schools'] =  schools.order_by('province','city')
 		context['provinces'] = MyProvince.objects.all()
 		
@@ -882,7 +881,6 @@ class CategorizeSchoolHelper:
 				u'提前招生':self.schools.	filter(take_pre=True)		
 			}
 
-
 class AnalysisSchoolSummaryAJAX(TemplateView):
 	summary_template_name = 'pi/analysis/schools_by_province_summary.html'
 
@@ -947,7 +945,6 @@ class AnalysisSchoolDetailAJAX(TemplateView):
 		return HttpResponse(json.dumps({'html':html}), 
 			content_type='application/javascript')	
 
-
 class AnalysisSchoolByProvince(TemplateView):		
 	template_name = 'pi/analysis/schools_by_province.html'
 	def get_context_data(self, **kwargs):
@@ -958,6 +955,7 @@ class AnalysisSchoolByProvince(TemplateView):
 		context['schools'] = MySchool.objects.filter(province=province)
 		return context
 
+@class_view_decorator(login_required)
 class AnalysisSchoolByCity(TemplateView):
 	template_name = 'pi/analysis/schools_by_city.html'
 	def get_context_data(self, **kwargs):
@@ -969,6 +967,7 @@ class AnalysisSchoolByCity(TemplateView):
 		context['trains'] = MyTrainStop.objects.filter(stop_name__icontains = city.city)
 		return context
 
+@class_view_decorator(login_required)
 class AnalysisMajorByCategory(TemplateView):
 	template_name = 'pi/analysis/major_by_category.html'
 	def get_context_data(self, **kwargs):
@@ -980,6 +979,7 @@ class AnalysisMajorByCategory(TemplateView):
 		return context
 
 import random
+@class_view_decorator(login_required)
 class AnalysisMajorBySubcategory(TemplateView):
 	template_name = 'pi/analysis/major_by_subcategory.html'
 	def get_context_data(self, **kwargs):
@@ -999,6 +999,7 @@ class AnalysisMajorBySubcategory(TemplateView):
 from tasks import baidu_consumer
 import pynlpir # http://pynlpir.readthedocs.org/en/latest/api.html#module-pynlpir.nlpir
 
+@class_view_decorator(login_required)
 class IntegrationBaiduTiebaAJAX(TemplateView):
 	'''
 		AJAX post view
@@ -1043,6 +1044,7 @@ class IntegrationBaiduTiebaAJAX(TemplateView):
 		return HttpResponse(json.dumps({'bd_html':tieba_html,'news_html':newsticker_html}), 
 			content_type='application/javascript')
 
+@class_view_decorator(login_required)
 class BaiduImages(TemplateView):
 	template_name = 'pi/3rd/baidu_images.html'
 	def post(self,request):
@@ -1062,6 +1064,7 @@ class BaiduImages(TemplateView):
 #	Train views
 #
 ###################################################		
+@class_view_decorator(login_required)
 class MyTrainRoute(TemplateView):
 	template_name = 'pi/train/route.html'
 	def post(self,request):
