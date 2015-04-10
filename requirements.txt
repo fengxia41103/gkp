@@ -64,8 +64,10 @@ psycopg2==2.6
 pyasn1==0.1.7
 pycrypto==2.6.1
 Pygments==2.0.2
+pygraphviz==1.2
 PyJWT==0.4.1
 Pympler==0.4
+PyNLPIR==0.2.2
 PySocks==1.5.0
 python-dateutil==2.4.1
 python-mimeparse==0.1.4
@@ -83,11 +85,13 @@ Shapely==1.5.6
 simplejson==3.6.5
 six==1.9.0
 slimit==0.8.1
+smartypants==1.8.6
 sqlparse==0.1.14
 static3==0.5.1
 stem==1.3.0
 testtools==1.5.0
 tornado==4.1
+typogrify==2.0.7
 Unidecode==0.4.17
 unittest2==0.8.0
 urllib3==1.10.2
