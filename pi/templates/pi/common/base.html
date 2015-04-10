@@ -63,6 +63,9 @@
 	{# jqcloud #}
 	<link rel="stylesheet" type="text/css" href="{% static 'jqcloud/jqcloud.css' %}">
 
+	{# toast https://github.com/CodeSeven/toastr #}
+	<link rel="stylesheet" type="text/css" href="{% static 'toastr/toastr.min.css' %}">
+
 	{# app specific tweaks #}
 	<link rel="stylesheet" type="text/css" href="{% static 'sass/my.css' %}">	
 	
@@ -297,6 +300,12 @@
     	src="{% static 'jqcloud/jqcloud-1.0.4.min.js' %}">
     </script>
 
+	{# toast https://github.com/CodeSeven/toastr #}
+    <script type="text/javascript"
+    	src="{% static 'toastr/toastr.min.js' %}">
+    </script>
+
+
 	<script type="text/javascript">
 		var j$ = jQuery.noConflict();
 
@@ -351,6 +360,7 @@
 	        j$.get("{% url 'user_bookmark' %}", // passed in from view
 	            function(resp) { // success callback
 	            	j$('#user-bookmarks').html(resp);
+	            	toastr.info('收藏夹准备战斗');
 	            }
 	        ).always(function(){     
 	        });	
@@ -359,6 +369,7 @@
 	        j$.get("{% url 'user_profile' %}", // passed in from view
 	            function(resp) { // success callback
 	            	j$('#user-profile').html(resp);
+	            	toastr.success('你的私人订制条件已经启动，开始量身定做吧!');
 	            }
 	        ).always(function(){     
 	        });	
