@@ -56,3 +56,6 @@ target/
 # sublime text
 *.sublime-project
 *.sublime-workspace
+
+# sensitive configs
+production_envvars.py
