@@ -49,6 +49,7 @@ INSTALLED_APPS = (
 
     # custom packages
     #'devserver', # django-devserver
+    'debug_toolbar',
     'storages', # django-storage
     's3_folder_storage', # django-s3-folder-storage
     'compressor', # django_compressor
@@ -67,6 +68,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'pagination_bootstrap.middleware.PaginationMiddleware', # django-pagination-bootstrap   
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = 'gaokao.urls'
@@ -204,3 +206,14 @@ BROKER_URL = 'redis://localhost:6379/0'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+# django-debug-toolbar
+INTERNAL_IPS = ('127.0.0.1',)
+
+# cache
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake'
+    }
+}

@@ -393,7 +393,7 @@ class MySchoolCustomManager(models.Manager):
 		'''
 			Only school with province is visible (and useful), ever!
 		'''
-		return super(MySchoolCustomManager, self).get_queryset().filter(province__isnull=False)
+		return super(MySchoolCustomManager, self).get_queryset().select_related().filter(province__isnull=False)
 
 	def visible(self,bound):
 		filtered_objs = []
@@ -432,12 +432,12 @@ class MySchoolCustomManager(models.Manager):
 
 		# filter by user profile location
 		province = user_profile.province		
-		if province: data = data.filter(accepting_province=province)
+		if province: data = data.select_related().filter(accepting_province=province)
 
 		# filter by student type
 		degree_type = user_profile.degree_type
-		if degree_type == u'本科': data = data.filter(take_bachelor=True)
-		elif degree_type == u'专科': data = data.filter(take_associate=True)
+		if degree_type == u'本科': data = data.select_related().filter(take_bachelor=True)
+		elif degree_type == u'专科': data = data.select_related().filter(take_associate=True)
 
 		# for scores, we set up a band around estimated_score
 		estimated_score = user_profile.estimated_score	
@@ -445,26 +445,26 @@ class MySchoolCustomManager(models.Manager):
 		SCORE_BAND=25
 		school_ids = []		
 		if estimated_score > 0 and province and student_type:
-			school_ids = MyAdmissionBySchool.objects.filter(
+			school_ids = MyAdmissionBySchool.objects.select_related().filter(
 				Q(school__in=data) & 
 				Q(min_score__lte = estimated_score+SCORE_BAND) & 
 				Q(min_score__gte=estimated_score-SCORE_BAND) &
 				Q(province=province) &
 				Q(category=student_type)).values_list('school',flat=True)
 		elif estimated_score > 0 and province:
-			school_ids = MyAdmissionBySchool.objects.filter(
+			school_ids = MyAdmissionBySchool.objects.select_related().filter(
 				Q(school__in=data) & 
 				Q(min_score__lte = estimated_score+SCORE_BAND) & 
 				Q(min_score__gte=estimated_score-SCORE_BAND) &
 				Q(province=province)).values_list('school',flat=True)
 		elif estimated_score > 0 and student_type:
-			school_ids = MyAdmissionBySchool.objects.filter(
+			school_ids = MyAdmissionBySchool.objects.select_related().filter(
 				Q(school__in=data) & 
 				Q(min_score__lte = estimated_score+SCORE_BAND) & 
 				Q(min_score__gte=estimated_score-SCORE_BAND) &
 				Q(category=student_type)).values_list('school',flat=True)
 		elif estimated_score > 0:
-			school_ids = MyAdmissionBySchool.objects.filter(
+			school_ids = MyAdmissionBySchool.objects.select_related().filter(
 				Q(school__in=data) & 
 				Q(min_score__lte = estimated_score+SCORE_BAND) & 
 				Q(min_score__gte=estimated_score-SCORE_BAND)).values_list('school',flat=True)			
