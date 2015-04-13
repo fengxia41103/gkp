@@ -104,7 +104,7 @@ elif DEPLOY_TYPE=='production':
     	#}
         	'default': {
                 	'ENGINE': 'django.db.backends.mysql', 
-                	'NAME': 'gaokaopi',
+                	'NAME': 'gaokaopi2',
                 	'USER': 'fengxia',
                 	'PASSWORD': 'xf123456',
                 	'HOST': 'gki-db.c6nrxqagj4zh.us-east-1.rds.amazonaws.com',   # Or an IP Address that your DB is hosted on
