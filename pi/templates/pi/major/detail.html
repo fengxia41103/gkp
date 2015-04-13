@@ -61,7 +61,7 @@
 		</section>
 
 		<section>
-		<h4>最新的50个招聘职位及其工作地点:</h4>
+		<h4>最新的{{jobs|length}}个招聘职位及其工作地点:</h4>
 
 		{% regroup jobs|dictsort:"location" by location as by_location_list %}
 		<ul id="myTab" class="nav nav-tabs">

@@ -995,7 +995,7 @@ class AnalysisMajorBySubcategory(TemplateView):
 		context['obj'] = cat
 
 		jobs = [job for major in cat.mymajor_set.all() for job in major.jobs.all()]
-		context['jobs'] = random.sample(jobs,100)
+		context['jobs'] = random.sample(jobs,50)
 		return context
 
 ###################################################
