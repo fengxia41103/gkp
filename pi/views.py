@@ -138,8 +138,10 @@ class UserProfileView(TemplateView):
 	template_name='pi/user/profile.html'
 	def get_context_data(self, **kwargs):
 		context = super(TemplateView, self).get_context_data(**kwargs)
-		user_profile,created = MyUserProfile.objects.get_or_create(owner=self.request.user)
-		context['schools']=user_profile.school_bookmarks.all()
+		if self.request.user.is_authenticated():
+			user_profile,created = MyUserProfile.objects.get_or_create(owner=self.request.user)
+			context['schools']=user_profile.school_bookmarks.all()
+		else: context['schools'] = []
 		return context
 
 	def post(self,request):
@@ -683,6 +685,7 @@ class MySchoolMapDetail(TemplateView):
 		return HttpResponse(json.dumps({'html':html}), 
 			content_type='application/javascript')	
 
+from itertools import groupby
 class MySchoolEchartMapFilter(TemplateView):
 	template_name = 'pi/school/emap.html'
 	def get_context_data(self, **kwargs):
@@ -690,20 +693,22 @@ class MySchoolEchartMapFilter(TemplateView):
 
 		# echart data, group by province
 		result = {}
-		try: schools = MySchool.objects.filter_by_user_profile(self.request.user)
-		except: schools = MySchool.objects.all() # this is when browsing anonymously
+		if self.request.user.is_authenticated():
+			schools = MySchool.objects.filter_by_user_profile(self.request.user).values('id','name','province__id','province__province','city__city')
+			echart_data = MySchool.objects.filter_by_user_profile(self.request.user).values('province__province','province__id').annotate(count=Count('province_province'))			
+		else: 
+			# this is when browsing anonymously
+			schools = MySchool.objects.values('id','name','province__id','province__province','city__city')
+			echart_data = MySchool.objects.values('province__province','province__id').annotate(count=Count('province__province'))			
 
-		context['schools'] =  schools.order_by('province','city')
+		context['schools'] =  schools.order_by('province__id','city__city')
 		context['provinces'] = MyProvince.objects.all()
 		
 		# echart data
-		for s in schools:
-			result.setdefault(s.province, []).append(s.id)
-		echart_data = [(key.id, key,len(value)) for key,value in result.iteritems()]
 		context['echart_data'] = echart_data
-		try: context['echart_data_min'] = min([a[2] for a in echart_data])
+		try: context['echart_data_min'] = min([a['count'] for a in echart_data])
 		except: context['echart_data_min'] = 0
-		try: context['echart_data_max'] = max([a[2] for a in echart_data])
+		try: context['echart_data_max'] = max([a['count'] for a in echart_data])
 		except: context['echart_data_max'] = 0
 
 		return context
