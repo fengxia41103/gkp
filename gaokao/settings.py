@@ -56,6 +56,7 @@ INSTALLED_APPS = (
     'django_filters', # django-filters
     'pagination_bootstrap', # django-pagination-bootstrap
     'crispy_forms', # django-crispy-forms
+    'social.apps.django_app.default', # python-social-auth
     'pi', 
 )
 
@@ -143,8 +144,10 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 # for django-pagination, very COOL!
 from django.conf import global_settings
 TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
-		'django.core.context_processors.request',
-	)
+	'django.core.context_processors.request',
+   'social.apps.django_app.context_processors.backends',
+   'social.apps.django_app.context_processors.login_redirect',        
+)
 
 # for django-allauth
 SITE_ID = 1
@@ -225,3 +228,11 @@ CACHES = {
         }
     }
 }
+
+# python social auth
+AUTHENTICATION_BACKENDS = (
+   'social.backends.facebook.FacebookOAuth2',
+   'social.backends.google.GoogleOAuth2',
+   'social.backends.twitter.TwitterOAuth',
+   'django.contrib.auth.backends.ModelBackend',
+)

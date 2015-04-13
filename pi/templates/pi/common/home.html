@@ -11,7 +11,7 @@
     </a>
     <ul class="dropdown-menu" role="menu">
         <li>
-            <a href="" class="" data-toggle="modal" data-target="#loginModal">Login</a>
+            <a href="{% url 'social:begin' 'google-oauth2' %}?next={% url 'school_rank' 10 %}">Login with Google</a>
         </li>
         <li>
             <a href="" class="" data-toggle="modal" data-target="#registrationModal">Register</a>
