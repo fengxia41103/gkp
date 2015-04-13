@@ -44,7 +44,7 @@ urlpatterns = patterns(
 		url(r'^major/(?P<pk>\d+)/detail/$', views.MyMajorDetail.as_view(), name='major_detail'),			
 		url(r'^major/school/(?P<school_pk>\d+)/(?P<major_pk>\d+)/$', cache_page(60 * 15)(views.MyMajorSchoolDetail.as_view()), name='major_school_detail'),			
 		url(r'^major/related/schools/$', cache_page(60 * 15)(views.MyMajorRelatedSchools.as_view()), name='major_related_schools'),
-		url(r'^major/rank/(?P<rank>\d+)/$', cache_page(60 * 15)(views.MyMajorRank.as_view()), name='major_rank'),
+		url(r'^major/rank/$', cache_page(60 * 15)(views.MyMajorRank.as_view()), name='major_rank'),
 
 		# school
 		url(r'^school/$', cache_page(60 * 15)(views.MySchoolList.as_view()), name='school_list'),

@@ -5,6 +5,11 @@
 {% endblock %}
 
 {% block content %}
+{% load crispy_forms_tags %}
+
+{# Load django_pagination #}
+{% load pagination_tags %}
+
 <div class="pull-right">
 	<i class="fa fa-sort-amount-desc"></i>
 	就业前景综合评分排名由高到低
@@ -12,10 +17,10 @@
 
 {{ jobs }}
 <div id="rank-by-min-score">
-	{% for major in ranks %}
+	{% for major in object_list %}
 	<section class="page-header">
 		<div class="row">
-			<div class="col-md-1"><span class="btn btn-default">{{ forloop.counter }}</span></div>
+			<div class="col-md-1"><span class="btn btn-default">{{ forloop.counter0|add:page_obj.start_index }}</span></div>
 			<div class="col-md-3" style="">
 				<span class="my-logo">
 				<a href="{% url 'major_detail' major.id %}">{{ major }}</a>
@@ -36,5 +41,10 @@
 	</section>
 	{% endfor %}
 </div>
-
+{# paginator #}
+<div class="pull-right">
+	{# bootstrap_pagination page_obj #}
+	{# autopaginate object_list #}
+	{% paginate %}	
+</div>
 {% endblock %}

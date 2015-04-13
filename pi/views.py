@@ -562,14 +562,12 @@ class MyMajorRelatedSchools(TemplateView):
 
 from django.db.models import Count
 @class_view_decorator(login_required)
-class MyMajorRank(TemplateView):
+class MyMajorRank(ListView):
 	template_name = 'pi/major/rank.html'
+	paginate_by = 10
 
-	def get_context_data(self, **kwargs):
-		context = super(TemplateView, self).get_context_data(**kwargs)		
-		top_count = int(context['rank'])
-		context['ranks'] = MyMajor.objects.exclude(Q(code__isnull=True) | Q(code__exact='')).order_by('-job_stat')[:top_count]
-		return context
+	def get_queryset(self):
+		return MyMajor.objects.exclude(Q(code__isnull=True) | Q(code__exact='')).order_by('-job_stat')
 
 ###################################################
 #
