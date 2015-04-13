@@ -489,7 +489,7 @@ class MyMajorDetail(DetailView):
 	template_name = 'pi/major/detail.html'
 	def get_context_data(self, **kwargs):
 		context = super(DetailView, self).get_context_data(**kwargs)
-		jobs = self.get_object().jobs.all()
+		jobs = self.get_object().jobs.all().order_by('-created')[:50]
 
 		context['jobs'] = jobs
 
@@ -995,7 +995,7 @@ class AnalysisMajorBySubcategory(TemplateView):
 		context['obj'] = cat
 
 		jobs = [job for major in cat.mymajor_set.all() for job in major.jobs.all()]
-		context['jobs'] = random.sample(jobs,50)
+		context['jobs'] = random.sample(jobs,100)
 		return context
 
 ###################################################
