@@ -695,7 +695,7 @@ class MySchoolEchartMapFilter(TemplateView):
 		result = {}
 		if self.request.user.is_authenticated():
 			schools = MySchool.objects.filter_by_user_profile(self.request.user).values('id','name','province__id','province__province','city__city')
-			echart_data = MySchool.objects.filter_by_user_profile(self.request.user).values('province__province','province__id').annotate(count=Count('province_province'))			
+			echart_data = MySchool.objects.filter_by_user_profile(self.request.user).values('province__province','province__id').annotate(count=Count('province__province'))			
 		else: 
 			# this is when browsing anonymously
 			schools = MySchool.objects.values('id','name','province__id','province__province','city__city')
