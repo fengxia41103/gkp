@@ -1051,7 +1051,6 @@ class IntegrationBaiduTiebaAJAX(TemplateView):
 		return HttpResponse(json.dumps({'bd_html':tieba_html,'news_html':newsticker_html}), 
 			content_type='application/javascript')
 
-@class_view_decorator(login_required)
 class BaiduImages(TemplateView):
 	template_name = 'pi/3rd/baidu_images.html'
 	def post(self,request):
@@ -1062,7 +1061,7 @@ class BaiduImages(TemplateView):
 			imgs += [img.file.url for img in feeds.attachments.all()]
 
 		content = loader.get_template(self.template_name)
-		html= content.render(Context({'objs':imgs}))
+		html= content.render(Context({'objs':imgs[:25]}))
 		return HttpResponse(json.dumps({'html':html}), 
 			content_type='application/javascript')
 
