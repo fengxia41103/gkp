@@ -11,10 +11,13 @@
     </a>
     <ul class="dropdown-menu" role="menu">
         <li>
-            <a href="{% url 'social:begin' 'google-oauth2' %}?next={% url 'school_rank' 10 %}">谷歌登录</a>
+            <a href="{% url 'social:begin' 'google-oauth2' %}?next={% url 'school_rank' 10 %}">用谷歌帐号登录</a>
         </li>
         <li>
-            <a href="" class="" data-toggle="modal" data-target="#registrationModal">Register</a>
+            <a href="" class="" data-toggle="modal" data-target="#loginModal">用户登录</a>
+        </li>        
+        <li>
+            <a href="" class="" data-toggle="modal" data-target="#registrationModal">新用户注册</a>
         </li>
     </ul>       
 </li>

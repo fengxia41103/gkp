@@ -186,12 +186,14 @@
 				<li class="dropdown" data-toggle="tooltip" title="更新你的用户信息" id="user-profile">
 				</li>
 
+				{% if user.is_authenticated %}
 				<li>
 					<a href="{% url 'logout' %}">
 						<i class="fa fa-sign-out"></i>
 						<span class="my-button-sm">Logout</span>
 					</a>
 				</li>
+				{% endif %}
 			</ul>
 		</div><!--/.nav-collapse -->
 		</div><!-- container-fluid -->
@@ -360,7 +362,7 @@
 	        j$.get("{% url 'user_bookmark' %}", // passed in from view
 	            function(resp) { // success callback
 	            	j$('#user-bookmarks').html(resp);
-	            	toastr.info('收藏夹准备战斗');
+	            	toastr.info('收藏夹更新完成准备战斗');
 	            }
 	        ).always(function(){     
 	        });	
@@ -402,11 +404,13 @@
 				e.stopPropagation();
 			});
 
+			{% if user.is_authenticated %}
 			// populate bookmarks
 			update_user_bookmarks();
 
 			// populate user preference
 			update_user_profile();
+			{% endif %}
 		});
 	</script>
 {% endblock %} <!-- end of block JS -->
