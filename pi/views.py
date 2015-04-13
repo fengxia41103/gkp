@@ -645,9 +645,11 @@ class MySchoolDetail(DetailView):
 		user_profile=MyUserProfile.objects.get(owner=self.request.user)
 
 		# related list
-		my_rank = MyRank.objects.get(rank_index=-1,school=school)
-		schools_with_similar_rank = MyRank.objects.filter(rank_index=-1,rank__gte=(my_rank.rank-50),rank__lte=(my_rank.rank+50))
-		tmp = [rank for rank in schools_with_similar_rank if self.get_object().city == rank.school.city]
+		my_rank = MyRank.objects.select_related().get(rank_index=-1,school=school)
+
+		# TODO: this is an expansive query. Adding "rank" column to DB index would help
+		city = self.get_object().city
+		tmp = MyRank.objects.filter(school__city = city).filter(rank_index=-1,rank__gte=(my_rank.rank-50),rank__lte=(my_rank.rank+50))
 		context['related_schools']=[a for a in reversed(sorted(tmp,lambda x,y:cmp(x.rank,y.rank)))]
 
 		# admission history
