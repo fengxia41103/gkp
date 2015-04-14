@@ -10,7 +10,7 @@ v1_api.register(SchoolResource())
 
 urlpatterns = patterns('',
     url(r'^api/', include(v1_api.urls)),
-	url(r'^gaokao/', include ('pi.urls')),
+	url(r'', include ('pi.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url('', include('social.apps.django_app.urls', namespace='social')),
     url('', include('django.contrib.auth.urls', namespace='auth')),
