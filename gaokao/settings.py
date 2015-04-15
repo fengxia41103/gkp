@@ -104,10 +104,10 @@ elif DEPLOY_TYPE=='production':
     	#}
         	'default': {
                 	'ENGINE': 'django.db.backends.mysql', 
-                	'NAME': 'gaokaopi2',
+                	'NAME': 'gaokaopi',
                 	'USER': 'fengxia',
                 	'PASSWORD': 'xf123456',
-                	'HOST': 'gki-db.c6nrxqagj4zh.us-east-1.rds.amazonaws.com',   # Or an IP Address that your DB is hosted on
+                	'HOST': AWS_MYSQL_ENDPOINT,   # Or an IP Address that your DB is hosted on
                 	'PORT': '3306',
         	}
 	}
