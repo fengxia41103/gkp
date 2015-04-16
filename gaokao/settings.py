@@ -89,11 +89,11 @@ if DEPLOY_TYPE == 'dev' :
         #}
     	'default': {
     		'ENGINE': 'django.db.backends.mysql', 
-    		'NAME': 'gaokaopi',
-    		'USER': 'root',
-    		'PASSWORD': 'natalie',
-    		'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
-    		'PORT': '3306',
+    		'NAME': DEV_DB,
+    		'USER': DEV_DB_USER,
+    		'PASSWORD': DEV_DB_PWD,
+    		'HOST': DEV_DB_HOST,   # Or an IP Address that your DB is hosted on
+    		'PORT': DEV_DB_PORT,
     	}
     }
 elif DEPLOY_TYPE=='production':
@@ -104,11 +104,11 @@ elif DEPLOY_TYPE=='production':
     	#}
         	'default': {
                 	'ENGINE': 'django.db.backends.mysql', 
-                	'NAME': 'gaokaopi',
-                	'USER': 'fengxia',
-                	'PASSWORD': 'xf123456',
+                	'NAME': PRODUCTION_DB,
+                	'USER': PRODUCTION_DB_USER,
+                	'PASSWORD': PRODUCTION_DB_PWD,
                 	'HOST': AWS_MYSQL_ENDPOINT,   # Or an IP Address that your DB is hosted on
-                	'PORT': '3306',
+                	'PORT': PRODUCTION_DB_PORT,
         	}
 	}
 
