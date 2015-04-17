@@ -1027,4 +1027,3 @@ class MySogouStream(MyBaseModel):
 		'''
 		return (dt.now()-self.created).total_seconds()
 	age = property(_age)
-	
