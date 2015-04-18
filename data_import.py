@@ -548,6 +548,21 @@ def crawl_weibo():
 	for id in ids[1:]:
 		sogou_consumer.delay(id)
 
+def cleanup_major_category():
+	cat, created = MyMajorCategory.objects.get_or_create(name=u'非国标',code=u'9999')
+	sub, created = MyMajorSubcategory.objects.get_or_create(name=u'非国标',code=u'9999',category=cat)
+	for m in MyMajor.objects.all():
+		if not m.subcategory: 
+			m.subcategory = sub
+			m.save()
+
+from pi.tasks import hudong_wiki_consumer
+def crawl_hudong():
+	ids = MySchool.objects.all().values_list('id',flat=True)
+	#for id in sample(ids,1):
+	for id in ids[1:]:
+		hudong_wiki_consumer.delay(id)
+
 import googlemaps
 def main():
 	django.setup()
@@ -575,9 +590,11 @@ def main():
 	#cleanup_city()
 	#crawl_city_wiki()
 	#cleanup_stop_time()
-	populate_school_tieba()
+	#populate_school_tieba()
 	#crawl_job()
 	#crawl_weibo()
+	#cleanup_major_category()
+	crawl_hudong()
 
 if __name__ == '__main__':
 	main()

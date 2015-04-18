@@ -1,64 +1,10 @@
-{% extends 'pi/common/detail.html' %}
-
-{% block page-header %}
-{{ object.name }}
-{% endblock %}
-
-{% block detail-navbar %}
-<ul class="nav navbar-nav">
-    <li class="">
-        <a href="{% url 'school_detail' object.id %}#school-intro">学校简介
-		<span class="pull-right"><i class="fa fa-angle-right"></i></span>
-		</a>
-    </li>
-
-    <li class="">
-    	<a href="{% url 'school_detail' object.id %}#school-major">学校专业
-		<span class="pull-right"><i class="fa fa-angle-right"></i></span>    	
-    	</a>
-    </li>
-
-    <li class="dropdown">
-		<a href="{% url 'school_detail' object.id %}#school-admission">
-			往年录取分数线
-			<span class="pull-right"><i class="fa fa-angle-right"></i></span>
-		</a>
-    </li>
-    <li class="">
-    	<a href="{% url 'school_detail' object.id %}#school-stream">
-    	聊天啦!
-			<span class="pull-right"><i class="fa fa-angle-right"></i></span>
-    	</a>
-    </li>
-    <li class="active">
-    	<a href="{% url 'school_weixin' object.id %}">
-    		加我微信
-    		<span class="pull-right"><i class="fa fa-angle-right"></i></span>
-    	</a>
-    </li>
-</ul>
-{% endblock %}
-
-{% block breadcrumb %}
-<ol class="breadcrumb">
-	<li>
-		<a href="{% url 'school_echart_map_filter' %}">全国</a>
-	</li>
-	<li>
-		<a href="{% url 'analysis_school_by_province' object.province.id %}">{{object.province}}</a>
-	</li>
-	<li>
-		<a href="{% url 'analysis_school_by_city' object.city.id %}">{{ object.city }}</a>
-	</li>
-	<li class="active">{{ object.name }}</li>
-</ol>
-{% endblock %}
+{% extends 'pi/school/detail.html' %}
 
 {% block detail-content %}
-	{% if objs %}
+	{% if weixins %}
 	<h4 class="my-h2-border"><i class="fa fa-tencent-weibo"></i>我的微信圈</h4>
 	<div class="my-multicol-3">
-		{% for wx in objs %}
+		{% for wx in weixins %}
 			<section class="pin-card" style=""
 			id="wx-{{wx.id}}">
 			<div class="page-header">
@@ -101,10 +47,14 @@
 	{% else %}
 	真抱歉，没有查到{{object}}的微信信息 ::&gt;_&lt;::
 	{% endif %}
+{% endblock %}
 
+{% block custom_js %}
 <script type="text/javascript">
-var j$ = jQuery.noConflict();
 j$(document).ready(function(){
+	j$('ul[data-type="nav-side"]').children('li').removeClass('active');
+	j$('#nav-school-weixin').addClass('active');
+
 	j$(document).delegate('*[data-toggle="lightbox"]', 'click', function(e) {
 	    e.preventDefault();
 	    j$(this).ekkoLightbox();
@@ -113,8 +63,7 @@ j$(document).ready(function(){
 	// initialize all tooltips
 	j$("[data-toggle='tooltip']").tooltip({
 		'placement': 'bottom'
-	});	
+	});		
 });
 </script>
-</script>	
 {% endblock %}

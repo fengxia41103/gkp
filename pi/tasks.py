@@ -469,3 +469,27 @@ def sogou_consumer(keyword):
 	http_agent = TorUtility()
 	crawler = MySogouCrawler(http_agent)
 	crawler.parser(keyword)
+
+class MyHudongWikiCrawler():
+	def __init__(self,handler):
+		self.http_handler = handler
+		self.logger = logging.getLogger('gkp')
+
+	def parser(self,school_id):
+		school = MySchool.objects.get(id = school_id)
+		# cleaner = Cleaner(style=True, links=True, add_nofollow=True,page_structure=False, safe_attrs_only=False)
+		url = 'http://www.baike.com/wiki/%s'%school.name.encode('utf-8')
+		content = self.http_handler.request(url)
+		html = lxml.html.document_fromstring(content)
+		wiki = html.xpath('//div[@id="content"]')
+		if wiki:
+			school.hudong = clean_html(lxml.html.tostring(wiki[0]))
+			school.save()
+			self.logger.info(school.name+ ' saved')
+		else: self.logger.info('Found nothing: '+city)
+
+@shared_task
+def hudong_wiki_consumer(school_id):
+	http_agent = TorUtility()
+	crawler = MyHudongWikiCrawler(http_agent)
+	crawler.parser(school_id)

@@ -651,20 +651,67 @@ class MySchoolDetail(DetailView):
 		city = self.get_object().city
 		tmp = MyRank.objects.filter(school__city = city).filter(rank_index=-1,rank__gte=(my_rank.rank-50),rank__lte=(my_rank.rank+50))
 		context['related_schools']=[a for a in reversed(sorted(tmp,lambda x,y:cmp(x.rank,y.rank)))]
+		return context
+
+@class_view_decorator(login_required)
+class MySchoolDetailMajor(DetailView):
+	model = MySchool
+	template_name = 'pi/school/detail_major.html'
+
+	def get_context_data(self, **kwargs):
+		context = super(DetailView, self).get_context_data(**kwargs)
+		school = self.get_object()
+		user_profile=MyUserProfile.objects.get(owner=self.request.user)
+
+		# school majors
+		#context['majors'] = filter(lambda x: x.degree_type == user_profile.degree_type,self.get_object().majors.all())
+		majors = school.majors.all().select_related()
+		major_by_cat = {}
+		for cat, by_cat_list in groupby(majors, lambda x: x.subcategory.category):
+			major_by_cat[cat] = sorted(list(by_cat_list), lambda x,y: cmp(x.subcategory,y.subcategory))
+
+		context['majors'] = major_by_cat
+		return context
+
+@class_view_decorator(login_required)
+class MySchoolDetailAdmission(DetailView):
+	model = MySchool
+	template_name = 'pi/school/detail_admission.html'
+
+	def get_context_data(self, **kwargs):
+		context = super(DetailView, self).get_context_data(**kwargs)
+		school = self.get_object()
+		user_profile=MyUserProfile.objects.get(owner=self.request.user)
 
 		# admission history
-		school_admission = MyAdmissionBySchool.objects.filter_by_user_profile_and_school(self.request.user, school.id)
+		# school_admission = MyAdmissionBySchool.objects.filter_by_user_profile_and_school(self.request.user, school.id)
+		school_admission = MyAdmissionBySchool.objects.filter(school = school)
 		school_admission_by_year = {}
 		for year,admission_by_year_list in groupby(school_admission,lambda x:x.year):
 			school_admission_by_year[year]=sorted(list(admission_by_year_list),lambda x,y:cmp(x.category,y.category))
-		context['school_admission_by_year']=school_admission_by_year
+		context['school_admission_by_year']=school_admission_by_year		
+		return context
 
-		# school majors
-		context['majors'] = filter(lambda x: x.degree_type == user_profile.degree_type,self.get_object().majors.all())
+@class_view_decorator(login_required)
+class MySchoolDetailStream(DetailView):
+	model = MySchool
+	template_name = 'pi/school/detail_stream.html'
 
-		# weixin accounts
+	def get_context_data(self, **kwargs):
+		context = super(DetailView, self).get_context_data(**kwargs)
+		school = self.get_object()
+		user_profile=MyUserProfile.objects.get(owner=self.request.user)
+	
+		return context
+
+@class_view_decorator(login_required)
+class MySchoolWeixin(DetailView):
+	model = MySchool	
+	template_name = 'pi/school/weixin.html'	
+	def get_context_data(self, **kwargs):
+		context = super(DetailView, self).get_context_data(**kwargs)
+		school = self.get_object()
 		context['weixins'] = MyWeixinAccount.objects.filter(school=school)
-		
 		return context
 
 @class_view_decorator(login_required)
@@ -749,17 +796,6 @@ class MySchoolMajorsFilterByTags(TemplateView):
 
 		return HttpResponse(json.dumps({'html':html}), 
 			content_type='application/javascript')		
-
-@class_view_decorator(login_required)
-class MySchoolWeixin(TemplateView):
-	template_name = 'pi/school/weixin.html'	
-	def get_context_data(self, **kwargs):
-		context = super(TemplateView, self).get_context_data(**kwargs)
-		school = MySchool.objects.get(id=int(kwargs['pk']))
-		context['object']=school
-		context['objs'] = MyWeixinAccount.objects.filter(school=school)
-
-		return context
 
 ###################################################
 #

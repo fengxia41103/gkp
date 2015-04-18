@@ -1,0 +1,51 @@
+{% extends 'pi/school/detail.html' %}
+
+{% block detail-content %}
+{# school feeds #}
+<section id="school-stream">
+	<h2 class="my-h2-border ladda-button" 
+	data-style="expand-right" 
+	data-size="l" data-spinner-color="#333" id="school-stream-bd">
+	同学们都在说什么呢
+	<span class="ladda-label">
+	</h2>
+	<div id="school-tieba"></div>
+</section>
+{% endblock %}
+
+{% block detail-sidebar %}
+	{# hot topics #}
+	<section style="margin-bottom: 10px;" id="school-newsticker">热门话题提取中，别急啊亲 ^_^</section>
+{% endblock %}
+
+{% block custom_js %}
+<script type="text/javascript">
+	function get_bd_tb(){
+		// loading spinner
+		var l = Ladda.create(j$('#school-stream-bd')[0]);
+	 	l.start();
+	 			
+        // ajax to server to get a list of columns:4"markers that are within the viewport
+        j$.post("{% url 'integration_baidu_tieba_ajax' %}", // passed in from view
+            { 
+                'obj_id':{{ object.id }},
+            }, 
+            function(resp) { // success callback
+                j$('#school-tieba').html(resp['bd_html']);             
+                j$('#school-newsticker').html(resp['news_html']);
+                toastr.info('又有新话题了哦');
+                setTimeout(get_bd_tb, 30000); // refresh every 30 seconds
+            },'json'
+        ).always(function(){
+    		// remove spinner
+    		l.stop();        	
+        });  
+	}
+
+j$(document).ready(function(){
+	setTimeout(get_bd_tb,500);
+	j$('ul[data-type="nav-side"]').children('li').removeClass('active');
+	j$('#nav-school-stream').toggleClass('active');
+});
+</script>
+{% endblock %}

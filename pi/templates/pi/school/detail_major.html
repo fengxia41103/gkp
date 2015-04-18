@@ -1,0 +1,23 @@
+{% extends 'pi/school/detail.html' %}
+
+{% block detail-content %}
+{% for cat, subcat_list in majors.iteritems %}
+	<h2 class="page-header">{{ cat }}</h2>
+	{% regroup subcat_list by subcategory as by_subcat_list %}
+	{% for subcat in by_subcat_list %}
+		<h4>{{ subcat.grouper }}</h4>
+		{% for major in subcat.list %}
+			<a href="{% url 'major_detail' major.id %}">{{major}}</a>
+		{% endfor %}
+	{% endfor %}
+{% endfor %}
+{% endblock %}
+
+{% block custom_js %}
+<script type="text/javascript">
+j$(document).ready(function(){
+	j$('ul[data-type="nav-side"]').children('li').removeClass('active');
+	j$('#nav-school-major').addClass('active');
+});
+</script>
+{% endblock %}

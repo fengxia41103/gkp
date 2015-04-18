@@ -490,6 +490,11 @@ class MySchool (MyBaseModel):
 	def __unicode__(self):
 		return self.name
 
+	hudong = models.TextField(
+		blank = True,
+		null = True,
+		verbose_name = u'Hudong wiki'
+	)
 	google_placeid = models.CharField (
 		max_length = 64,
 		null = True,
