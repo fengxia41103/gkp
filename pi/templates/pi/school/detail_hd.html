@@ -1,0 +1,14 @@
+{% extends 'pi/school/detail.html' %}
+
+{% block detail-content %}
+	{{ object.hudong|default:""|safe }}
+{% endblock %}
+
+{% block custom_js %}
+<script type="text/javascript">
+j$(document).ready(function(){
+	j$('ul[data-type="nav-side"]').children('li').removeClass('active');
+	j$('#nav-school-hd').toggleClass('active');
+});
+</script>
+{% endblock %}

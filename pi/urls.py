@@ -55,6 +55,7 @@ urlpatterns = patterns(
 		url(r'^school/(?P<pk>\d+)/detail/major/$', views.MySchoolDetailMajor.as_view(), name='school_detail_major'),
 		url(r'^school/(?P<pk>\d+)/detail/admission/$', views.MySchoolDetailAdmission.as_view(), name='school_detail_admission'),
 		url(r'^school/(?P<pk>\d+)/detail/stream/$', views.MySchoolDetailStream.as_view(), name='school_detail_stream'),
+		url(r'^school/(?P<pk>\d+)/detail/hd/$', views.MySchoolDetailHudong.as_view(), name='school_detail_hd'),
 
 		url(r'^school/map/filter/', ensure_csrf_cookie(views.MySchoolMapFilter.as_view()),name='school_map_filter'),
 		url(r'^school/map/detail/', ensure_csrf_cookie(views.MySchoolMapDetail.as_view()),name='school_map_detail'),

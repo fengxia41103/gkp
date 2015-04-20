@@ -55,6 +55,12 @@
 		</a>
     </li>
 
+    <li class="" id="nav-school-hd">
+        <a href="{% url 'school_detail_hd' object.id %}">学校百科
+		<span class="pull-right"><i class="fa fa-angle-right"></i></span>
+		</a>
+    </li>
+
     <li class="" id="nav-school-major">
     	<a href="{% url 'school_detail_major' object.id %}">学校专业
 		<span class="pull-right"><i class="fa fa-angle-right"></i></span>    	
@@ -103,10 +109,7 @@
 		<h4 class="my-h2-border"><i class="fa fa-university"></i>学校简介</h4>
 		<div>
 		{{ object.description|default:"暂无信息"|safe }}
-		</div>
-		<div>
-			{{ object.hudong|default:""|safe }}
-		</div>
+		</div>		
 	</section>
 
 

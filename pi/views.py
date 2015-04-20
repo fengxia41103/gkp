@@ -701,7 +701,17 @@ class MySchoolDetailStream(DetailView):
 		context = super(DetailView, self).get_context_data(**kwargs)
 		school = self.get_object()
 		user_profile=MyUserProfile.objects.get(owner=self.request.user)
-	
+		return context
+
+@class_view_decorator(login_required)
+class MySchoolDetailHudong(DetailView):
+	model = MySchool
+	template_name = 'pi/school/detail_hd.html'
+
+	def get_context_data(self, **kwargs):
+		context = super(DetailView, self).get_context_data(**kwargs)
+		school = self.get_object()
+		user_profile=MyUserProfile.objects.get(owner=self.request.user)
 		return context
 
 @class_view_decorator(login_required)

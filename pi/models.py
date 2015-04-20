@@ -495,6 +495,21 @@ class MySchool (MyBaseModel):
 		null = True,
 		verbose_name = u'Hudong wiki'
 	)
+	hudong_summary_table = models.TextField(
+		blank = True,
+		null = True,
+		verbose_name = u'Hudong summary table'
+	)
+	hudong_toc = models.TextField(
+		blank = True,
+		null = True,
+		verbose_name = u'Hudong table of contents'
+	)
+	hudong_raw_html = models.TextField(
+		blank = True,
+		null = True,
+		verbose_name = u'Hudong wiki raw html. Research used ONLY!'
+	)
 	google_placeid = models.CharField (
 		max_length = 64,
 		null = True,

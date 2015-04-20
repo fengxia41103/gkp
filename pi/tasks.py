@@ -19,20 +19,20 @@ from pi.models import *
 logger = logging.getLogger('gkp')
 logger.setLevel(logging.DEBUG)
 # create file handler which logs even debug messages
-fh = logging.FileHandler('/tmp/gkp.log')
-fh.setLevel(logging.DEBUG)
+# fh = logging.FileHandler('/tmp/gkp.log')
+# fh.setLevel(logging.DEBUG)
 
-# create console handler with a higher log level
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
+# # create console handler with a higher log level
+# ch = logging.StreamHandler()
+# ch.setLevel(logging.DEBUG)
 
-# create formatter and add it to the handlers
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-fh.setFormatter(formatter)
-ch.setFormatter(formatter)
-# add the handlers to the logger
-logger.addHandler(fh)
-logger.addHandler(ch)
+# # create formatter and add it to the handlers
+# formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+# fh.setFormatter(formatter)
+# ch.setFormatter(formatter)
+# # add the handlers to the logger
+# logger.addHandler(fh)
+# logger.addHandler(ch)
 
 class MyBaiduCrawler():
 	def __init__(self,handler):
@@ -247,7 +247,7 @@ class MyCityWikiCrawler():
 		# cleaner = Cleaner(style=True, links=True, add_nofollow=True,page_structure=False, safe_attrs_only=False)
 		url = 'http://zh.wikipedia.org/wiki/%s'%city.encode('utf-8')
 		content = self.http_handler.request(url)
-		html = lxml.html.document_fromstring(content)
+		html = lxml.html.document_fromstring(clean_html(content))
 		wiki = html.xpath('//table[contains(@class, "infobox")]')
 		if wiki:
 			# remove all relative links that are linking back to wiki source
@@ -258,7 +258,7 @@ class MyCityWikiCrawler():
 			for img in wiki[0].iter('img'):
 				img.set('width','100%')
 
-			html = clean_html(lxml.html.tostring(wiki[0]))
+			html = lxml.html.tostring(wiki[0])
 			city_obj = MyCity.objects.get(city = city, province = province_id)
 			city_obj.wiki_intro = html
 			city_obj.save()
@@ -479,14 +479,28 @@ class MyHudongWikiCrawler():
 		school = MySchool.objects.get(id = school_id)
 		# cleaner = Cleaner(style=True, links=True, add_nofollow=True,page_structure=False, safe_attrs_only=False)
 		url = 'http://www.baike.com/wiki/%s'%school.name.encode('utf-8')
+		# url = 'http://www.baike.com/wiki/%s'%school.name
+
 		content = self.http_handler.request(url)
-		html = lxml.html.document_fromstring(content)
+		try: html = lxml.html.document_fromstring(content)
+		except: 
+			self.logger.info(school.name)
+			return
+
 		wiki = html.xpath('//div[@id="content"]')
 		if wiki:
-			school.hudong = clean_html(lxml.html.tostring(wiki[0]))
-			school.save()
-			self.logger.info(school.name+ ' saved')
-		else: self.logger.info('Found nothing: '+city)
+			for img in wiki[0].xpath('.//img'):
+				img.attrib['src'] = img.get('data-original')
+			school.hudong = lxml.html.tostring(wiki[0])
+			school.hudong_raw_html = content
+		else: self.logger.info('Found nothing: '+school.name)
+		
+		summary_table = html.xpath('.//div[@id="datamodule"]//table')
+		if summary_table: school.hudong_summary_table = lxml.html.tostring(summary_table[0])
+		toc = html.xpath('.//fieldset[@id="catalog"]')
+		if toc: school.hudong_toc = lxml.html.tostring(toc[0])
+		school.save()
+		self.logger.info(school.name+ ' saved')
 
 @shared_task
 def hudong_wiki_consumer(school_id):
