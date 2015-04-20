@@ -563,6 +563,53 @@ def crawl_hudong():
 	for id in ids[1:]:
 		hudong_wiki_consumer.delay(id)
 
+import lxml.html
+from lxml.html.clean import clean_html
+def cleanup_hudong():
+	ids = MySchool.objects.values_list('id',flat=True)
+	for id in ids:
+		school = MySchool.objects.get(id=id)
+		if school.hudong_toc:
+			html = lxml.html.document_fromstring(clean_html(school.hudong_toc))
+			for tag in html.xpath('//*[@class]'):
+			    # For each element with a class attribute, remove that class attribute
+			    if tag.attrib.has_key('class'): tag.attrib.pop('class')
+
+			for tag in html.xpath('//table'):
+			    tag.attrib['class'] = 'table'
+
+			# Print out our "After"
+			school.hudong_toc = lxml.html.tostring(html)
+
+		if school.hudong_summary_table:
+			html = lxml.html.document_fromstring(clean_html(school.hudong_summary_table))
+			for tag in html.xpath('//*[@class]'):
+			    # For each element with a class attribute, remove that class attribute
+			    if tag.attrib.has_key('class'): tag.attrib.pop('class')
+			for tag in html.xpath('//table'):
+			    tag.attrib['class'] = 'table'
+
+			# Print out our "After"
+			school.hudong_summary_table = lxml.html.tostring(html)
+
+		if school.hudong:
+			html = lxml.html.document_fromstring(clean_html(school.hudong))
+			for tag in html.xpath('//*[@class]'):
+			    # For each element with a class attribute, remove that class attribute
+			    if tag.attrib.has_key('class'): tag.attrib.pop('class')
+
+			for tag in html.xpath('//table'):
+			    if tag.attrib.has_key('class'): tag.attrib.pop('class')
+			    tag.attrib['class'] = 'table'
+
+			for tag in html.xpath('//img/ancestor::div[1]'):
+				tag.attrib['class']='img'
+
+			# Print out our "After"
+			school.hudong = lxml.html.tostring(html)
+		school.save()
+		print school.name
+
 import googlemaps
 def main():
 	django.setup()
@@ -594,7 +641,8 @@ def main():
 	#crawl_job()
 	#crawl_weibo()
 	#cleanup_major_category()
-	crawl_hudong()
+	# crawl_hudong()
+	cleanup_hudong()
 
 if __name__ == '__main__':
 	main()

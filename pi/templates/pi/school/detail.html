@@ -107,6 +107,8 @@
 	{# school introduction #}
 	<section id="school-intro">
 		<h4 class="my-h2-border"><i class="fa fa-university"></i>学校简介</h4>
+		{{ object.hudong_summary_table|safe }}
+
 		<div>
 		{{ object.description|default:"暂无信息"|safe }}
 		</div>		

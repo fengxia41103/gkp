@@ -4,11 +4,28 @@
 	{{ object.hudong|default:""|safe }}
 {% endblock %}
 
+{% block detail-sidebar %}
+<div class="pull-right" data-target="#content" data-spy="affix" 
+style="border-left:3px solid orange; padding-left:10px;">
+<h4>目录</h4>
+<ol id="toc"></ol>
+</div>
+{% endblock %}
+
 {% block custom_js %}
 <script type="text/javascript">
 j$(document).ready(function(){
 	j$('ul[data-type="nav-side"]').children('li').removeClass('active');
 	j$('#nav-school-hd').toggleClass('active');
+
+	j$("#toc").tableOfContents(
+		'div#content',                        // Default scoping
+		{
+		  startLevel:           2,   // H1
+		  depth:                4,   // H1 through H4
+		  proportionateSpacing: true // Spacing On
+		}
+	); 
 });
 </script>
 {% endblock %}
