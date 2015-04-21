@@ -602,7 +602,8 @@ def cleanup_hudong():
 			    if tag.attrib.has_key('class'): tag.attrib.pop('class')
 			    tag.attrib['class'] = 'table'
 
-			for tag in html.xpath('//img/ancestor::div[1]'):
+			for tag in html.xpath('//img/ancestor::div[1][@id]'):
+				if tag.attrib.has_key('class'): tag.attrib.pop('class')
 				tag.attrib['class']='img'
 
 			# Print out our "After"

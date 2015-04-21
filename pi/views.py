@@ -1084,7 +1084,7 @@ class IntegrationBaiduTiebaAJAX(TemplateView):
 
 		# hot topics
 		pynlpir.open() # must have this line!
-		topics = feeds[:20]
+		topics = feeds[:50]
 		content = loader.get_template(self.newsticker_template_name)
 		newsticker_html= content.render(Context({
 			'objs':topics,

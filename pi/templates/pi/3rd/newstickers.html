@@ -11,7 +11,7 @@
 	<i class="fa fa-forumbee"></i>
 	实时校园
 </h4>
-<ul class="list-unstyled newsticker" style="min-height:300px;overflow:hidden;">
+<ul class="list-unstyled newsticker" style="min-height:500px;overflow:hidden;">
 	{% for topic in objs %}
 		<li style="border-bottom:1px dashed #dedede;">
 		<h6 style="color:#89e;">
@@ -45,7 +45,7 @@
 		// start news ticker
 		j$('.newsticker').newsTicker({
 			//row_height: 48,
-			max_rows: 5,
+			max_rows: 15,
 			speed: 600,
 			direction: 'up',
 			duration: 4000,
