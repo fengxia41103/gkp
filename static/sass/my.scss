@@ -468,7 +468,7 @@ body {
   box-shadow:0 1px 2px 0 rgba(0, 0, 0, 0.22);
 }
 
-#content .img {
+#content .img, #mw-content-text .thumb {
   background: #f7f7f7;
   border: 1px solid #e1e1e1;
   padding: 3px;
@@ -481,24 +481,25 @@ body {
   //clear: right; 
 }
 
-#content img {
+#content img, #mw-content-text img {
   background: #f7f7f7;
   padding: 5px;
 }
+
 #content .img strong {
-font-size: 12px;
-font-weight: normal;
-display: block;
-overflow: hidden;
-line-height: 18px;
-padding-top: 10px;
-clear: both;
+  font-size: 12px;
+  font-weight: normal;
+  display: block;
+  overflow: hidden;
+  line-height: 18px;
+  padding-top: 10px;
+  clear: both;
 }
 
-#content p {
-padding: 7px 0;
-word-wrap: break-word;
-word-break: break-all;
+#content p, #mw-content-text p{
+  padding: 7px 0;
+  word-wrap: break-word;
+  word-break: normal;
 }
 
 // p {
@@ -516,7 +517,7 @@ br {
   font-size: 100%;
 }
 
-#content h2 {
+#content h2, #mw-content-text h2{
 font-size: 24px;
 line-height: 24px;
 font-weight: normal;

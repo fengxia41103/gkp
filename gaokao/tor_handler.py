@@ -8,16 +8,14 @@ from stem import Signal
 from stem.control import Controller
 from urllib3 import PoolManager, Retry, Timeout,ProxyManager
 
-retries = Retry(connect=5, read=5, redirect=5)
-http_manager = PoolManager(10,retries=retries, timeout=Timeout(total=30.0))
-
 class PlainUtility():
-	def __init__(self, http):
+	def __init__(self):
 		user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7'
 		self.headers={'User-Agent':user_agent}
 		self.ip_url = 'http://icanhazip.com/'
 		self.logger = logging.getLogger('gkp')
-		self.http = http_manager
+		retries = Retry(connect=5, read=5, redirect=5)
+		self.http = PoolManager(10,retries=retries, timeout=Timeout(total=30.0))
 
 	def current_ip(self):
 		return self.request(self.ip_url)
@@ -79,7 +77,7 @@ class TorUtility():
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 class SeleniumUtility():
-	def __init__(self):
+	def __init__(self, use_tor = True):
 		self.ip_url = 'http://icanhazip.com/'
 		self.logger = logging.getLogger('gkp')
 
@@ -93,8 +91,10 @@ class SeleniumUtility():
 			'--proxy=127.0.0.1:8118', # provixy proxy 
 			'--proxy-type=http',
 		]		
-		self.http = webdriver.PhantomJS('phantomjs', service_args=service_args, desired_capabilities=dcap)
-		#self.http = webdriver.PhantomJS('phantomjs',desired_capabilities=dcap)
+		if use_tor:
+			self.http = webdriver.PhantomJS('phantomjs', service_args=service_args, desired_capabilities=dcap)
+		else:
+			self.http = webdriver.PhantomJS('phantomjs',desired_capabilities=dcap)
 		self.http.set_page_load_timeout(120)
 
 	def request(self,url):

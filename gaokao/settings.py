@@ -57,7 +57,8 @@ INSTALLED_APPS = (
     'pagination_bootstrap', # django-pagination-bootstrap
     'crispy_forms', # django-crispy-forms
     'social.apps.django_app.default', # python-social-auth
-    'pi', 
+    'pi', # gkp
+    'lx', # liuxue
 )
 
 MIDDLEWARE_CLASSES = (

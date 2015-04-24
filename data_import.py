@@ -611,6 +611,158 @@ def cleanup_hudong():
 		school.save()
 		print school.name
 
+
+from postalcodes_us import data
+def populate_us_postalcodes():
+	for d in data:
+		MyZip(
+			zipcode = d[0],
+			city = d[2],
+			state = d[3]
+		).save()
+		print d[0],d[2],d[3]
+
+from django.db.models import Q
+from lx.tasks import sevis_consumer
+from lx.models import *
+def crawl_sevis():
+	# with open('/home/fengxia/Desktop/textract/sevp.csv','r') as f:
+		# ids = [int(a) for a in f.read().split('\n')]
+		# existing = MySEVISSchool.objects.values_list('campus_id',flat=True)
+		# for id in list(set(ids).difference(existing)):
+		# 	sevis_consumer.delay(id)
+
+	ids = MySEVISSchool.objects.filter(Q(physical_address__isnull=True) | Q(physical_address__exact='') & Q(physical_zip__isnull=True)).values_list('campus_id',flat=True)
+	for id in ids: sevis_consumer.delay(id)
+
+def sevis_google_geocoding():
+	#https://maps.googleapis.com/maps/api/geocode/json?address=&sensor=false&key=AIzaSyBs9Lh9SBeGg8azzB5h50y8DDjxFO4SLwA&language=zh-cn
+	# https://code.google.com/apis/console/?noredirect&pli=1#project:871463256694:access
+	key='AIzaSyBs9Lh9SBeGg8azzB5h50y8DDjxFO4SLwA'
+	ids = MySEVISSchool.objects.filter(google_geocode__isnull = True,sevis_physical__isnull=False).values_list('id',flat=True)
+	print len(ids)
+	for idx, id in enumerate(ids[:2600]):
+		s = MySEVISSchool.objects.get(id=id)
+
+		print idx, ': Working on ', s.name
+		# renew: 
+		# if s.campus:
+		# 	ss = ','.join([s.name,s.campus,s.physical_address,s.physical_zip.city,s.physical_zip.state,s.physical_zip.zipcode])
+		# else: ss = ','.join([s.name,s.physical_address,s.physical_zip.city,s.physical_zip.state,s.physical_zip.zipcode])
+		ss = ','.join([s.name,s.sevis_physical[:-4].strip()])
+		query = urllib.urlencode({
+			'address':ss,
+			'sensor':'false',
+			'key':key,
+			'language':'zh-cn'
+		})
+
+		post_url = 'https://maps.googleapis.com/maps/api/geocode/json?' + query
+		result = urllib2.urlopen(post_url, timeout=15)
+		geo = json.loads(result.read())
+		if geo['status'] != 'OK':
+			print 'Error: ',s.name 
+			raw_input()
+			continue
+		if len(geo['results'])>1:
+			print ">1 results!"
+
+		s.google_geocode = geo
+		s.google_placeid = geo['results'][0]['place_id']
+		s.formatted_address = geo['results'][0]['formatted_address']
+		s.lat = geo['results'][0]['geometry']['location']['lat']
+		s.lng = geo['results'][0]['geometry']['location']['lng']
+		s.save()
+		
+from lx.tasks import school_wiki_consumer
+def crawl_school_wiki():
+	# ids = MySEVISSchool.objects.filter(Q(wiki__isnull=True) | Q(wiki__exact='')).values_list('id',flat=True)
+	# for id in ids[:1]: school_wiki_consumer.delay(195)
+	school_wiki_consumer.delay(195)
+
+import lxml.html
+from lxml.html.clean import clean_html, Cleaner
+def cleanup_school_wiki():
+	ids = MySEVISSchool.objects.values_list('id',flat=True)
+	for id in ids:
+		school = MySEVISSchool.objects.get(id=id)
+
+		if school.wiki_quick_facts:
+			html = lxml.html.document_fromstring(school.wiki_quick_facts)
+			# remove coordinates
+			for coor in html.xpath('//*[@id="coordinates"]'):
+				coor.getparent().remove(coor)
+
+			for link in html.xpath('//a[not(contains(@rel,"nofollow"))]'):
+				link.drop_tag()
+
+			# remove all sup
+			for sup in html.xpath('//sup'):
+				sup.getparent().remove(sup)
+
+			# remove nourlexpansion
+			for nourl in html.xpath('//*[contains(@class,"nourlexpansion")]'):
+				if nourl.getparent(): nourl.getparent().remove(nourl)
+
+			# remove tags that have no children
+			# for leaf in html.xpath('//*[not(child::*)]'):
+			# 	if leaf.getparent(): leaf.getparent().remove(leaf)
+			school.wiki_quick_facts = lxml.html.tostring(html, pretty_print=True)
+
+		if school.wiki:
+			html = lxml.html.document_fromstring(school.wiki)
+			for note in html.xpath('//*[contains(@class,"hatnote")]'):
+				if note.getparent(): note.getparent().remove(note)
+
+			# remove tags that have no children
+			# for leaf in html.xpath('//h2[not(child::*)]'):
+
+			for non_print in html.xpath('//*[contains(@class,"noprint")]'):
+				if non_print.getparent(): non_print.getparent().remove(non_print)
+
+			# remove all sup
+			for sup in html.xpath('//sup/a'):
+				sup.getparent().remove(sup)
+
+			for tmp in html.xpath('//*[@id="cite_ref-6"]'):
+				tmp.getparent().remove(tmp)
+
+			# always the last one
+			for leaf in html.xpath('//h2'):			
+				if not leaf.text_content().strip() and leaf.getparent(): leaf.getparent().remove(leaf)
+
+			school.wiki = lxml.html.tostring(html, pretty_print=True)
+
+		school.save()
+		print school.name, 'cleaned'
+
+def cleanup_sevis_zipcode():
+	ids = MySEVISSchool.objects.filter(physical_zip__isnull = True,sevis_physical__isnull=False).values_list('id',flat=True)
+	print len(ids)
+	for id in ids:
+		school = MySEVISSchool.objects.get(id=id)	
+		print school.campus_id, school.name, school.sevis_physical
+
+		# let's try parse this first
+		tmp = school.sevis_physical.split(',')
+		city = tmp[0].strip()
+		state = tmp[-1].strip().split(' ')[0].strip()
+		try: tmp_zip = tmp[-1].strip().split(' ')[1].strip()
+		except: 
+			print 'Error'
+			raw_input()
+			continue
+
+		zipcode = MyZip.objects.filter(state__iexact=state,zipcode__icontains=tmp_zip)
+		if zipcode and len(zipcode) == 1: 
+			school.physical_zip = zipcode[0]
+			school.save()
+			print 'found an exact match', school.id, school.name
+		elif zipcode and len(zipcode) > 1:  print [z.zipcode for z in zipcode]
+		elif not zipcode:
+			print 'nothing matched', ' | '.join([city, state, tmp_zip])
+			raw_input()
+
 import googlemaps
 def main():
 	django.setup()
@@ -643,7 +795,12 @@ def main():
 	#crawl_weibo()
 	#cleanup_major_category()
 	# crawl_hudong()
-	cleanup_hudong()
+	#cleanup_hudong()
+	crawl_sevis()
+	# sevis_google_geocoding()
+	# crawl_school_wiki()
+	# cleanup_school_wiki()
+	# cleanup_sevis_zipcode()
 
 if __name__ == '__main__':
 	main()

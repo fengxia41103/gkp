@@ -1,0 +1,68 @@
+{% extends 'lx/common/detail.html' %}
+
+{% block page-header %}
+	{{ object.name }}
+{% endblock %}
+
+{% block detail-navbar %}
+<ul class="nav navbar-nav" data-type="nav-side">
+    <li class="active" id="nav-school-intro">
+        <a href="{% url 'sevis_detail' object.id %}">学校简介
+		<span class="pull-right"><i class="fa fa-angle-right"></i></span>
+		</a>
+    </li>   
+</ul>
+{% endblock %}
+
+{% block breadcrumb %}
+<ol class="breadcrumb">
+	<li>
+		<a href="{%url 'sevis_list' %}">全国</a>
+	</li>
+	<li>
+		<a href="">{{object.physical_zip.state}}</a>
+	</li>
+	<li>
+		<a href="">{{ object.physical_zip.city }}</a>
+	</li>
+	<li class="active">{{ object.name }}</li>
+</ol>
+{% endblock %}
+
+{% block detail-content %}
+
+{# TOC #}
+<div class="" data-target="#mw-content-text" data-spy="" style="">
+	<h4>目录</h4>
+	<ol id="toc"></ol>
+</div>
+
+{# wiki content #}
+{{ object.wiki|safe }}
+
+{% endblock %}
+
+{% block detail-sidebar %}
+	<table class="table">
+	{{ object.wiki_quick_facts|safe }}
+	</table>
+{% endblock %}
+
+{% block custom_js %}
+<script type="text/javascript">
+j$(document).ready(function(){
+	j$('ul[data-type="nav-side"]').children('li').removeClass('active');
+	j$('#nav-school-intro').toggleClass('active');
+
+	j$("#toc").tableOfContents(
+		'div#mw-content-text',                        // Default scoping
+		{
+		  startLevel:           2,   // H1
+		  depth:                4,   // H1 through H4
+		  proportionateSpacing: true, // Spacing On
+		  topLinks: false
+		}
+	); 
+});
+</script>
+{% endblock %}

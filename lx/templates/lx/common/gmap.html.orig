@@ -1,0 +1,152 @@
+{% extends "pi/common/base.html" %}
+{% load staticfiles %}
+
+{% block custom_css %}
+    <style type="text/css">
+      html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
+    </style>
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div id="map-canvas" style="height:640px;width:100%;"></div>
+{% endblock %}
+
+{% block custom_js %}
+    <script type="text/javascript"
+    	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBs9Lh9SBeGg8azzB5h50y8DDjxFO4SLwA">
+    </script>
+<<<<<<< HEAD
+=======
+
+    {# JS hash library #}
+>>>>>>> gmap
+    <script type="text/javascript" 
+    	src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/md5.js">
+    </script>
+    
+<<<<<<< HEAD
+    <script type="text/javascript">
+    	var j$ = jQuery.noConflict();
+    	var map;
+=======
+    {# Google map marker cluster #}
+    {# http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/docs/examples.html #}
+    <script type="text/javascript" 
+    	src="{% static 'js/markerclusterer.js' %}">
+    </script>
+
+    <script type="text/javascript">
+    	var j$ = jQuery.noConflict();
+    	var map, mapCluster;
+    	var mcOptions = {
+    		gridSize: 100, 
+    		maxZoom: 13,
+    		minimumClusterSize: 3
+    	};
+>>>>>>> gmap
+    	var markers={}; // maintain a visible list
+
+		function initialize() {
+			var mapOptions = {
+				center: { lat: {{ center.lat }}, lng: {{ center.lng }} },
+<<<<<<< HEAD
+				zoom: 8
+			};
+			map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+			google.maps.event.addListener(map,'idle',updateMarkers);
+			//google.maps.event.addListener(map, 'click', updateMarkers);
+=======
+				zoom: 10
+			};
+			map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+			google.maps.event.addListener(map,'idle',updateMarkers);
+>>>>>>> gmap
+		}
+		google.maps.event.addDomListener(window, 'load', initialize);
+
+		// update map markers based on viewport
+		function updateMarkers(){
+			var bounds = map.getBounds();
+			var ne = bounds.getNorthEast();
+			var sw = bounds.getSouthWest();
+
+			// ajax to server to get a list of markers that are within the viewport
+			j$.post("{% url 'googlemap_viewport_filter' %}",
+					{ 
+                	'ne.k': ne.k,
+                	'ne.D':ne.D,
+                	'sw.k': sw.k,
+                	'sw.D':sw.D 
+            		}, 
+            		function(resp) { // success callback
+            			var show_keys = [];
+<<<<<<< HEAD
+
+				  		// iterate through markers to add remove old ones from map and add new ones
+                		for (var i=0; i<resp.length; i++){
+                			var hash = CryptoJS.MD5(resp[i].name);
+                			var pos = new google.maps.LatLng(resp[i].lat,resp[i].lng);
+                			var marker = new google.maps.Marker({
+                				position: pos,
+                				map: map,
+                				title: resp[i].name
+                				});
+                			show_keys.push(hash);
+                			markers[hash]=marker
+                		}
+
+                		// iterate markers to turn on and off on the map
+                		for (var m in markers){
+                			if (show_keys.indexOf(m) != -1){ // show
+                				markers[m].setMap(map);
+                			}else {
+                				markers[m].setMap(null);
+                			}
+                		} // end of iteration of markers
+=======
+            			var show_markers = [];
+            			var hide_markers = [];
+
+				  		// iterate through markers to add remove old ones from map and add new ones
+                		for (var i=0; i<resp.length; i++){
+                			// Must use toString. Otherwise a comparsion to markers' key will fail!
+                			var hash = CryptoJS.MD5(resp[i].name).toString();
+                			show_keys.push(hash);
+                			if (!markers.hasOwnProperty(hash)) {
+	                			var pos = new google.maps.LatLng(resp[i].lat,resp[i].lng);
+	                			var marker = new google.maps.Marker({
+	                				position: pos,
+	                				map: map,
+	                				title: resp[i].name
+	                				});
+	                			markers[hash]=marker
+	                		}
+                		}
+
+						for (var m in markers){
+							if (show_keys.indexOf(m) != -1) { //show
+								show_markers.push(markers[m]);
+							}else { // hide
+								hide_markers.push(markers[m]);
+							}
+						}
+
+                		if (mapCluster == null || mapCluster == undefined) {
+                			mapCluster = new MarkerClusterer(map, show_markers, mcOptions);
+                		}else {
+	                		//mapCluster.clearMarkers();
+	                		mapCluster.removeMarkers(hide_markers);
+	                		mapCluster.addMarkers(show_markers);
+	                		//mapCluster.repaint();
+                		}
+>>>>>>> gmap
+            		},'json'
+            	);		
+		}
+    </script>
+<<<<<<< HEAD
+=======
+
+>>>>>>> gmap
+{% endblock %}

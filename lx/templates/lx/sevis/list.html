@@ -1,0 +1,44 @@
+{% extends "lx/common/base.html" %}
+
+{% block page-header %}
+	SEVIS Schools
+{% endblock %}
+
+
+{% block content %}
+     {% include "lx/common/filter.html" %}
+     <section class="row">
+     <table class="table table-striped table-hover">
+     <thead>
+     	<th class="">Name</th>
+          <th>Campus ID</th>
+          <th>Physical Address</th>
+          <th>SEVIS Physical</th>          
+     	<th>Zip</th>
+          <th>Google GEO</th>
+     </thead>
+     <tbody>
+     	{% for obj in object_list %}
+     	<tr><td>
+                    <a href="{% url 'sevis_detail' obj.id %}">
+     			  {{ obj.name }}
+                    </a>
+               </td><td>
+                    <a href="http://studyinthestates.dhs.gov/certified-school/{{ obj.campus_id }}">
+                    {{obj.campus_id}}</a>
+               </td><td>
+                    {{ obj.physical_address }}
+               </td><td>
+                    {{ obj.sevis_physical }}                    
+     		</td><td>
+     			{{ obj.physical_zip }}
+               </td><td>
+                    {{ obj.google_geocode }}
+               </td>
+     	</tr>	
+     	{% endfor %}
+     </tbody>
+     </table>	
+     </section>
+{% endblock %}
+
