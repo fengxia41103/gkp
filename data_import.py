@@ -643,7 +643,7 @@ def sevis_google_geocoding():
 	#https://maps.googleapis.com/maps/api/geocode/json?address=&sensor=false&key=AIzaSyBs9Lh9SBeGg8azzB5h50y8DDjxFO4SLwA&language=zh-cn
 	# https://code.google.com/apis/console/?noredirect&pli=1#project:871463256694:access
 	key='AIzaSyBs9Lh9SBeGg8azzB5h50y8DDjxFO4SLwA'
-	ids = MySEVISSchool.objects.filter(google_geocode__isnull = True,sevis_physical__isnull=False).values_list('id',flat=True)
+	ids = MySEVISSchool.objects.filter(google_geocode__isnull = True,physical_zip__isnull=False).values_list('id',flat=True)
 	print len(ids)
 	for idx, id in enumerate(ids[:2600]):
 		s = MySEVISSchool.objects.get(id=id)
@@ -653,7 +653,7 @@ def sevis_google_geocoding():
 		# if s.campus:
 		# 	ss = ','.join([s.name,s.campus,s.physical_address,s.physical_zip.city,s.physical_zip.state,s.physical_zip.zipcode])
 		# else: ss = ','.join([s.name,s.physical_address,s.physical_zip.city,s.physical_zip.state,s.physical_zip.zipcode])
-		ss = ','.join([s.name,s.sevis_physical[:-4].strip()])
+		ss = ','.join([s.name,s.physical_zip.state,s.physical_zip.zipcode])
 		query = urllib.urlencode({
 			'address':ss,
 			'sensor':'false',
@@ -801,10 +801,10 @@ def main():
 	# crawl_hudong()
 	#cleanup_hudong()
 	# crawl_sevis()
-	# sevis_google_geocoding()
+	sevis_google_geocoding()
 	# crawl_school_wiki()
 	# cleanup_school_wiki()
-	cleanup_sevis_zipcode()
+	# cleanup_sevis_zipcode()
 
 if __name__ == '__main__':
 	main()
