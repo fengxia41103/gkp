@@ -135,6 +135,27 @@ class UserRegisterView(FormView):
 
 ###################################################
 #
+#	MyZip views
+#
+###################################################
+class MyZipListFilter (FilterSet):
+	class Meta:
+		model = MyZip
+		fields = {'zipcode':['icontains'],
+				'city':['icontains'],
+				'state':['icontains'],
+				}
+
+@class_view_decorator(login_required)
+class MyZipList (FilterView):
+	template_name = 'lx/zip/list.html'
+	paginate_by = 10
+
+	def get_filterset_class(self):
+		return MyZipListFilter
+
+###################################################
+#
 #	MySEVIS views
 #
 ###################################################
@@ -153,10 +174,24 @@ class MySEVISList (FilterView):
 	paginate_by = 10
 	
 	def get_queryset(self):
-		return MySEVISSchool.objects.filter(physical_zip__isnull = True, sevis_physical__isnull=True)
+		return MySEVISSchool.objects.filter(physical_zip__isnull=True)
 
 	def get_filterset_class(self):
-		return MySEVISlListFilter		
+		return MySEVISlListFilter
+
+@class_view_decorator(login_required)
+class MySEVISEdit(UpdateView):
+	model = MySEVISSchool
+	template_name = 'lx/common/edit_form.html'
+
+	def get_success_url(self):
+		return reverse_lazy('sevis_detail', kwargs={'pk':self.get_object().id})
+			
+	def get_context_data(self, **kwargs):
+		context = super(UpdateView, self).get_context_data(**kwargs)
+		context['title'] = u'Edit'
+		context['list_url'] = reverse_lazy('sevis_list')
+		return context	
 
 @class_view_decorator(login_required)
 class MySEVISDetail(DetailView):

@@ -632,8 +632,12 @@ def crawl_sevis():
 		# for id in list(set(ids).difference(existing)):
 		# 	sevis_consumer.delay(id)
 
-	ids = MySEVISSchool.objects.filter(Q(physical_address__isnull=True) | Q(physical_address__exact='') & Q(physical_zip__isnull=True)).values_list('campus_id',flat=True)
-	for id in ids: sevis_consumer.delay(id)
+	ids = MySEVISSchool.objects.filter(Q(physical_address__isnull=True) | Q(physical_address__exact='')).values_list('campus_id',flat=True)
+	print len(ids)
+	raw_input()
+	for id in ids: 
+		# school = MySEVISSchool.objects.get(campus_id = id)
+		sevis_consumer.delay(id)
 
 def sevis_google_geocoding():
 	#https://maps.googleapis.com/maps/api/geocode/json?address=&sensor=false&key=AIzaSyBs9Lh9SBeGg8azzB5h50y8DDjxFO4SLwA&language=zh-cn
@@ -761,7 +765,7 @@ def cleanup_sevis_zipcode():
 		elif zipcode and len(zipcode) > 1:  print [z.zipcode for z in zipcode]
 		elif not zipcode:
 			print 'nothing matched', ' | '.join([city, state, tmp_zip])
-			raw_input()
+			# raw_input()
 
 import googlemaps
 def main():
@@ -796,11 +800,11 @@ def main():
 	#cleanup_major_category()
 	# crawl_hudong()
 	#cleanup_hudong()
-	crawl_sevis()
+	# crawl_sevis()
 	# sevis_google_geocoding()
 	# crawl_school_wiki()
 	# cleanup_school_wiki()
-	# cleanup_sevis_zipcode()
+	cleanup_sevis_zipcode()
 
 if __name__ == '__main__':
 	main()

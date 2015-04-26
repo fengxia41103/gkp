@@ -18,6 +18,9 @@ urlpatterns = patterns(
 
 	# MySEVIS
 	url(r'^sevis/$', views.MySEVISList.as_view(), name='sevis_list'),
+	url(r'^sevis/(?P<pk>\d+)/edit/$', views.MySEVISEdit.as_view(), name='sevis_edit'),
 	url(r'^sevis/(?P<pk>\d+)/detail/$', views.MySEVISDetail.as_view(), name='sevis_detail'),
 
+	# MyZip
+	url(r'^zip/$', views.MyZipList.as_view(), name='zip_list'),
 )+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

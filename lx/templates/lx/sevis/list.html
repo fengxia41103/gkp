@@ -12,10 +12,10 @@
      <thead>
      	<th class="">Name</th>
           <th>Campus ID</th>
-          <th>Physical Address</th>
-          <th>SEVIS Physical</th>          
+          <th>Physical Address</th>         
      	<th>Zip</th>
-          <th>Google GEO</th>
+          <th>SEVIS Physical</th>
+          <th></th>
      </thead>
      <tbody>
      	{% for obj in object_list %}
@@ -29,11 +29,11 @@
                </td><td>
                     {{ obj.physical_address }}
                </td><td>
-                    {{ obj.sevis_physical }}                    
-     		</td><td>
      			{{ obj.physical_zip }}
                </td><td>
-                    {{ obj.google_geocode }}
+                    {{ obj.sevis_physical }}
+               </td><td>
+                    <a href="{%url 'sevis_edit' obj.id %}">Edit</a>
                </td>
      	</tr>	
      	{% endfor %}

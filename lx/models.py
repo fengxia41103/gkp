@@ -114,7 +114,8 @@ class MySEVISSchool(models.Model):
 		max_length = 128,
 	)
 	campus = models.CharField(
-		default = '',
+		null = True,
+		blank = True,
 		max_length = 128
 	)
 	campus_id = models.IntegerField()

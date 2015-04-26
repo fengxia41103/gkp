@@ -40,19 +40,12 @@ class MySEVISCrawler():
 		school = MySEVISSchool.objects.get(campus_id = id)
 		url = 'http://studyinthestates.dhs.gov/certified-school/%d'%id
 		self.logger.info(url)
-		self.logger.info(school.name)
 
-		if not school.raw_html:
-			self.logger('Grabbing raw')
-			try: content = self.http_handler.request(url)
-			except:
-				self.logger.error(url)
-				return
-
-			html = lxml.html.document_fromstring(content)
-		else: 
-			self.logger.info('We have raw')
-			html = lxml.html.document_fromstring(school.raw_html)
+		try: content = self.http_handler.request(url)
+		except:
+			self.logger.error(url)
+			return
+		html = lxml.html.document_fromstring(content)
 
 		try: school_name = html.xpath('//h1[@id="page-title"]')[0].text_content().strip()
 		except: return # we don't have a school name, could be "page not found"
@@ -68,7 +61,7 @@ class MySEVISCrawler():
 			mailing = physical = ''
 			mailing_zip = physical_zip = None
 			sevis_mailing = sevis_physical = None
-			for p in html.xpath('.//p')[-3:-1]:
+			for p in html.xpath('.//p'):
 				tmp = filter(lambda x: x.strip(), p.text_content().split('\n'))
 
 				if 'Mailing' in tmp[0]:
