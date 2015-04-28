@@ -76,7 +76,7 @@
 {% block custom_css %}
 {% endblock %}
 
-<title>MySAT Platform</title>
+<title>US Schools Platform</title>
 </head>
 
 <body>
@@ -92,7 +92,7 @@
 				</button>
 				<a class="navbar-brand" href="{% url 'home' %}">
 					<i class="fa fa-home"></i>
-					MySAT
+					US Schools
 				</a>
 		</div>
 		<div class="collapse navbar-collapse">
@@ -141,29 +141,11 @@
 					</a>
 					<ul class="dropdown-menu">
 						<li>
-							<a href="{% url 'school_list' %}">
+							<a href="{% url 'sevis_list' %}">
 								<i class="fa fa-university"></i>
 								高校库
 							</a>
 						</li>					
-						<li>
-							<a href="{% url 'major_list' %}">
-								<i class="fa fa-pencil"></i>
-								专业库
-							</a>
-						</li>
-						<li class="divider"></li>
-						<li class="dropdown-submenu">
-							<a tabindex="-1" href="#">
-								<i class="fa fa-bar-chart"></i>
-									历史分数线		
-							</a>
-							<ul class="dropdown-menu">
-								<li><a href="{% url 'admission_school_list' %}">历年高校录取分数线</a></li>
-								<li><a href="{% url 'admission_major_list' %}">历年各校分专业录取分数线</a></li>
-							</ul>
-						</li>
-
 					</ul>
 				</li>
 
@@ -236,7 +218,7 @@
 {% block footer %}
 <footer class="" id="footer">
 	<i class="fa fa-copyright"></i>
-	2015 MySAT Company Compile
+	2015 US Schools Company Compile
 </footer>
 {% endblock %}<!- end of block footer -->
 
@@ -413,10 +395,10 @@
 
 			{% if user.is_authenticated %}
 			// populate bookmarks
-			update_user_bookmarks();
+			// update_user_bookmarks();
 
 			// populate user preference
-			update_user_profile();
+			// update_user_profile();
 			{% endif %}
 		});
 	</script>

@@ -174,7 +174,7 @@ class MySEVISList (FilterView):
 	paginate_by = 10
 	
 	def get_queryset(self):
-		return MySEVISSchool.objects.filter(physical_zip__isnull=True)
+		return MySEVISSchool.objects.filter(physical_zip__isnull=False)
 
 	def get_filterset_class(self):
 		return MySEVISlListFilter
