@@ -5,7 +5,99 @@
 <div>
 {{ object.name }}
 
-<div class="btn-group pull-right"> 
+{% endblock %}
+
+{% block detail-navbar %}
+<ul class="nav nav-pills" data-type="nav-side">
+	<li class="active">
+    <a href="{% url 'school_detail' object.id %}">
+		学校简介
+	</a>
+	</li>
+
+	<li id="nav-school-hd">
+    <a href="{% url 'school_detail_hd' object.id %}">
+			学校百科
+	</a>
+	</li>
+
+	<li id="nav-school-major">
+    <a href="{% url 'school_detail_major' object.id %}">
+			学校专业
+	</a>
+	</li>
+
+	<li id="nav-school-admission">
+    <a href="{% url 'school_detail_admission' object.id %}">
+			往年录取分数线
+	</a>
+	</li>
+
+	<li id="nav-school-stream">
+    <a href="{% url 'school_detail_stream' object.id %}">
+			校园生活
+	</a>
+	</li>
+
+	<li id="nav-school-weixin">
+    <a href="{% url 'school_weixin' object.id %}">
+			校园微信
+	</a>
+	</li>
+</ul>
+{% endblock %}
+
+{% block breadcrumb %}
+<ol class="breadcrumb">
+	<li>
+		<a href="{% url 'school_echart_map_filter' %}">全国</a>
+	</li>
+	<li>
+		<a href="{% url 'analysis_school_by_province' object.province.id %}">{{object.province}}</a>
+	</li>
+	<li>
+		<a href="{% url 'analysis_school_by_city' object.city.id %}">{{ object.city }}</a>
+	</li>
+	<li class="active">{{ object.name }}</li>
+</ol>
+{% endblock %}
+
+{% block detail-school-header %}
+<div class="school-landing">
+	<div class="cover-photo">*校园照片随你看</div>
+	<div class="school-name-bar">
+		<div id="school-logo">
+			<div id="eggshell-114" class="C-common-school-logo medium">
+				<a class="logo" href="/schools/ucla">
+				<div class="school-icon white">
+					<div class="school-icon-img">
+						<i class="fa fa-institution"></i>
+					</div>
+				</div>
+				</a>
+			</div>
+		</div>
+		<div class="school-name">
+				<h4><div class="txt-hdr-top" style="font-size: 160%;">{{object.name}}</div></h4>
+				<div class="txt-hdr-dark">{{object.city}}, {{object.province}}</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block detail-content %}
+	{# school introduction #}
+	<section id="school-intro">
+		{{ object.hudong_summary_table|safe }}
+
+		<div>
+		{{ object.description|default:"暂无信息"|safe }}
+		</div>		
+	</section>
+{% endblock %}
+
+{% block detail-sidebar %}
+<div class="btn-group"> 
     <button
     	{% if object in user.myuserprofile.school_bookmarks.all %} 
     		class="btn btn-small ladda-button btn-primary"
@@ -43,96 +135,87 @@
     	<i class="fa fa-thumbs-o-down"></i>
     	X-OUT
     </button>
-	</div>
 </div>
-{% endblock %}
 
-{% block detail-navbar %}
-<ul class="nav navbar-nav" data-type="nav-side">
-    <li class="active" id="nav-school-intro">
-        <a href="{% url 'school_detail' object.id %}">学校简介
-		<span class="pull-right"><i class="fa fa-angle-right"></i></span>
-		</a>
-    </li>
+{# school summary #}
+<div style="margin-top:25px;">
+<h4>
+	<i class="fa fa-info"></i>
+	学校缩影
+</h4>
+<div style="background-color:white;">
 
-    <li class="" id="nav-school-hd">
-        <a href="{% url 'school_detail_hd' object.id %}">学校百科
-		<span class="pull-right"><i class="fa fa-angle-right"></i></span>
-		</a>
-    </li>
+	<ul class="list-unstyled" style="margin: 20px;padding:20px;">
+		<li>
+		<strong>Type</strong>
+		<span class="pull-right">{{ object.school_type}}</span>
+		</li>
 
-    <li class="" id="nav-school-major">
-    	<a href="{% url 'school_detail_major' object.id %}">学校专业
-		<span class="pull-right"><i class="fa fa-angle-right"></i></span>    	
-    	</a>
-    </li>
+		<li>
+		<strong>Founded</strong>
+		<span class="pull-right">{{ object.founded}}</span>
+		</li>
 
-    <li class="" id="nav-school-admission">
-		<a href="{% url 'school_detail_admission' object.id %}">
-			往年录取分数线
-			<span class="pull-right"><i class="fa fa-angle-right"></i></span>
-		</a>
-    </li>
-    <li class="" id="nav-school-stream">
-    	<a href="{% url 'school_detail_stream' object.id %}">
-    	校园吧
-		<span class="pull-right"><i class="fa fa-angle-right"></i></span>
-    	</a>
-    </li>
-    <li class="" id="nav-school-weixin">
-    	<a href="{% url 'school_weixin' object.id %}">
-    	校园微信
-		<span class="pull-right"><i class="fa fa-angle-right"></i></span>
-    	</a>
-    </li>    
-</ul>
-{% endblock %}
+		<li>
+		<strong>Key Majors</strong>
+		<span class="pull-right">{{ object.no_key_major}}</span>
+		</li>
 
-{% block breadcrumb %}
-<ol class="breadcrumb">
-	<li>
-		<a href="{% url 'school_echart_map_filter' %}">全国</a>
-	</li>
-	<li>
-		<a href="{% url 'analysis_school_by_province' object.province.id %}">{{object.province}}</a>
-	</li>
-	<li>
-		<a href="{% url 'analysis_school_by_city' object.city.id %}">{{ object.city }}</a>
-	</li>
-	<li class="active">{{ object.name }}</li>
-</ol>
-{% endblock %}
+		<li>
+		<strong>Students</strong>
+		<span class="pull-right">{{ object.no_student}}</span>
+		</li>
 
-{% block detail-content %}
-	{# school introduction #}
-	<section id="school-intro">
-		<h2 class="my-h2-border"><i class="fa fa-university"></i>学校简介</h2>
-		{{ object.hudong_summary_table|safe }}
+		<li>
+		<strong>Fellows</strong>
+		<span class="pull-right">{{ object.no_fellow}}</span>
+		</li>
 
-		<div>
-		{{ object.description|default:"暂无信息"|safe }}
-		</div>		
-	</section>
+		<li>
+		<strong>Ph.D</strong>
+		<span class="pull-right">{{ object.no_phd_program}}</span>
+		</li>		
 
+		<li>
+		<strong>Master's</strong>
+		<span class="pull-right">{{ object.no_master_program}}</span>
+		</li>		
+	</ul>
+</div>
+</div>
 
-{% endblock %}
+<section>
+	<h4>
+		<i class="fa fa-map-marker"></i>
+		同城大学推荐
+	</h4>
+	<br />
+	<ul class="list-unstyled">
+		{% for s in related_schools %}
+		<li style="margin-top:20px;">
+			<ul class="list-inline">
+			<li>
+			<span class="col-sm1">
+			<span class="text-center" style="padding:10px 15px; border:1px solid #ccc;background-color:white;font-size:2.0em;">
+				{{s.school|slice:"1"}}
+			</span>	
+			</span>
+			</li>
 
-{% block detail-sidebar %}
-	{# float to right, related #}
-	<section>
-		<h4>
-			<i class="fa fa-map-marker"></i>
-			同城大学推荐
-		</h4>
-		<ol class="">
-			{% for s in related_schools %}
-				<li><a href="{% url 'school_detail' s.school.id %}">
-					{{ s.school }}</a>
-					<span class="pull-right">({{s.rank}})</span>
-				</li>
-			{% endfor %}
-		</ol>
-	</section>
+			<li>
+			<a href="{% url 'school_detail' s.school.id %}" style="font-size:1.3em;">
+				{{ s.school }}
+			</a>
+			<p>
+				+ 果断收藏之
+			</p>
+			</li>
+
+			</ul>
+		</li>
+		{% endfor %}
+	</ul>
+</section>
 {% endblock %}
 
 {% block custom_js %}
@@ -155,7 +238,7 @@
 	            	}
 	            	update_user_bookmarks();
 	            },'json'
-	        ).always(function(){     
+	        ).alway(function(){     
 	        	l.stop(); 	
 	        });			
 		});
