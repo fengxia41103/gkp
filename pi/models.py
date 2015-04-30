@@ -806,6 +806,8 @@ class MyRank(models.Model):
 		default = 0,
 		verbose_name = u'打分'
 	)
+	def __unicode__(self):
+		return self.rank
 
 class MyTrainStopCustomManager(models.Manager):
 	def get_queryset(self):

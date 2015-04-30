@@ -638,21 +638,6 @@ class MySchoolDetail(DetailView):
 	model = MySchool
 	template_name = 'pi/school/detail.html'
 
-	def get_context_data(self, **kwargs):
-		context = super(MySchoolDetail, self).get_context_data(**kwargs)
-		context['list_url'] = reverse_lazy('school_list')
-		school = self.get_object()
-		user_profile=MyUserProfile.objects.get(owner=self.request.user)
-
-		# related list
-		my_rank = MyRank.objects.select_related().get(rank_index=-1,school=school)
-
-		# TODO: this is an expansive query. Adding "rank" column to DB index would help
-		city = self.get_object().city
-		tmp = MyRank.objects.filter(school__city = city).filter(rank_index=-1,rank__gte=(my_rank.rank-50),rank__lte=(my_rank.rank+50))
-		context['related_schools']=[a for a in reversed(sorted(tmp,lambda x,y:cmp(x.rank,y.rank)))]
-		return context
-
 @class_view_decorator(login_required)
 class MySchoolDetailMajor(DetailView):
 	model = MySchool
@@ -697,22 +682,32 @@ class MySchoolDetailStream(DetailView):
 	model = MySchool
 	template_name = 'pi/school/detail_stream.html'
 
-	def get_context_data(self, **kwargs):
-		context = super(DetailView, self).get_context_data(**kwargs)
-		school = self.get_object()
-		user_profile=MyUserProfile.objects.get(owner=self.request.user)
-		return context
+@class_view_decorator(login_required)
+class MySchoolDetailRelatedSchools(TemplateView):
+	template_name = 'pi/school/detail_related_schools.html'
+
+	def post(self,request):
+		obj_id = request.POST['obj_id']
+		school = MySchool.objects.get(id=int(obj_id))
+
+		# related list
+		my_rank = MyRank.objects.select_related().get(rank_index=-1,school=school)
+
+		# TODO: this is an expansive query. Adding "rank" column to DB index would help
+		city = school.city
+		tmp = MyRank.objects.filter(school__city = city).filter(rank_index=-1,rank__gte=(my_rank.rank-50),rank__lte=(my_rank.rank+50))
+		related_schools=[a for a in reversed(sorted(tmp,lambda x,y:cmp(x.rank,y.rank)))]		
+		
+		content = loader.get_template(self.template_name)
+		html= content.render(Context({'objs':related_schools}))
+
+		return HttpResponse(json.dumps({'html':html}), 
+			content_type='application/javascript')	
 
 @class_view_decorator(login_required)
 class MySchoolDetailHudong(DetailView):
 	model = MySchool
 	template_name = 'pi/school/detail_hd.html'
-
-	def get_context_data(self, **kwargs):
-		context = super(DetailView, self).get_context_data(**kwargs)
-		school = self.get_object()
-		user_profile=MyUserProfile.objects.get(owner=self.request.user)
-		return context
 
 @class_view_decorator(login_required)
 class MySchoolWeixin(DetailView):

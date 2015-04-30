@@ -56,14 +56,12 @@
 {% else %}
 	 根据你的私人订制条件没有查到合适的分数信息 ::&gt;_&lt;::, 是不是这个学校不在你那儿招生哦？
 {% endif %}					
-
-{% endblock %}
-
-{% block custom_js %}
 <script type="text/javascript">
+var j$ = jQuery.noConflict();
 j$(document).ready(function(){
 	j$('ul[data-type="nav-side"]').children('li').removeClass('active');
 	j$('#nav-school-admission').addClass('active');
 });
 </script>
 {% endblock %}
+

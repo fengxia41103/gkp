@@ -2,7 +2,7 @@
 
 {% block detail-content %}
 	{% if weixins %}
-	<h4 class="my-h2-border"><i class="fa fa-tencent-weibo"></i>我的微信圈</h4>
+	<h2 class="my-h2-border"><i class="fa fa-tencent-weibo"></i>我的微信圈</h2>
 	<div class="my-multicol-3">
 		{% for wx in weixins %}
 			<section class="pin-card" style=""
@@ -47,10 +47,9 @@
 	{% else %}
 	真抱歉，没有查到{{object}}的微信信息 ::&gt;_&lt;::
 	{% endif %}
-{% endblock %}
 
-{% block custom_js %}
 <script type="text/javascript">
+var j$ = jQuery.noConflict();
 j$(document).ready(function(){
 	j$('ul[data-type="nav-side"]').children('li').removeClass('active');
 	j$('#nav-school-weixin').addClass('active');

@@ -11,15 +11,9 @@
 	</h2>
 	<div id="school-tieba"></div>
 </section>
-{% endblock %}
 
-{% block detail-sidebar %}
-	{# hot topics #}
-	<section style="margin-bottom: 10px;" id="school-newsticker">热门话题提取中，别急啊亲 ^_^</section>
-{% endblock %}
-
-{% block custom_js %}
 <script type="text/javascript">
+var j$ = jQuery.noConflict();
 function get_bd_tb(){
 	// loading spinner
 	var l = Ladda.create(j$('#school-stream-bd')[0]);
@@ -48,4 +42,9 @@ j$(document).ready(function(){
 	j$('#nav-school-stream').toggleClass('active');
 });
 </script>
+{% endblock %}
+
+{% block extra-sidebar-content %}
+	{# hot topics #}
+	<section style="margin-bottom: 10px;" id="school-newsticker">热门话题提取中，别急啊亲 ^_^</section>
 {% endblock %}
