@@ -4,6 +4,8 @@ import sys,time,os,gc,csv
 import lxml.html
 import urllib
 import simplejson as json
+import requests
+
 
 # setup Django
 import django
@@ -15,6 +17,14 @@ from django.utils import timezone
 
 # import models
 from pi.models import *
+
+# Google account
+# anthem.market.place@gmail.com, anthem123456, recovery email an.banana.slug@gmail.com
+# GOOGLE_API_KEY='AIzaSyDooQcg6OO8AYa1Oc_aVJX31DFHXaMr5b8'
+GOOGLE_API_KEY='AIzaSyBs9Lh9SBeGg8azzB5h50y8DDjxFO4SLwA'
+
+# search engine www.amazon.com
+GOOGLE_CSE='016432411100893507841:y0sw886dln8';
 
 def admission_by_school_persist (r):
 	# if we choose to write to DB directly
@@ -542,10 +552,10 @@ def crawl_job():
 
 from pi.tasks import sogou_consumer
 from random import sample
-def crawl_weibo():
-	ids = MySchool.objects.all().values_list('id',flat=True)
+def crawl_weixin():
+	ids = MySchool.objects.values_list('id',flat=True)
 	#for id in sample(ids,1):
-	for id in ids[1:]:
+	for id in ids:
 		sogou_consumer.delay(id)
 
 def cleanup_major_category():
@@ -767,6 +777,65 @@ def cleanup_sevis_zipcode():
 			print 'nothing matched', ' | '.join([city, state, tmp_zip])
 			# raw_input()
 
+import os
+def download_city_image2(api = 'google'):
+	files = os.listdir('static/img/city')
+
+	state_city = []
+	for school in MySchool.objects.filter(city__isnull=False,province__isnull=False).values('city__city','province__province'):
+		state_city.append((school['province__province'],school['city__city']))
+	for idx, (state,city) in enumerate(set(state_city)):
+		if '%s_%s.jpg'%(state,city) in files: continue
+		if api == 'google':
+			# google API url
+			keyword = urllib.quote(city+u'风光'.encode('utf-8'))
+
+			url = 'https://www.googleapis.com/customsearch/v1?key=%s&searchType=image&imgSize=xlarge&safe=high&q=%s&cx=%s' % (GOOGLE_API_KEY,keyword,GOOGLE_CSE)
+		elif api == 'baidu':
+			# baidu API url
+			keyword = (state+city).encode('utf-8')
+			url = 'http://image.baidu.com/i?tn=baiduimage&ipn=r&ct=201326592&cl=2&lm=-1&st=-1&fm=result&fr=&sf=1&fmq=1430446681412_R&pv=&ic=0&nc=1&z=&se=1&showtab=0&fb=0&width=&height=&face=0&istype=2&ie=utf-8&word=%s'%keyword
+		result = requests.get(url)
+		if result.status_code == 200:
+			tmp = result.json()
+			if api == 'google': total_items = len(tmp['items'])
+			elif api == 'baidu': total_items = len(tmp['data'])
+
+			for i in xrange(total_items):
+				if api == 'google': link = tmp['items'][i]['link']
+				elif api == 'baidu': link = tmp['data'][i]['objURL']
+
+				# download image
+				try: 
+					img = requests.get(link)
+					if img.status_code == 200:
+						with open('static/img/city/%s_%s.jpg'%(state,city),'w') as f:
+							f.write(img.content)
+						print '%d/%d:'%(idx,len(state_city)), state,city, 'done'
+						break
+				except: continue
+		else:
+			print 'Google API failed'
+			print state, city
+			print url
+			continue
+
+from pi.tasks import baidu_image_consumer
+def download_city_image():
+	state_city = []
+	for school in MySchool.objects.filter(city__isnull=False,province__isnull=False).values('city__city','province__province'):
+		state_city.append((school['province__province'],school['city__city']))
+	for idx, (state,city) in enumerate(set(state_city)):
+		keyword = state+city+u'风光'
+		baidu_image_consumer.delay(keyword,save_to='static/img/city/')
+
+def download_school_image():
+	ids = MySchool.objects.values_list('id',flat=True)
+	for id in ids:
+		school = MySchool.objects.get(id=id)
+		keyword = school.name+u'正门'
+		baidu_image_consumer.delay(keyword,save_to='static/img/school/')
+
 import googlemaps
 def main():
 	django.setup()
@@ -796,15 +865,17 @@ def main():
 	#cleanup_stop_time()
 	#populate_school_tieba()
 	#crawl_job()
-	#crawl_weibo()
+	crawl_weixin()
 	#cleanup_major_category()
 	# crawl_hudong()
 	#cleanup_hudong()
 	# crawl_sevis()
-	sevis_google_geocoding()
+	# sevis_google_geocoding()
 	# crawl_school_wiki()
 	# cleanup_school_wiki()
 	# cleanup_sevis_zipcode()
+	#download_city_image()
+	#download_school_image()
 
 if __name__ == '__main__':
 	main()

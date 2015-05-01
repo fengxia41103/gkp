@@ -2,7 +2,8 @@
 
 {% block detail-content %}
 	{% if weixins %}
-	<h2 class="my-h2-border"><i class="fa fa-tencent-weibo"></i>我的微信圈</h2>
+	<h2 class="page-header"><i class="fa fa-tencent-weibo"></i>我的微信圈</h2>
+	*点击二维码图标扫描微信
 	<div class="my-multicol-3">
 		{% for wx in weixins %}
 			<section class="pin-card" style=""
@@ -17,10 +18,9 @@
 
 			{% if wx.icon %}
 			<div class="" style="padding:0px 0;">
-				<a href="{{ wx.icon.url }}">
-					<img src="{{wx.icon.url}}" class="img-responsive center-block"
-					style="margin-bottom:20px;">
-				</a>			
+				<img src="{{wx.icon.url}}" class="img-responsive center-block"
+				style="margin-bottom:20px;">
+		
 				<p>{{ wx.description }}</p>
 			</div>
 			{% endif %}

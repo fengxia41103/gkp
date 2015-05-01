@@ -1,6 +1,5 @@
-<section class="section">
 {% if objs %}
-<h4>{{start.city}} &rarr; {{dest.city}}</h4>
+<h2 class="page-header text-center">{{start.city}} &rarr; {{dest.city}}</h2>
 <ul id="myTab" class="nav nav-tabs">
 {% for category,trains in group_by_category.iteritems %}
 	{% if trains %}
@@ -64,7 +63,6 @@
 	<p>记得出发地的省、市都要填写哦!</p>
 	<a href="">重新再找</a>
 {% endif %}
-<section>
 
 <script type="text/javascript">
 j$(document).ready(function(){

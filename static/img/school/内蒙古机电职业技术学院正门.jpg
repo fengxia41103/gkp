@@ -1,0 +1,81 @@
+<html >
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>Default Page 服务器默认页</title>
+<style type="text/css">
+<!--
+body, td, th {
+  font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: normal;
+  color: #000000;
+  margin: 0;
+  padding: 0;
+}
+.font {
+	color: #FFFFFF;
+	text-decoration: none;
+	font: bolder 24px "黑体";
+}
+
+
+a:link,
+a:visited {
+  color: #0240a3;
+}
+
+#top {
+	height: 51px;
+	background-image:  url(default_images/top_bg.jpg);
+	background-position: top right;
+	background-repeat: no-repeat;
+	margin-bottom: 40px;
+	padding-top: 5px;
+	padding-left: 10px;
+}
+.line {
+	border-right: 1px solid #CCCCCC;
+	border-bottom: 1px solid #CCCCCC;
+	border-left: 1px solid #CCCCCC;
+}
+
+-->
+</style>
+</head>
+<body leftmargin="0" topmargin="0">
+<div id="top">
+  <table border="0" cellpadding="0" cellspacing="0" width="97%">
+    <tbody><tr>
+      <td><a href="default.php" target="_blank"><img src="admin/logoimages/1" border="0" width="234" height="60"></a></td>
+      <td align="right"><font color="#ffffff">深圳市汉码软件技术有限公司<br>
+        保留所有权利</font></td>
+    </tr>
+  </tbody></table>
+</div>
+<table align="center" border="0" cellpadding="0" cellspacing="0" width="460">
+  <tbody><tr>
+    <td background="images/404menu.gif" height="54"><table border="0" cellpadding="0" cellspacing="8" width="97%">
+      <tbody><tr>
+        <td class="font">服务器默认页</td>
+      </tr>
+    </tbody></table></td>
+  </tr>
+  <tr>
+    <td class="line"><table align="center" border="0" cellpadding="0" cellspacing="8" width="100%">
+      <tbody><tr>
+        <td width="30%"><img src="images/404.gif" height="138" width="129"></td>
+        <td width="70%">
+<br>
+<p><strong>对不起,你要访问的网页没有找到。</strong></p>
+<p>这里是服务器的默认页面：你要访问的网页没有找到。</p>
+<p><strong>Sorry, the page is not exist. </strong></p>
+<p>This is the default page of the server, which means the page you browsed is not exist..</p>
+<p>
+</p></td>
+      </tr>
+    </tbody></table></td>
+  </tr>
+</tbody></table>
+
+</body>
+</html>

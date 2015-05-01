@@ -84,35 +84,35 @@ class Attachment (models.Model):
 
 	# instance fields
 	created_by = models.ForeignKey (
-			User,
-			blank = True,
-			null = True,
-			default = None,
-			verbose_name = u'创建用户',
-			help_text = ''
-		)
+		User,
+		blank = True,
+		null = True,
+		default = None,
+		verbose_name = u'创建用户',
+		help_text = ''
+	)
 		
 	# basic value fields
 	name = models.CharField(
-			default = 'default name',
-			max_length = 64,
-			verbose_name = u'附件名称'
-		)
+		default = 'default name',
+		max_length = 64,
+		verbose_name = u'附件名称'
+	)
 	description = models.CharField (
-			max_length = 64,
-			default = 'default description',
-			verbose_name = u'附件描述'
-		)
+		max_length = 64,
+		default = 'default description',
+		verbose_name = u'附件描述'
+	)
 	source_url = models.URLField(
-			max_length=512,
-			verbose_name = u'File origin url'
-		)
+		max_length=512,
+		verbose_name = u'File origin url'
+	)
 
 	file = models.FileField (
-			upload_to = '%Y/%m/%d',
-			verbose_name = u'附件',
-			help_text = u'附件'
-		)	
+		upload_to = '%Y/%m/%d',
+		verbose_name = u'附件',
+		help_text = u'附件'
+	)	
 
 	def __unicode__(self):
 		return self.file.name
@@ -984,7 +984,8 @@ class MyWeixinAccount(MyBaseModel):
 		'MySchool',
 		blank = True,
 		null = True,
-		verbose_name=u'Related 学校'
+		verbose_name=u'Related 学校',
+		related_name = 'school_weixin'
 	)
 	account = models.CharField(
 		max_length=32,

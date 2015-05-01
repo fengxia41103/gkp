@@ -22,7 +22,7 @@ import re
 from datetime import timedelta
 from itertools import izip_longest
 
-from gaokao.tor_handler import TorUtility, SeleniumUtility
+from gaokao.tor_handler import *
 from pi.models import *
 from lx.models import *
 
@@ -354,6 +354,7 @@ def job_consumer(major):
 class MySogouCrawler():
 	def __init__(self,handler):
 		self.http_handler = handler
+		self.retriever = PlainUtility()
 		self.logger = logging.getLogger('gkp')
 		
 	def parser(self,id):
@@ -369,24 +370,34 @@ class MySogouCrawler():
 		school = MySchool.objects.get(id=id)
 
 		# STEP 1: get weixin account
-		url = "http://weixin.sogou.com/weixin?type=1&query=%s&fr=sgsearch&ie=utf8" % urllib.quote(school.name.encode('utf-8'))
-		#content = self.http_handler.request(url)
-		content = self.http_handler.request(url).decode('utf-8')
+		# url = "http://weixin.sogou.com/weixin?type=1&query=%s&fr=sgsearch&ie=utf8" % urllib.quote(school.name.encode('utf-8'))
+		url = 'http://weixin.sogou.com/weixin?type=1&query=%s&fr=sgsearch&ie=utf8&_ast=1430486528&_asf=null&w=01029901&cid=null'% urllib.quote(school.name.encode('utf-8'))
+
+		# uncomment .decode('utf-8') if using TorUtility		
+		content = self.http_handler.request(url)
+		#content = self.http_handler.request(url).decode('utf-8')
+
 		html = lxml.html.document_fromstring(clean_html(content))
+		no_result = html.xpath('//div[@id="noresult_part1_container"]')
+		if len(no_result): 
+			print school.name, 'no result'
+			return # no result
 
 		total_page = html.xpath('//div[@id="pagebar_container"]/a')
 		total_page = len(total_page)
-		print total_page
+		if not total_page: total_page = 2 # we are counting from 1
 
 		for page in range(1,total_page):
 			url = "http://weixin.sogou.com/weixin?type=1&query=%s&fr=sgsearch&ie=utf8&page=%d" % (urllib.quote(school.name.encode('utf-8')),page)
-			#content = self.http_handler.request(url)
-			content = self.http_handler.request(url).decode('utf-8')
+
+			content = self.http_handler.request(url)
+			#content = self.http_handler.request(url).decode('utf-8')
 			html = lxml.html.document_fromstring(clean_html(content))
 
 			for result in html.xpath('//div[contains(@class,"results")]/div'):
 				name = result.xpath('.//h3')[0].text_content().strip()
-				
+				self.logger.info('Found %s'%name)
+
 				# we only save ones that have full school name in it
 				if school.name not in name: continue
 
@@ -398,11 +409,16 @@ class MySogouCrawler():
 				wx.description = description
 				wx.sg_url = 'http://weixin.sogou.com%s'%source_url
 				wx.save()
+				if created:	self.logger.info('%s added'%name)
+				else: self.logger.info('%s updated'%name)
+
+				# we already have the barcode
+				if len(wx.attachments.all()): continue
 
 				# images
 				icon_url = result.xpath('.//div[contains(@class,"img-box")]/img')[0].get('src')
 				img_data = None
-				try: img_data = self.http_handler.request(icon_url)
+				try: img_data = self.retriever.request(icon_url)
 				except: self.logger.error('retrieve img failed: %s' % icon_url)
 				if img_data:
 					print 'writing icon image data'
@@ -413,8 +429,9 @@ class MySogouCrawler():
 					tmp_file.close()
 
 				barcode_url = 'http://www.vchale.com/uploads/ewm/%s.jpg'%account_id
+				# barcode_url = result.xpath('.//div[contains(@class,"pos-box")]/img')[0].get('src')
 				img_data = None
-				try: img_data = self.http_handler.request(barcode_url)
+				try: img_data = self.retriever.request(barcode_url)
 				except: self.logger.error('retrieve img failed: %s' % icon_url)
 				if img_data:
 					print 'writing barcode image data'				
@@ -466,7 +483,7 @@ class MySogouCrawler():
 
 @shared_task
 def sogou_consumer(keyword):
-	http_agent = TorUtility()
+	http_agent = SeleniumUtility(use_tor=False)
 	crawler = MySogouCrawler(http_agent)
 	crawler.parser(keyword)
 
@@ -511,7 +528,7 @@ def hudong_wiki_consumer(school_id):
 class MySEVISCrawler():
 	def __init__(self,handler):
 		self.http_handler = handler
-		self.logger = logging.getLogger('camp')
+		self.logger = logging.getLogger('gkp')
 
 	def parser(self,id):
 		# cleaner = Cleaner(style=True, links=True, add_nofollow=True,page_structure=False, safe_attrs_only=False)
@@ -618,3 +635,38 @@ def sevis_consumer(id):
 	http_agent = SeleniumUtility()
 	crawler = MySEVISCrawler(http_agent)
 	crawler.parser(id)
+
+class MyBaiduImageCrawler():
+	def __init__(self,handler):
+		self.http_handler = handler
+		self.logger = logging.getLogger('gkp')
+
+	def parser(self,keyword,save_to,min_width=800):
+		url = 'http://image.baidu.com/i?tn=baiduimagejson&ipn=r&ct=201326592&cl=2&lm=-1&st=-1&fm=result&fr=&sf=1&fmq=1430450474499_R&pv=&ic=0&nc=1&z=&se=1&showtab=0&fb=0&width=800&height=&face=0&istype=2&ie=utf-8&rn=20&word=%s'%keyword.encode('utf-8')
+		self.logger.info(url)
+
+		result = self.http_handler.request(url)
+		data = json.loads(result,'latin-1')['data']
+		total_items = len(data)
+		blacklist = ['gkcx']
+		for d in data:
+			if 'width' in d and d['width'] < min_width: continue
+			link = d['objURL']
+
+			# black list these sites
+			if filter(lambda x: x in link, blacklist): continue
+
+			# download image
+			try: 
+				img = self.http_handler.request(link)
+				with open('%s%s.jpg'%(save_to,keyword),'w') as f:
+					f.write(img)
+				print keyword, 'done'
+				break
+			except: continue
+
+@shared_task
+def baidu_image_consumer(keyword,save_to):
+	http_agent = PlainUtility()
+	crawler = MyBaiduImageCrawler(http_agent)
+	crawler.parser(keyword,save_to)

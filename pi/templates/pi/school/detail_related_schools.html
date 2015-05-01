@@ -1,27 +1,22 @@
-<section>
+<div class="text-right">*按学校综合得分排名</div>
+<div>
 	<ul class="list-unstyled">
 		{% for s in objs %}
 		<li style="margin-top:20px;">
-			<ul class="list-inline">
-			<li>
-			<span class="col-sm1">
-			<span class="text-center" style="padding:10px 15px; border:1px solid #ccc;background-color:white;font-size:2.0em;">
+			<table>
+			<tr><td class="text-center" style="padding:10px 15px; border:1px solid #ccc;background-color:white;font-size:1.5em;">
 				{{s.rank}}
-			</span>	
-			</span>
-			</li>
 
-			<li>
-			<a href="{% url 'school_detail' s.school.id %}" style="font-size:1.3em;">
-				{{ s.school }}
-			</a>
-			<p>
-				+ 果断收藏之
-			</p>
-			</li>
-
-			</ul>
+			</td><td style="padding-left: 10px;">
+				<a href="{% url 'school_detail' s.school.id %}" style="font-size:1.2em;">
+					{{ s.school }}
+				</a>
+				<p>
+					{{ s.school.school_type}}
+				</p>
+			</td></tr>
+			</table>
 		</li>
 		{% endfor %}
 	</ul>
-</section>
+</div>

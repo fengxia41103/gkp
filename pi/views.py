@@ -695,9 +695,9 @@ class MySchoolDetailRelatedSchools(TemplateView):
 
 		# TODO: this is an expansive query. Adding "rank" column to DB index would help
 		city = school.city
-		tmp = MyRank.objects.filter(school__city = city).filter(rank_index=-1,rank__gte=(my_rank.rank-50),rank__lte=(my_rank.rank+50))
+		tmp = MyRank.objects.filter(school__city = city).filter(rank_index=-1,rank__gte=(my_rank.rank-100),rank__lte=(my_rank.rank+100))[:10]
 		related_schools=[a for a in reversed(sorted(tmp,lambda x,y:cmp(x.rank,y.rank)))]		
-		
+
 		content = loader.get_template(self.template_name)
 		html= content.render(Context({'objs':related_schools}))
 

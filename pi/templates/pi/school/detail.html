@@ -64,7 +64,9 @@
 
 {% block detail-school-header %}
 <div class="school-landing">
-	<div class="cover-photo">*校园照片随你看</div>
+	<div class="cover-photo"
+	style="background:transparent url(/static/img/school/{{object.name}}正门.jpg) no-repeat; background-size:cover;"
+	>*校园照片来自网络</div>
 	<div class="school-name-bar">
 		<div id="school-logo">
 			<div id="eggshell-114" class="C-common-school-logo medium">
@@ -78,8 +80,10 @@
 			</div>
 		</div>
 		<div class="school-name">
-				<h4><div class="txt-hdr-top" style="font-size: 160%;">{{object.name}}</div></h4>
-				<div class="txt-hdr-dark">{{object.city}}, {{object.province}}</div>
+			<h4><div class="txt-hdr-top" style="font-size: 160%;">{{object.name}}</div></h4>
+			<div class="txt-hdr-dark" style="color:#555;">
+			{{object.province}} | {{object.city}}
+			</div>
 		</div>
 	</div>
 </div>
@@ -96,14 +100,15 @@
 {% endblock %}
 
 {% block detail-sidebar %}
-<div class="btn-group"> 
-    <button
+<div class="text-center">
+<div class="btn-group" role="group"> 
+    <a
     	{% if object in user.myuserprofile.school_bookmarks.all %} 
-    		class="btn btn-small ladda-button btn-primary"
+    		class="btn btn-small ladda-button btn-default"
     	{% else %}
     		class="btn btn-small ladda-button" 
     	{% endif %}
-
+    	role="button" 
     	id="btn-school-bookmark" 
     	style="border-right:1px solid #fefefe;margin-right:1px;" 
     	data-style="expand-left" 
@@ -115,14 +120,14 @@
 		<span class="ladda-label"></span>			
     	<i class="fa fa-heart-o"></i>
     	Bookmark
-    </button>
-    <button 
+    </a>
+    <a
     	{% if object in user.myuserprofile.school_xouts.all %} 
-    		class="btn btn-small ladda-button btn-primary"
+    		class="btn btn-small ladda-button btn-default"
     	{% else %}
     		class="btn btn-small ladda-button" 
     	{% endif %}
-    	
+    	role="button"
 		data-style="expand-right" 
 		data-size="l" 
 		data-spinner-color="#333" 		    
@@ -133,12 +138,13 @@
 		<span class="ladda-label"></span>			    
     	<i class="fa fa-thumbs-o-down"></i>
     	X-OUT
-    </button>
+    </a>
+</div>
 </div>
 
 {# school summary #}
 <div style="margin-top:25px;">
-	<h3>
+	<h3 class="page-header">
 		<i class="fa fa-info"></i>
 		学校缩影
 	</h3>
@@ -184,7 +190,7 @@
 </div>
 
 {# school feeds #}
-<h3 class="my-h2-border ladda-button" 
+<h3 class="page-header ladda-button" 
 data-style="expand-right" 
 data-size="l" data-spinner-color="#333" id="school-related">
 <i class="fa fa-map-marker"></i>
@@ -215,12 +221,12 @@ data-size="l" data-spinner-color="#333" id="school-related">
 	            }, 
 	            function(resp) { // success callback
 	            	if (resp['status'] == 'ok'){
-	            		j$('#btn-school-bookmark').toggleClass('btn-primary');
-	            		j$('#btn-school-xout').removeClass('btn-primary');
+	            		j$('#btn-school-bookmark').toggleClass('btn-default');
+	            		j$('#btn-school-xout').removeClass('btn-default');
 	            	}
 	            	update_user_bookmarks();
 	            },'json'
-	        ).alway(function(){     
+	        ).always(function(){     
 	        	l.stop(); 	
 	        });			
 		});
@@ -236,8 +242,8 @@ data-size="l" data-spinner-color="#333" id="school-related">
 	            }, 
 	            function(resp) { // success callback
 	            	if (resp['status'] == 'ok'){
-	            		j$('#btn-school-xout').toggleClass('btn-primary');
-	            		j$('#btn-school-bookmark').removeClass('btn-primary');
+	            		j$('#btn-school-xout').toggleClass('btn-default');
+	            		j$('#btn-school-bookmark').removeClass('btn-default');
 	            	}
 	            	update_user_bookmarks();
 	            },'json'

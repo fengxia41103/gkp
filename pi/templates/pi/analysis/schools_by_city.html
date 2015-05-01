@@ -1,7 +1,7 @@
 {% extends 'pi/common/detail.html' %}
 
 {% block page-header %}
-	{{ obj }}
+	{{ obj }}高校汇总
 {% endblock %}
 
 {% block breadcrumb %}
@@ -16,19 +16,34 @@
 </ol>
 {% endblock %}
 
-{% block detail-navbar %}
-<ul class="nav navbar-nav">
-    <li class="">
-        <a href="#city-school-list">学校列表
-		<span class="pull-right"><i class="fa fa-angle-right"></i></span>
-		</a>
-    </li>
+{% block detail-school-header %}
+<div class="school-landing">
+	<div class="cover-photo" 
+	style="background:transparent url(/static/img/city/{{obj.province}}{{obj}}风光.jpg) no-repeat;">
+	*城市照片来自网络	
+	</div>
+	<div class="school-name-bar">
+		<div id="school-logo">
+			<div id="eggshell-114" class="C-common-school-logo medium">
+				<a class="logo" href="/schools/ucla">
+				<div class="school-icon white">
+					<div class="school-icon-img">
+						<i class="fa fa-quote-left"></i>
+					</div>
+				</div>
+				</a>
+			</div>
+		</div>
+		<div class="school-name">
+				<h4><div class="txt-hdr-top" style="font-size: 160%;">{{obj}}</div></h4>
+				<div class="txt-hdr-dark">{{obj.province}}</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
 
-    <li class="">
-    	<a href="#trains">{{obj}}火车时刻表
-		<span class="pull-right"><i class="fa fa-angle-right"></i></span>    	
-    	</a>
-    </li>   
+{% block detail-navbar %}
+<ul class="nav nav-pills" data-type="nav-side">  
 </ul>
 {% endblock %}
 
@@ -37,10 +52,10 @@
 
 {# city's school list #}
 <section>
-	<h4>
+	<h2 class="page-header">
 	<i class="fa fa-university"></i>
 	学校列表
-	</h4>
+	</h2>
 	<div class="row">
 	    <div class="col-md-12">
 	 		<table class="table table-condensed table-striped table-hover" id="city-school-list">
@@ -72,10 +87,10 @@
 
 {# train schedules #}
 <section>
-	<h4>
+	<h2 class="page-header">
 		<i class="fa fa-train"></i>
-		{{obj}}, 我来啦亲！
-	</h4>
+		火车时刻表查询
+	</h2>
 	<div class="row">
 	    {# train who stops at this city #}
 		<div class="col-md-4">
@@ -144,9 +159,9 @@ j$(document).ready(function(){
 {% endblock %}
 
 {% block detail-sidebar %}
-	<h4 class="my-h2-border">
+	<h3 class="page-header">
 		<i class="fa fa-book"></i>
 		城市wiki
-	</h4>
+	</h3>
 	{{ obj.wiki_intro|safe }}
 {% endblock %}

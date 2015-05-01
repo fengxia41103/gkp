@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="ElggRelease" content="1.8.8" />
+	<meta name="ElggVersion" content="2012071100" />
+	<title>阳光体育网</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="SHORTCUT ICON" href="http://www.sunnysports.org.cn/_graphics/favicons.ico" />	<meta name="keywords" content="阳光体育  阳光体育网  阳光体育互动平台  赛事  学校  机构   班级">
+	<link rel="stylesheet" href="http://www.sunnysports.org.cn/mod/twitter_bootstrap/vendors/dist/css/bootstrap-cosmo.min.css" type="text/css" />
+	<link rel="stylesheet" href="http://www.sunnysports.org.cn/cache/css/default/lightbox.1430216380.css" type="text/css" />
+	<link rel="stylesheet" href="http://www.sunnysports.org.cn/cache/css/default/elgg.1430216380.css" type="text/css" />
+	<link rel="stylesheet" href="http://www.sunnysports.org.cn/mod/blog/pages/css/blog.css" type="text/css" />
+	<link rel="stylesheet" href="http://www.sunnysports.org.cn/mod/twitter_bootstrap/views/default/twitter_bootstrap/custom.css" type="text/css" />
+	<link rel="stylesheet" href="http://www.sunnysports.org.cn/mod/twitter_bootstrap/vendors/font-awesome/css/font-awesome.min.css" type="text/css" />
+	<link rel="stylesheet" href="http://www.sunnysports.org.cn/mod/game/pages/js/pagination.css" type="text/css" />
+	<link rel="stylesheet" href="http://www.sunnysports.org.cn/mod/57tiyu/css/57tiyu.css" type="text/css" />
+
+	<!--[if gt IE 7]>
+		<link rel="stylesheet" type="text/css" href="http://www.sunnysports.org.cn/cache/css/default/ie.1430216380.css" />
+	<![endif]-->
+	<!--[if IE 7]>
+		<link rel="stylesheet" type="text/css" href="http://www.sunnysports.org.cn/cache/css/default/ie7.1430216380.css" />
+        <script type="text/javascript">
+            window.location.href = "http://www.sunnysports.org.cn/mod/57tiyu/page/update.html";
+        </script>
+	<![endif]-->
+	<!--[if IE 6]>
+		<link rel="stylesheet" type="text/css" href="http://www.sunnysports.org.cn/cache/css/default/ie6.1430216380.css" />
+        <script type="text/javascript">
+            window.location.href = "http://www.sunnysports.org.cn/mod/57tiyu/page/update.html";
+        </script>
+	<![endif]-->
+
+
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="http://www.sunnysports.org.cn/mod/twitter_bootstrap/vendors/assets/js/html5shiv.js"></script>
+      <script src="http://www.sunnysports.org.cn/mod/twitter_bootstrap/vendors/assets/js/respond.min.js"></script>
+    <![endif]-->
+
+<!--[if IE]><script lang="javascript" type="text/javascript" src="http://www.sunnysports.org.cn/mod/run/vendors/js/excanvas.js"></script><![endif]-->
+
+	<script type="text/javascript" src="http://www.sunnysports.org.cn/mod/twitter_bootstrap/vendors/assets/js/jquery.min.js"></script>
+	<script type="text/javascript" src="http://www.sunnysports.org.cn/mod/twitter_bootstrap/vendors/assets/js/jquery-ui-1.10.4.min.js"></script>
+	<script type="text/javascript" src="http://www.sunnysports.org.cn/cache/js/default/elgg.1430216380.js"></script>
+	<script type="text/javascript" src="http://www.sunnysports.org.cn/cache/js/default/lightbox.1430216380.js"></script>
+	<script type="text/javascript" src="http://www.sunnysports.org.cn/mod/blog/venders/js/jquery.SuperSlide.js"></script>
+	<script type="text/javascript" src="http://www.sunnysports.org.cn/mod/game/pages/js/jquery.pagination.js"></script>
+	<script type="text/javascript" src="http://www.sunnysports.org.cn/mod/comment/venders/js/jquery.livequery.js"></script>
+	<script type="text/javascript" src="http://www.sunnysports.org.cn/mod/comment/venders/js/comment.js"></script>
+	<script type="text/javascript" src="http://www.sunnysports.org.cn/mod/editor/venders/ueditor.config.js"></script>
+	<script type="text/javascript" src="http://www.sunnysports.org.cn/mod/editor/venders/ueditor.all.min.js"></script>
+	<script type="text/javascript" src="http://www.sunnysports.org.cn/mod/Exercise/vendors/js/Chart.min.js"></script>
+	<script type="text/javascript" src="http://www.sunnysports.org.cn/mod/comment/venders/js/praise.js"></script>
+
+<script type="text/javascript">
+	/**
+ * Don't want to cache these -- they could change for every request
+ */
+elgg.config.lastcache = 1430216380;
+elgg.config.viewtype = 'default';
+elgg.config.simplecache_enabled = 1;
+
+elgg.security.token.__elgg_ts = 1430477158;
+elgg.security.token.__elgg_token = 'd270ca3569fff7ed7fe8ce10a23ad5f6';
+
+
+//Before the DOM is ready, but elgg's js framework is fully initalized
+elgg.trigger_hook('boot', 'system');</script>
+
+
+</head>
+<body>
+<div class="elgg-page elgg-page-default">
+	<div class="navbar navbar-default navbar-fixed-top navbar-global" role="navigation"><!-- navbar -->
+		<div class="elgg-inner"><!-- navbar-inner -->
+			<div class="container"><!-- container -->
+				<div class="navbar-header pull-left">		<button type="button" class="navbar-toggle pull-left" data-toggle="collapse" data-target=".navbar-global-collapse">
+			<span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+         </button><a href="http://www.sunnysports.org.cn/" class="navbar-brand logo-topbar">阳光体育</a></div>		<div class="btn-group pull-right" style="margin-left:15px;"><!--open button group -->
+		<a class="btn btn-primary navbar-btn" data-toggle="modal" href="#loginBox">
+            登陆
+            <span class="caret"></span>
+        </a>
+		<ul class="dropdown-menu"><li class="dropdown" style="padding:10px;"><form method="post" action="http://www.sunnysports.org.cn/action/login" class="elgg-form-login" role="form"><input type="hidden" name="__elgg_token" value="d270ca3569fff7ed7fe8ce10a23ad5f6" /><input type="hidden" name="__elgg_ts" value="1430477158" />
+<style>
+
+
+
+</style>
+
+<div class='col-md-6 col-md-push-61 '><div  ><h5>阳光体育关联帐号登录:</h5>
+	
+	</div>
+			<a href="javascript:void(0);" title=" 通过腾讯qq登录"
+			class="ha_connect_with_provider btn btn-block btn-lg btn-primary " provider="qq">
+			<img alt="腾讯qq" width="18px" title="腾讯qq" src="http://www.sunnysports.org.cn/mod/threelogin/graphics/32x32/qq.png" />
+			使用QQ账户登录&nbsp;&nbsp;				
+			</a>
+			
+			<a href="javascript:void(0);" title=" 通过新浪微博登录"
+			class="ha_connect_with_provider btn btn-block btn-lg btn-primary " provider="weibo">
+			<img alt="新浪微博" width="18px" title="新浪微博" src="http://www.sunnysports.org.cn/mod/threelogin/graphics/32x32/weibo.png" />
+			使用微博账户登录				
+			</a>
+			
+			<a href="javascript:void(0);" title=" 通过百度登录"
+			class="ha_connect_with_provider btn btn-block btn-lg btn-primary " provider="baidu">
+			<img alt="百度" width="18px" title="百度" src="http://www.sunnysports.org.cn/mod/threelogin/graphics/32x32/baidu.png" />
+			使用百度账户登录				
+			</a>
+			<div style="padding-top:10px"><p>尚未注册的用户可以点击以上图标直接通过关联帐号登录。</p></div>		<input id="ha_popup_base_url" type="hidden" value="http://www.sunnysports.org.cn/mod/threelogin/authenticate.php?" />
+		
+
+		 
+	
+	</div><script>
+	$(function(){
+		$(".ha_connect_with_provider").click(function(){
+			popupurl = $("#ha_popup_base_url").val();
+			provider = $(this).attr("provider");
+
+			window.open(
+				popupurl+"provider="+provider,
+				"hybridauth_social_sing_on", 
+				"location=1,status=0,scrollbars=0,width=800,height=570"
+			); 
+		});
+	});  
+</script> 
+
+<div class="col-md-6 col-md-pull-6x">
+<h5>用户名或邮箱登陆</h5>
+<div class="form-group">
+	<label class="sr-only">邮箱</label>
+    <div class="input-group">
+    <span class="input-group-addon" style="padding:5px 10px;"><i class="icon icon-user"></i></span>
+	
+<input type="text" value="" name="username" class="form-control" />    </div>
+</div>
+<div class="form-group">
+   <div class="input-group">
+    <span class="input-group-addon" style="padding:5px 10px;"><i class="icon icon-lock"></i></span>
+	<label class="sr-only">密码</label>
+	
+<input type="password" value="" name="password" class="form-control" />
+  </div>
+</div>
+
+
+<div class="checkbox">
+	<label>
+		<input type="checkbox" name="persistent" value="true" />
+		记住我	</label>
+</div>
+	<input type="submit" value="登陆" class="btn btn-success" />
+	
+	    <span class="help-block"></span>
+<div>
+	<ul class="list-inline">
+			<li>
+			<a class="offset2" href="http://www.sunnysports.org.cn/forgotpassword">找回密码</a>
+		</li>
+	</ul>
+</div>
+</div>
+</form></li></ul></div><!-- /button group --><div class="collapse navbar-collapse navbar-global-collapse">	
+    <ul class="nav navbar-nav"><li class="elgg-menu-item-blog"><a href="http://www.sunnysports.org.cn/blog/all">文章</a></li><li class="divider-vertical"></li><li class="elgg-menu-item-grade"><a href="http://www.sunnysports.org.cn/grade/all">班级</a></li><li class="divider-vertical"></li><li class="elgg-menu-item-thewire"><a href="http://www.sunnysports.org.cn/thewire/all">签名</a></li><li class="divider-vertical"></li><li class="elgg-menu-item-photos"><a href="http://www.sunnysports.org.cn/photos/all">组照</a></li><li class="divider-vertical"></li><li class="elgg-menu-item-org"><a href="http://www.sunnysports.org.cn/org">组织</a></li><li class="divider-vertical"></li><li class="elgg-menu-item-game"><a href="http://www.sunnysports.org.cn/game/all">赛事</a></li><li class="divider-vertical"></li><li class="elgg-more dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">更多 <b class="caret white"></b></a><ul class="elgg-menu elgg-menu-site elgg-menu-site-more dropdown-menu"><li class="elgg-menu-item-exercise"><a href="http://www.sunnysports.org.cn/exercise/all">健身</a></li></ul></li></ul><form class="navbar-form navbar-left hidden-md hidden-sm" action="http://www.sunnysports.org.cn/search" method="get">	<div class="form-group">
+    <input type="text" class="form-control" placeholder="搜索" name="q">
+	</div>
+	<button type="submit" class="btn btn-primary "><i class="icon-search"></i></button>
+	<input type="hidden" name="search_type" value="all" />
+    </form>
+	<ul class="nav navbar-nav navbar-right"><li class="elgg-menu-item-notices"><a href="http://www.sunnysports.org.cn/msgnote/inbox/"><i class="icon icon-bell"></i>&nbsp;</a></li></ul></div>
+
+
+
+
+
+			</div><!-- /container -->
+		</div><!-- /navbar-inner -->
+	</div><!-- /navbar -->
+	    <div class="container"><!-- container -->
+				<div class="row">
+			<div class="col-lg-12">
+				<div class="elgg-page-header">
+									</div>
+			</div>
+		</div>
+				
+        <div class="row">
+			<div class="col-lg-12">
+				<div class="elgg-page-messages">
+					<ul class="elgg-system-messages list-unstyled"><li class="hidden"></li></ul>				</div>
+			</div>
+		</div>
+		<div class="row" id="tb-content">
+			<div class="elgg-page-body col-lg-12">
+					<div class="elgg-body elgg-main">
+		<h2>抱歉。我们无法找到您所请求的页面。</h2>	</div>			</div>
+		</div>
+		<div class="elgg-page-footer row">
+			<div class="elgg-inner col-lg-12">
+					<hr />
+	<div class="row">
+		<div class="col-lg-3">
+			<p class="small text-muted">&copy 2013 57TIYU, 京ICP备11022508号-2
+.</p>
+		</div>
+		<div class="col-lg-9">
+			<ul class="elgg-menu elgg-menu-footer elgg-menu-hz pull-right elgg-menu-footer-default"><li class="elgg-menu-item-download-documents"><a href="http://www.sunnysports.org.cn/download-documents" title="下载帮助文档"><i class="icon-download"></i> 下载帮助文档</a></li><li class="elgg-menu-item-moelink"><a href="http://www.moe.edu.cn/publicfiles/business/htmlfiles/moe/A17/index.html" title="教育部" target="_blank">教育部</a></li><li class="elgg-menu-item-sportlink"><a href="http://www.sport.gov.cn/n16/n33193/n33208/n1581724/index.html" title="国家体育总局" target="_blank">国家体育总局</a></li><li class="elgg-menu-item-about-sunnysports"><a href="http://www.sunnysports.org.cn/about-sunnysports" title="关于阳光体育">关于阳光体育</a></li><li class="elgg-menu-item-about-us"><a href="http://www.sunnysports.org.cn/about-us" title="关于我们">关于我们</a></li><li class="elgg-menu-item-contact"><a href="http://www.sunnysports.org.cn/contact" title="联系我们">联系我们</a></li></ul>
+		</div>
+	</div><div class="elgg-hide">
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F7ac5dd02f4269279f45418a0eaa112f4' type='text/javascript'%3E%3C/script%3E"));
+</script>
+</div>
+
+
+
+<!-- Modal -->
+  <div class="modal fade" id="loginBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">登陆</h4>
+        </div>
+        <div class="modal-body">
+        	<div class="">
+            	<div class="row">
+          			<form method="post" action="http://www.sunnysports.org.cn/action/login" class="elgg-form-login" role="form"><input type="hidden" name="__elgg_token" value="d270ca3569fff7ed7fe8ce10a23ad5f6" /><input type="hidden" name="__elgg_ts" value="1430477158" />
+<style>
+
+
+
+</style>
+
+<div class='col-md-6 col-md-push-61 '><div  ><h5>阳光体育关联帐号登录:</h5>
+	
+	</div>
+			<a href="javascript:void(0);" title=" 通过腾讯qq登录"
+			class="ha_connect_with_provider btn btn-block btn-lg btn-primary " provider="qq">
+			<img alt="腾讯qq" width="18px" title="腾讯qq" src="http://www.sunnysports.org.cn/mod/threelogin/graphics/32x32/qq.png" />
+			使用QQ账户登录&nbsp;&nbsp;				
+			</a>
+			
+			<a href="javascript:void(0);" title=" 通过新浪微博登录"
+			class="ha_connect_with_provider btn btn-block btn-lg btn-primary " provider="weibo">
+			<img alt="新浪微博" width="18px" title="新浪微博" src="http://www.sunnysports.org.cn/mod/threelogin/graphics/32x32/weibo.png" />
+			使用微博账户登录				
+			</a>
+			
+			<a href="javascript:void(0);" title=" 通过百度登录"
+			class="ha_connect_with_provider btn btn-block btn-lg btn-primary " provider="baidu">
+			<img alt="百度" width="18px" title="百度" src="http://www.sunnysports.org.cn/mod/threelogin/graphics/32x32/baidu.png" />
+			使用百度账户登录				
+			</a>
+			<div style="padding-top:10px"><p>尚未注册的用户可以点击以上图标直接通过关联帐号登录。</p></div>		<input id="ha_popup_base_url" type="hidden" value="http://www.sunnysports.org.cn/mod/threelogin/authenticate.php?" />
+		
+
+		 
+	
+	</div><script>
+	$(function(){
+		$(".ha_connect_with_provider").click(function(){
+			popupurl = $("#ha_popup_base_url").val();
+			provider = $(this).attr("provider");
+
+			window.open(
+				popupurl+"provider="+provider,
+				"hybridauth_social_sing_on", 
+				"location=1,status=0,scrollbars=0,width=800,height=570"
+			); 
+		});
+	});  
+</script> 
+
+<div class="col-md-6 col-md-pull-6x">
+<h5>用户名或邮箱登陆</h5>
+<div class="form-group">
+	<label class="sr-only">邮箱</label>
+    <div class="input-group">
+    <span class="input-group-addon" style="padding:5px 10px;"><i class="icon icon-user"></i></span>
+	
+<input type="text" value="" name="username" class="form-control" />    </div>
+</div>
+<div class="form-group">
+   <div class="input-group">
+    <span class="input-group-addon" style="padding:5px 10px;"><i class="icon icon-lock"></i></span>
+	<label class="sr-only">密码</label>
+	
+<input type="password" value="" name="password" class="form-control" />
+  </div>
+</div>
+
+
+<div class="checkbox">
+	<label>
+		<input type="checkbox" name="persistent" value="true" />
+		记住我	</label>
+</div>
+	<input type="submit" value="登陆" class="btn btn-success" />
+	
+	    <span class="help-block"></span>
+<div>
+	<ul class="list-inline">
+			<li>
+			<a class="offset2" href="http://www.sunnysports.org.cn/forgotpassword">找回密码</a>
+		</li>
+	</ul>
+</div>
+</div>
+</form>          		</div>
+             </div>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->			</div>
+		</div>
+	</div><!-- /container -->
+</div>
+	<script type="text/javascript" src="http://www.sunnysports.org.cn/mod/tidypics/vendors/cycle/index.js"></script>
+	<script type="text/javascript" src="http://www.sunnysports.org.cn/mod/twitter_bootstrap/vendors/dist/js/bootstrap.custom.js"></script>
+	<script type="text/javascript" src="http://www.sunnysports.org.cn/mod/twitter_bootstrap/vendors/bootstrapx-clickover/js/bootstrapx-clickover.js"></script>
+	<script type="text/javascript" src="http://www.sunnysports.org.cn/mod/twitter_bootstrap/views/default/twitter_bootstrap/custom.js"></script>
+	<script type="text/javascript" src="http://www.sunnysports.org.cn/mod/user/views/default/js/jquery.qrcode.min.js"></script>
+</body>
+</html>

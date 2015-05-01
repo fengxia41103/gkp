@@ -31,6 +31,7 @@ class TorUtility():
 		self.headers={'User-Agent':user_agent}
 		self.ip_url = 'http://icanhazip.com/'
 		self.logger = logging.getLogger('gkp')
+		retries = Retry(connect=5, read=5, redirect=5)		
 		self.http = ProxyManager('http://localhost:8118/', retries=retries, timeout=Timeout(total=60.0))
 
 	def renewTorIdentity(self,passAuth):
