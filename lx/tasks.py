@@ -216,4 +216,4 @@ class MySchoolWikiCrawler():
 def school_wiki_consumer(id):
 	http_agent = SeleniumUtility(use_tor = False)
 	crawler = MySchoolWikiCrawler(http_agent)
-	crawler.parser(id)	
+	crawler.parser(id)

@@ -15,13 +15,13 @@ class PlainUtility():
 		self.ip_url = 'http://icanhazip.com/'
 		self.logger = logging.getLogger('gkp')
 		retries = Retry(connect=5, read=5, redirect=5)
-		self.http = PoolManager(10,retries=retries, timeout=Timeout(total=30.0))
+		self.agent = PoolManager(10,retries=retries, timeout=Timeout(total=30.0))
 
 	def current_ip(self):
 		return self.request(self.ip_url)
 
 	def request(self,url):
-		r = self.http.request('GET',url)
+		r = self.agent.request('GET',url)
 		if r.status == 200: return r.data
 		else: self.logger.error('status %s'%r.status)
 
@@ -32,7 +32,7 @@ class TorUtility():
 		self.ip_url = 'http://icanhazip.com/'
 		self.logger = logging.getLogger('gkp')
 		retries = Retry(connect=5, read=5, redirect=5)		
-		self.http = ProxyManager('http://localhost:8118/', retries=retries, timeout=Timeout(total=60.0))
+		self.agent = ProxyManager('http://localhost:8118/', retries=retries, timeout=Timeout(total=60.0))
 
 	def renewTorIdentity(self,passAuth):
 	    try:
@@ -66,7 +66,7 @@ class TorUtility():
 		self.logger.info('*'*50)
 
 	def request(self,url):
-		r = self.http.request('GET',url)
+		r = self.agent.request('GET',url)
 		if r.status == 200: return r.data
 		elif r.status==403: self.renew_connection()
 		else: self.logger.error('status %s'%r.status)
@@ -93,14 +93,14 @@ class SeleniumUtility():
 			'--proxy-type=http',
 		]		
 		if use_tor:
-			self.http = webdriver.PhantomJS('phantomjs', service_args=service_args, desired_capabilities=dcap)
+			self.agent = webdriver.PhantomJS('phantomjs', service_args=service_args, desired_capabilities=dcap)
 		else:
-			self.http = webdriver.PhantomJS('phantomjs',desired_capabilities=dcap)
-		self.http.set_page_load_timeout(120)
+			self.agent = webdriver.PhantomJS('phantomjs',desired_capabilities=dcap)
+		self.agent.set_page_load_timeout(120)
 
 	def request(self,url):
-		self.http.get(url)
-		return self.http.page_source
+		self.agent.get(url)
+		return self.agent.page_source
 
 	def __del__(self):
-		self.http.quit()
+		self.agent.quit()
