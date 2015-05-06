@@ -99,8 +99,11 @@ class SeleniumUtility():
 		self.agent.set_page_load_timeout(120)
 
 	def request(self,url):
-		self.agent.get(url)
-		return self.agent.page_source
+		for i in xrange(1,4):
+			try: 
+				self.agent.get(url)
+				return self.agent.page_source
+			except TimeoutException: self.logger.error('#%d request timeout'%i)
 
 	def __del__(self):
 		self.agent.quit()

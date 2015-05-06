@@ -836,6 +836,11 @@ def download_school_image():
 		keyword = school.name+u'正门'
 		baidu_image_consumer.delay(keyword,save_to='static/img/school/')
 
+from pi.tasks import gkp_plan_consumer
+def parse_gkp_plan():
+	for id in xrange(1):
+		gkp_plan_consumer.delay(477)
+
 import googlemaps
 def main():
 	django.setup()
@@ -865,7 +870,7 @@ def main():
 	#cleanup_stop_time()
 	#populate_school_tieba()
 	#crawl_job()
-	crawl_weixin()
+	#crawl_weixin()
 	#cleanup_major_category()
 	# crawl_hudong()
 	#cleanup_hudong()
@@ -876,6 +881,7 @@ def main():
 	# cleanup_sevis_zipcode()
 	#download_city_image()
 	#download_school_image()
+	parse_gkp_plan()
 
 if __name__ == '__main__':
 	main()

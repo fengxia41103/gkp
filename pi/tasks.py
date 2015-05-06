@@ -45,6 +45,10 @@ logger.setLevel(logging.DEBUG)
 # logger.addHandler(fh)
 # logger.addHandler(ch)
 
+def grouper(iterable, n, padvalue=None):
+	# grouper('abcdefg', 3, 'x') --> ('a','b','c'), ('d','e','f'), ('g','x','x')
+	return list(izip_longest(*[iter(iterable)]*n, fillvalue=padvalue))
+
 class MyBaiduCrawler():
 	def __init__(self,handler):
 		self.http_handler = handler
@@ -178,9 +182,6 @@ def baidu_consumer(param):
 	crawler = MyBaiduCrawler(http_agent)
 	crawler.parser(param)
 
-def grouper(iterable, n, padvalue=None):
-	# grouper('abcdefg', 3, 'x') --> ('a','b','c'), ('d','e','f'), ('g','x','x')
-	return list(izip_longest(*[iter(iterable)]*n, fillvalue=padvalue))
 
 class MyTrainCrawler():
 	def __init__(self,handler):
@@ -670,3 +671,63 @@ def baidu_image_consumer(keyword,save_to):
 	http_agent = PlainUtility()
 	crawler = MyBaiduImageCrawler(http_agent)
 	crawler.parser(keyword,save_to)
+
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.support.ui import WebDriverWait # available since 2.4.0
+from selenium.webdriver.support import expected_conditions as EC # available since 2.26.0
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
+from random import shuffle
+class MyGKPPlanCrawler():
+	def __init__(self,handler):
+		self.http_handler = handler
+		self.agent = handler.agent
+		self.logger = logging.getLogger('gkp')
+
+	def wait_for_presence(self,by_what,val, wait_length=15):
+		WebDriverWait(self.agent,wait_length).until(EC.presence_of_element_located((by_what,val)))
+
+	def wait_for_invisible(self,by_what,val, wait_length=15):
+		WebDriverWait(self.agent,wait_length).until(EC.invisibility_of_element_located((by_what,val)))
+
+	def parser(self,id):
+		url = 'http://www.gaokaopai.com/daxue-zhaosheng-%d.html'%id
+		self.logger.debug(url)
+		content = self.http_handler.request(url)
+
+		states = [11,12,13,14,15,21,22,23,31,32,33,34,35,36,37,41,42,43,44,45,46,50,51,52,53,54,61,62,63,64,65]
+		shuffle(states)
+
+		# for cat in self.agent.find_elements_by_xpath("//*[@data-id='1']"):
+		for cat in [1,2]:			
+			self.agent.execute_script("$.setVar('claimSubType', %d);"%cat)
+
+			# for state in self.agent.find_elements_by_xpath("//*[@data-id='2']"):
+			for state in states:
+				self.agent.execute_script("$(arguments[0]).click();", state)
+
+				search_btn = self.agent.find_element_by_xpath('//*[contains(@class,"mlSearch")]')
+				search_btn.click()
+				self.logger.debug('activating search')
+
+				self.wait_for_presence(By.XPATH,"//*[contains(text(),'loading')]")
+				self.logger.debug('loading')
+
+				self.wait_for_invisible(By.XPATH,"//*[contains(text(),'loading')]")
+				self.logger.debug('loading complete')
+				
+				self.logger.debug('selecting cat: %d'%cat)
+				self.logger.debug('selecting state: %d'%state)				
+				tds = self.agent.find_elements_by_xpath('//*[@class="claimContent"]/descendant::td')
+				self.logger.debug(len(tds))
+
+				for tr in grouper([t.text for t in tds],6,''):
+					self.logger.debug('-'.join(tr))
+					break
+
+@shared_task
+def gkp_plan_consumer(id):
+	http_agent = SeleniumUtility(use_tor=True) # has to use Selenium for this one
+	crawler = MyGKPPlanCrawler(http_agent)
+	crawler.parser(id)	
