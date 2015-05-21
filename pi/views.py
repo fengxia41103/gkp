@@ -151,6 +151,8 @@ class UserProfileView(TemplateView):
 		degree_type = request.POST['degree_type'].strip()
 		tags = request.POST['tags'].strip()
 
+		print province,student_type,score,degree_type,tags
+		
 		# get user property obj
 		user_profile,created = MyUserProfile.objects.get_or_create(owner=request.user)
 
@@ -708,6 +710,11 @@ class MySchoolDetailRelatedSchools(TemplateView):
 class MySchoolDetailHudong(DetailView):
 	model = MySchool
 	template_name = 'pi/school/detail_hd.html'
+
+@class_view_decorator(login_required)
+class MySchoolDetailAdmissionPlan(DetailView):
+	model = MySchool
+	template_name = 'pi/school/detail_admission_plan.html'
 
 @class_view_decorator(login_required)
 class MySchoolWeixin(DetailView):

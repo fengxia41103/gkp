@@ -1050,3 +1050,61 @@ class MySogouStream(MyBaseModel):
 		'''
 		return (dt.now()-self.created).total_seconds()
 	age = property(_age)
+
+class MyAdmissionPlan(models.Model):
+	DEGREE_TYPE_CHOICES = (
+		('',''),
+		(u'本科', u'本科'),
+		(u'专科', u'专科'),
+	)		
+	STUDENT_TYPE_CHOICES = (
+		('',''),
+		(u'文科', u'文科'),
+		(u'理科', u'理科'),
+	)		
+	tmp_school_name = models.CharField(
+		max_length=128,
+		blank = True,
+		null = True
+	)
+	tmp_major = models.CharField(
+		max_length='128',
+		blank = True,
+		null = True,
+		verbose_name = 'Major temp'
+	)
+	school = models.ForeignKey(
+		'MySchool',
+		blank = True,
+		null = True,
+		verbose_name = 'School'
+	)
+	major = models.ForeignKey(
+		'MyMajor',
+		blank = True,
+		null = True,
+		verbose_name = u'Major'
+	)
+	province = models.ForeignKey(
+		'MyProvince',
+		verbose_name = 'Admission province'
+	)
+	plan_type = models.CharField(
+		max_length=64,
+		verbose_name = u'计划类型'
+	)
+	degree_type = models.CharField(
+		max_length = 8,
+		verbose_name = u'层次',
+		choices = DEGREE_TYPE_CHOICES
+	)
+	student_type = models.CharField(
+		max_length = 8,
+		verbose_name = u'科类',
+		choices = STUDENT_TYPE_CHOICES
+	)
+	count = models.IntegerField(
+		blank = True,
+		null = True,
+		verbose_name = u'计划数'
+	)

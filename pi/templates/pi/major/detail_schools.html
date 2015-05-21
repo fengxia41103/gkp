@@ -1,0 +1,41 @@
+{% extends 'pi/major/detail.html'%}
+
+{% block detail-content %}
+<h2 class="page-header">开设院校</h2>
+	
+<table class="table table-striped">
+<thead>
+	<th>所在省</th>
+	<th>学校列表</th>
+</thead>
+<tbody>
+	{% for province,school_list in schools.iteritems %}
+		<tr><td>
+			{{ province }}
+		</td><td>
+			<ul class="list-unstyled">
+			{% for s in school_list %}
+				<li><a href="{% url 'school_detail' s.id %}">{{s}}</a></li>
+			{% endfor %}
+			</ul>
+		</td></tr>
+	{% endfor %}
+</tbody>
+</table>
+<script type="text/javascript">
+var j$ = jQuery.noConflict();
+j$(document).ready(function(){
+	j$('ul[data-type="nav-side"]').children('li').removeClass('active');
+	j$('#nav-major-schools').toggleClass('active');
+
+	// starting first tab
+	j$('[data-toggle="tab"]:first').tab('show');
+
+	// profile filter toggle
+	j$('#filtered-by-profile').click(function(){
+		var profiled = j$(this).is(':checked') ? 1 : 0;
+		get_related_schools(profiled);
+	});
+});
+</script>
+{% endblock %}

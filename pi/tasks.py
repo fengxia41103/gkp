@@ -685,46 +685,155 @@ class MyGKPPlanCrawler():
 		self.agent = handler.agent
 		self.logger = logging.getLogger('gkp')
 
+	def wait_for_jquery_load(self,wait_length=15):
+		#wait for ajax items to load
+	    WebDriverWait(self.agent, wait_length).until(
+	             self.ajax_complete,  "Timeout waiting for page to load")
+
+	def ajax_complete(self,driver):
+		try:
+		    return 0 == driver.execute_script("return jQuery.active")
+		except: pass
+
 	def wait_for_presence(self,by_what,val, wait_length=15):
 		WebDriverWait(self.agent,wait_length).until(EC.presence_of_element_located((by_what,val)))
 
 	def wait_for_invisible(self,by_what,val, wait_length=15):
 		WebDriverWait(self.agent,wait_length).until(EC.invisibility_of_element_located((by_what,val)))
 
+	def wait_for_deletion(self,by_what,val, wait_length=15):
+		elem = self.agent.find_element(by_what,val)
+		WebDriverWait(self.agent,wait_length).until(EC.staleness_of(elem))
+
 	def parser(self,id):
 		url = 'http://www.gaokaopai.com/daxue-zhaosheng-%d.html'%id
 		self.logger.debug(url)
+		
 		content = self.http_handler.request(url)
+		self.wait_for_jquery_load()
+		# self.logger.debug('jQuery loading complete')
+		
+		elem = self.agent.find_element_by_xpath('//div[contains(@class,"schoolName")]/strong')
+		school = MySchool.objects.filter(name = elem.text.strip())
+		if school and len(school) == 1: 
+			school = school[0]
+			self.logger.debug(school.name)
+		else: 
+			school = None
+			school_name = elem.text.strip()
+			self.logger.debug('school not found: %s'%school_name)
 
-		states = [11,12,13,14,15,21,22,23,31,32,33,34,35,36,37,41,42,43,44,45,46,50,51,52,53,54,61,62,63,64,65]
-		shuffle(states)
+		states = {
+			11: MyProvince.objects.get(province = u'北京'),
+			12: MyProvince.objects.get(province = u'天津'),
+			13: MyProvince.objects.get(province = u'河北'),
+			14: MyProvince.objects.get(province = u'山西'),
+			15: MyProvince.objects.get(province = u'内蒙古'),
+			21: MyProvince.objects.get(province = u'辽宁'),
+			22: MyProvince.objects.get(province = u'吉林'),
+			23: MyProvince.objects.get(province = u'黑龙江'),
+			31: MyProvince.objects.get(province = u'上海'),
+			32: MyProvince.objects.get(province = u'江苏'),
+			33: MyProvince.objects.get(province = u'浙江'),
+			34: MyProvince.objects.get(province = u'安徽'),
+			35: MyProvince.objects.get(province = u'福建'),
+			36: MyProvince.objects.get(province = u'江西'),
+			37: MyProvince.objects.get(province = u'山东'),
+			41: MyProvince.objects.get(province = u'河南'),
+			42: MyProvince.objects.get(province = u'湖北'),
+			43: MyProvince.objects.get(province = u'湖南'),
+			44: MyProvince.objects.get(province = u'广东'),
+			45: MyProvince.objects.get(province = u'广西'),
+			46: MyProvince.objects.get(province = u'海南'),
+			50: MyProvince.objects.get(province = u'重庆'),
+			51: MyProvince.objects.get(province = u'四川'),
+			52: MyProvince.objects.get(province = u'贵州'),
+			53: MyProvince.objects.get(province = u'云南'),
+			54: MyProvince.objects.get(province = u'西藏'),
+			61: MyProvince.objects.get(province = u'陕西'),
+			62: MyProvince.objects.get(province = u'甘肃'),
+			63: MyProvince.objects.get(province = u'青海'),
+			64: MyProvince.objects.get(province = u'宁夏'),
+			65: MyProvince.objects.get(province = u'新疆')
+		}
+                                      
+		keys = states.keys()
+		shuffle(keys)
 
 		# for cat in self.agent.find_elements_by_xpath("//*[@data-id='1']"):
 		for cat in [1,2]:			
 			self.agent.execute_script("$.setVar('claimSubType', %d);"%cat)
 
 			# for state in self.agent.find_elements_by_xpath("//*[@data-id='2']"):
-			for state in states:
-				self.agent.execute_script("$(arguments[0]).click();", state)
+			for state in keys:
+				self.agent.execute_script("$.setVar('claimCity', %d);"%state)
 
-				search_btn = self.agent.find_element_by_xpath('//*[contains(@class,"mlSearch")]')
-				search_btn.click()
-				self.logger.debug('activating search')
+				# search_btn = self.agent.find_element_by_xpath('//*[contains(@class,"mlSearch")]')
+				# search_btn.click()
+				self.agent.execute_script("$.getMajor(1);")
+				# self.logger.debug('activating search')
 
-				self.wait_for_presence(By.XPATH,"//*[contains(text(),'loading')]")
-				self.logger.debug('loading')
+				self.wait_for_presence(By.XPATH,"//*[contains(text(),'loading')]",30)
+				# self.logger.debug('loading')
 
-				self.wait_for_invisible(By.XPATH,"//*[contains(text(),'loading')]")
-				self.logger.debug('loading complete')
+				self.wait_for_deletion(By.XPATH,"//*[contains(text(),'loading')]",30)
+				# self.logger.debug('loading complete')
 				
-				self.logger.debug('selecting cat: %d'%cat)
-				self.logger.debug('selecting state: %d'%state)				
+				# self.logger.debug('selecting cat: %d'%cat)
+				# self.logger.debug('selecting state: %d'%state)				
 				tds = self.agent.find_elements_by_xpath('//*[@class="claimContent"]/descendant::td')
-				self.logger.debug(len(tds))
+				
+				# there is no data
+				if len(tds) == 1 and tds[0].get_attribute('innerHTML') == u'暂无数据': 
+					self.logger.debug('no data')
+					continue
 
-				for tr in grouper([t.text for t in tds],6,''):
-					self.logger.debug('-'.join(tr))
-					break
+				# there is data
+				for tr in grouper([t.get_attribute('innerHTML') for t in tds],6,''):
+					major = MyMajor.objects.filter(name = tr[0].strip())
+					if major and len(major) == 1: major=major[0]
+					else: 
+						major = None
+						self.logger.debug('Major not matched: %s'%tr[0])
+
+					if school and major:
+						record,created = MyAdmissionPlan.objects.get_or_create(
+							school = school,
+							major = major,
+							province = states[state],
+							plan_type = tr[1],
+							degree_type = tr[2],
+							student_type = tr[3],
+						)
+					elif not school and major:
+						record,created = MyAdmissionPlan.objects.get_or_create(
+							tmp_school_name = school_name,
+							major = major,
+							province = states[state],
+							plan_type = tr[1],
+							degree_type = tr[2],
+							student_type = tr[3],
+						)
+					elif school and not major:
+						record,created = MyAdmissionPlan.objects.get_or_create(
+							school = school,
+							tmp_major = tr[0].strip(),
+							province = states[state],
+							plan_type = tr[1],
+							degree_type = tr[2],
+							student_type = tr[3],
+						)						
+					else:
+						record,created = MyAdmissionPlan.objects.get_or_create(
+							tmp_school_name = school_name,
+							tmp_major = tr[0].strip(),
+							province = states[state],
+							plan_type = tr[1],
+							degree_type = tr[2],
+							student_type = tr[3],
+						)
+					record.count = int(tr[5])
+					record.save()
 
 @shared_task
 def gkp_plan_consumer(id):

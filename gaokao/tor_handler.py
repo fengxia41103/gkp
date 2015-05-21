@@ -103,7 +103,7 @@ class SeleniumUtility():
 			try: 
 				self.agent.get(url)
 				return self.agent.page_source
-			except TimeoutException: self.logger.error('#%d request timeout'%i)
+			except: self.logger.error('#%d request timeout'%i)
 
 	def __del__(self):
 		self.agent.quit()

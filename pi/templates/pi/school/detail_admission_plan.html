@@ -1,0 +1,45 @@
+{% extends 'pi/school/detail.html' %}
+
+{% block detail-content %}
+<table class="table">
+	<thead>
+		<th>Major</th>
+		<th>Province</th>
+		<th>Plan Type</th>
+		<th>Degree Type</th>
+		<th>Student Type</th>
+		<th>Count</th>
+	</thead>
+<tbody>
+{% for plan in object.myadmissionplan_set.all %}
+	<tr><td>
+		{% if plan.major %}
+			<a href="{%url 'major_detail' plan.major.id %}">{{ plan.major }}</a>
+		{% else %}
+			{{ plan.tmp_major }}
+		{% endif %}
+	</td><td>
+		{{ plan.province }}
+	</td><td>
+		{{ plan.plan_type }}
+	</td><td>
+		{{ plan.degree_type }}
+	</td><td>
+		{{ plan.student_type }}
+	</td><td>
+		{{ plan.count }}
+	</td></tr>
+{% endfor %}
+</tbody>
+</table>
+
+<script type="text/javascript">
+var j$ = jQuery.noConflict();
+j$(document).ready(function(){
+	j$('ul[data-type="nav-side"]').children('li').removeClass('active');
+	j$('#nav-school-admission-plan').toggleClass('active');
+});
+</script>
+{% endblock %}
+
+

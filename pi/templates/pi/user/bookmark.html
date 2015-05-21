@@ -41,7 +41,6 @@
 	 		l.start();
 	 		var obj_id = j$(this).attr('obj-id');
 
-	        // ajax to server to get a list of columns:4"markers that are within the viewport
 	        j$.post("{% url 'user_bookmark' %}", // passed in from view
 	            { 
 	                'obj_id':obj_id,

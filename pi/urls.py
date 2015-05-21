@@ -17,8 +17,8 @@ urlpatterns = patterns(
 		url(r'^register/$', views.UserRegisterView.as_view(), name='user_register'),
 
 		# user related
-		url(r'^user/profile/$', cache_page(60 * 15)(views.UserProfileView.as_view()), name='user_profile'),
-		url(r'^user/bookmark/$', cache_page(60 * 15)(views.UserBookmark.as_view()), name='user_bookmark'),
+		url(r'^user/profile/$', views.UserProfileView.as_view(), name='user_profile'),
+		url(r'^user/bookmark/$', views.UserBookmark.as_view(), name='user_bookmark'),
 		url(r'^user/tags/delete/$', views.UserTagsDelete.as_view(), name='user_delete_tags'),
 
 		# file import/export
@@ -52,17 +52,18 @@ urlpatterns = patterns(
 		url(r'^school/(?P<pk>\d+)/edit/$', views.MySchoolEdit.as_view(), name='school_edit'),
 		url(r'^school/(?P<pk>\d+)/delete/$', views.MySchoolDelete.as_view(), name='school_delete'),
 		url(r'^school/(?P<pk>\d+)/detail/$', views.MySchoolDetail.as_view(), name='school_detail'),
-		url(r'^school/(?P<pk>\d+)/detail/major/$', views.MySchoolDetailMajor.as_view(), name='school_detail_major'),
-		url(r'^school/(?P<pk>\d+)/detail/admission/$', views.MySchoolDetailAdmission.as_view(), name='school_detail_admission'),
+		url(r'^school/(?P<pk>\d+)/detail/major/$', cache_page(60 * 15)(views.MySchoolDetailMajor.as_view()), name='school_detail_major'),
+		url(r'^school/(?P<pk>\d+)/detail/admission/$', cache_page(60 * 15)(views.MySchoolDetailAdmission.as_view()), name='school_detail_admission'),
 		url(r'^school/(?P<pk>\d+)/detail/stream/$', views.MySchoolDetailStream.as_view(), name='school_detail_stream'),
 		url(r'^school/(?P<pk>\d+)/detail/hd/$', views.MySchoolDetailHudong.as_view(), name='school_detail_hd'),
+		url(r'^school/(?P<pk>\d+)/detail/plan/$', views.MySchoolDetailAdmissionPlan.as_view(), name='school_detail_admission_plan'),
 		url(r'^school/detail/related/$', views.MySchoolDetailRelatedSchools.as_view(), name='school_detail_related_schools'),
 
 
 		url(r'^school/map/filter/', ensure_csrf_cookie(views.MySchoolMapFilter.as_view()),name='school_map_filter'),
 		url(r'^school/map/detail/', ensure_csrf_cookie(views.MySchoolMapDetail.as_view()),name='school_map_detail'),
 		url(r'^school/map/info/', ensure_csrf_cookie(views.MySchoolMapInfo.as_view()),name='school_map_info'),
-		url(r'^school/e/map/filter/$', cache_page(60 * 15)(views.MySchoolEchartMapFilter.as_view()),name='school_echart_map_filter'),
+		url(r'^school/e/map/filter/$', views.MySchoolEchartMapFilter.as_view(),name='school_echart_map_filter'),
 		url(r'^school/rank/(?P<rank>\d+)/$', cache_page(60 * 15)(views.MySchoolRank.as_view()), name='school_rank'),
 		url(r'^school/majors/filter/tags/$', ensure_csrf_cookie(views.MySchoolMajorsFilterByTags.as_view()), name='school_majors_filter_by_tags'),
 		url(r'^school/weixin/(?P<pk>\d+)/$', cache_page(60 * 15)(views.MySchoolWeixin.as_view()), name='school_weixin'),

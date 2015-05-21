@@ -17,33 +17,39 @@
 
 	<li id="nav-school-hd">
     <a href="{% url 'school_detail_hd' object.id %}">
-			学校百科
+		学校百科
 	</a>
 	</li>
 
 	<li id="nav-school-major">
     <a href="{% url 'school_detail_major' object.id %}">
-			学校专业
+		学校专业
 	</a>
 	</li>
 
 	<li id="nav-school-admission">
     <a href="{% url 'school_detail_admission' object.id %}">
-			往年录取分数线
+		往年录取分数线
 	</a>
 	</li>
 
 	<li id="nav-school-stream">
     <a href="{% url 'school_detail_stream' object.id %}">
-			校园生活
+		校园生活
 	</a>
 	</li>
 
 	<li id="nav-school-weixin">
     <a href="{% url 'school_weixin' object.id %}">
-			校园微信
+		校园微信
 	</a>
 	</li>
+
+	<li id="nav-school-admission-plan">
+    <a href="{% url 'school_detail_admission_plan' object.id %}">
+		招生计划
+	</a>
+	</li>	
 </ul>
 {% endblock %}
 

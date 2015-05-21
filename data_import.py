@@ -838,8 +838,9 @@ def download_school_image():
 
 from pi.tasks import gkp_plan_consumer
 def parse_gkp_plan():
-	for id in xrange(1):
-		gkp_plan_consumer.delay(477)
+	# for id in xrange(1,2):	
+	for id in xrange(2,3301):
+		gkp_plan_consumer.delay(id)
 
 import googlemaps
 def main():
