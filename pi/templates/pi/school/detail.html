@@ -69,9 +69,11 @@
 {% endblock %}
 
 {% block detail-school-header %}
+{% load static %}
+{% static "" as baseUrl %}
 <div class="school-landing">
 	<div class="cover-photo"
-	style="background:transparent url(/static/img/school/{{object.name}}正门.jpg) no-repeat; background-size:cover;"
+	style="background:transparent url({{baseUrl}}img/school/{{object.name}}正门.jpg) no-repeat; background-size:cover;"
 	>*校园照片来自网络</div>
 	<div class="school-name-bar">
 		<div id="school-logo">
