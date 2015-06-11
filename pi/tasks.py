@@ -52,16 +52,21 @@ def grouper(iterable, n, padvalue=None):
 class MyBaiduCrawler():
 	def __init__(self,handler):
 		self.http_handler = handler
+		self.retriever = PlainUtility()
 		self.logger = logging.getLogger('gkp')
 
 	def parse_tieba(self,keyword):
 		baidu_url = 'http://tieba.baidu.com/f?kw=%s&ie=utf-8'%urllib.quote(keyword.encode('utf-8'))
-		content = self.http_handler.request(baidu_url)
+		self.logger.debug(baidu_url)
+
+		content = self.http_handler.request(baidu_url)		
 		html = lxml.html.document_fromstring(content)
 
 		threads = []
 		for t in html.xpath('//li[contains(@class, "j_thread_list")]'):
-			if t.get('data-field') is None: continue
+			if t.get('data-field') is None:
+				self.logger.error('Missing data-field!') 
+				continue
 
 			stats = json.loads(t.get('data-field'))
 			if stats['is_top'] or not stats['reply_num']: continue  # sticky posts, always on top, so we skip these
@@ -75,7 +80,8 @@ class MyBaiduCrawler():
 				'reply_num': stats['reply_num'],
 				'title': t.xpath('.//a[contains(@class,"j_th_tit")]')[0].text_content().strip(), # post title line
 				'abstract': t.xpath('.//div[contains(@class,"threadlist_abs_onlyline")]')[0].text_content().strip(), # post abstracts
-				'last_timestamp': t.xpath('.//span[contains(@class,"threadlist_reply_date")]')[0].text_content().strip()			}
+				'last_timestamp': t.xpath('.//span[contains(@class,"threadlist_reply_date")]')[0].text_content().strip()
+			}
 
 			imgs = []
 			for i in t.xpath('.//img[contains(@class,"threadlist_pic")]'):
@@ -151,14 +157,14 @@ class MyBaiduCrawler():
 
 			# look up its attachments, if any
 			for img_url in t['imgs']:
-				if len(Attachment.objects.filter(source_url=img_url)): continue # exist
+				for a in Attachment.objects.filter(source_url=img_url): a.delete() # exist
 
 				self.logger.info('retrieving images [%s]' % img_url)
 
 				# get image and store into a tmp file
 				img_data = None
-				try: img_data = self.http_handler.request(img_url)
-				except: self.logger.error('Retrieve img failed: %s' % img_url)
+				try: img_data = self.retriever.request(img_url)
+				except: self.logger.error('retrieve img failed: %s' % img_url)
 				if img_data:
 					tmp_file = NamedTemporaryFile(suffix='.jpg',delete=False)
 					tmp_file.write(img_data)
@@ -177,8 +183,8 @@ class MyBaiduCrawler():
 @shared_task
 def baidu_consumer(param):
 	#http_agent = PlainUtility(http_manager)
-	http_agent = TorUtility()
-	'The test task executed with argument "%s" ' % json.dumps(param)
+	http_agent = SeleniumUtility(use_tor=False)
+	# 'The test task executed with argument "%s" ' % json.dumps(param)
 	crawler = MyBaiduCrawler(http_agent)
 	crawler.parser(param)
 
