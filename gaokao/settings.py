@@ -33,7 +33,8 @@ ALLOWED_HOSTS = ['*']
 
 # Application definition
 
-																		
+INTERNAL_IPS = ('localhost')
+
 INSTALLED_APPS = (
 	'django_admin_bootstrapped.bootstrap3',
 	'django_admin_bootstrapped',
@@ -48,14 +49,14 @@ INSTALLED_APPS = (
     'django.contrib.sites', 
 
     # custom packages
-    #'devserver', # django-devserver
+    'crispy_forms', # django-crispy-forms
+    'devserver', # django-devserver
     'debug_toolbar',
     'storages', # django-storage
     's3_folder_storage', # django-s3-folder-storage
     'compressor', # django_compressor
     'django_filters', # django-filters
     'pagination_bootstrap', # django-pagination-bootstrap
-    'crispy_forms', # django-crispy-forms
     'social.apps.django_app.default', # python-social-auth
     'pi', # gkp
     'lx', # liuxue
@@ -145,9 +146,9 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 # for django-pagination, very COOL!
 from django.conf import global_settings
 TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
-	'django.core.context_processors.request',
-   'social.apps.django_app.context_processors.backends',
-   'social.apps.django_app.context_processors.login_redirect',        
+    'django.core.context_processors.request',
+    'social.apps.django_app.context_processors.backends',
+    'social.apps.django_app.context_processors.login_redirect',        
 )
 
 # for django-allauth

@@ -497,7 +497,7 @@ class MyMajorDetail(DetailView):
 
 		pynlpir.open() # must have this line!
 		keywords = ','.join([''.join([j.title,j.location,j.req_degree]) for j in jobs])
-		context['keywords']= pynlpir.get_key_words(keywords, max_words=25, weighted=True)
+		context['keywords'] = pynlpir.get_key_words(keywords, max_words=25, weighted=True)
 		pynlpir.close()
 
 
