@@ -1,29 +1,28 @@
-{% extends 'pi/common/home_base.html' %}
+{% extends 'pi/common/home.html' %}
+{% load crispy_forms_tags %} 
+{% load staticfiles %}
 
 {% block login %}
-{% load crispy_forms_tags %}
-<form action="" method="post">      
-    <div class="modal-body">
-        {% csrf_token %}
-        <div class="row">
-            <div class="col-sm-1"></div>
-            <div class="col-sm-4 my-login-box">
-                {% crispy form %}
-                {% if form.errors %}
-                    <div class="alert alert-info">
-                        Your username and password didn’t match. Please try again.</p>
-                    </div>
-                {% endif %}                
-            </div>
-            <div class="col-sm-6">Give user instructions how to login or registration.</div>                    
+
+<div class="pin-card col-md-6">
+    <form action="{% url 'login' %}" method="POST">
+    {% csrf_token %}
+    {{ form|crispy }}
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <p>Your username and password didn’t match. Please try again.</p>
         </div>
-        <div class="row modal-footer">
-            <span class="addLink">
-            <a href="{% url 'user_register' %}">新用户注册</a>
-            </span>
-            <input class="btn btn-primary default pull-right" type="submit" value="登录" />
-            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>              
-        </div>
-    </div>
-</form>      
+    {% endif %}
+
+    <ul class="list-inline modal-footer">
+        <li>
+            <a href="{% url 'user_register' %}">新用户注册</a>         
+        </li><li>
+            <input class="btn btn-primary default" type="submit" value="登录" />
+        </li><li>
+            <a href="{% url 'home' %}" class="btn btn-default">取消</a>
+        </li>
+    </ul>
+    </form>  
+</div>
 {% endblock %}

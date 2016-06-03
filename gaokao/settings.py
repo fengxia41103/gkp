@@ -49,6 +49,7 @@ INSTALLED_APPS = (
     'django.contrib.sites', 
 
     # custom packages
+    'widget_tweaks', # https://github.com/kmike/django-widget-tweaks/    
     'crispy_forms', # django-crispy-forms
     'devserver', # django-devserver
     'debug_toolbar',
@@ -59,7 +60,7 @@ INSTALLED_APPS = (
     'pagination_bootstrap', # django-pagination-bootstrap
     'social.apps.django_app.default', # python-social-auth
     'pi', # gkp
-    'lx', # liuxue
+    # 'lx', # liuxue
 )
 
 MIDDLEWARE_CLASSES = (

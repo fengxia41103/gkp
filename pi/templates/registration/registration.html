@@ -1,0 +1,27 @@
+{% extends 'pi/common/home.html' %}
+{% load crispy_forms_tags %} 
+
+{% block main %} 
+<div class="modal-dialog modal-body">
+<form action="{% url 'user_register' %}" method="POST">
+{% csrf_token %}
+{{ form|crispy }}
+{% if form.errors %}
+    <div class="alert alert-danger">
+        <p>Your username/password are not successful. Please try again.</p>
+    </div>
+{% endif %}                
+      
+<ul class="list-inline modal-footer">
+    <li>
+        <a href="{% url 'login' %}">来这里登录吧</a>
+    </li><li>
+        <input class="btn btn-primary default" type="submit" value="注册用户" />
+        <input type="hidden" name="next" value="{% url 'login' %}" />
+    </li><li>
+        <a href="{% url 'home' %}" class="btn btn-default">取消</a>
+    </li>
+</ul>        
+</form>
+</div>
+{% endblock %}

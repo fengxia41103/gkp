@@ -53,6 +53,7 @@ import urllib, lxml.html
 from utility import MyUtility
 
 from pi.models import *
+from pi.forms import *
 
 ###################################################
 #
@@ -78,18 +79,13 @@ def class_view_decorator(function_decorator):
 #	Static views
 #
 ###################################################
-class HomeView (TemplateView):
-	template_name = 'pi/common/home_with_login_modal.html'
+class HomeView(TemplateView):
+	template_name = 'pi/common/home.html'
 
 	def get_context_data(self, **kwargs):
 		context = super(TemplateView, self).get_context_data(**kwargs)
-
-		user_auth_form = AuthenticationForm()
-		user_registration_form = UserCreationForm()
-
-		context['registration_form']=user_registration_form
-		context['auth_form']=user_auth_form
-		return context
+		context['contact_form'] = ContactForm()
+		return context	
 
 ###################################################
 #
@@ -98,8 +94,9 @@ class HomeView (TemplateView):
 ###################################################
 class LoginView(FormView):
 	template_name = 'registration/login.html'
-	success_url = reverse_lazy('school_rank', kwargs={'rank': 10})
+	success_url = reverse_lazy('location_list')
 	form_class = AuthenticationForm
+
 	def form_valid(self,form):
 		username = form.cleaned_data['username']
 		password = form.cleaned_data['password']
@@ -107,7 +104,7 @@ class LoginView(FormView):
 
 		if user is not None and user.is_active:
 		    login(self.request, user)
-		    return super(LoginView, self).form_valid(form)
+		    return HttpResponseRedirect(reverse_lazy('location_list'))
 		else:
 		    return self.form_invalid(form)
 
@@ -115,14 +112,13 @@ class LogoutView(TemplateView):
 	template_name = 'registration/logged_out.html'
 	def get(self,request):
 		logout(request)
-    	# Redirect to a success page.
-		# messages.add_message(request, messages.INFO, 'Thank you for using our service. Hope to see you soon!')
 		return HttpResponseRedirect (reverse_lazy('home'))
 
 class UserRegisterView(FormView):
-	template_name = 'registration/register_form.html'
+	template_name = 'registration/registration.html'
 	form_class = UserCreationForm
 	success_url = reverse_lazy('login')
+
 	def form_valid(self,form):
 		user_name = form.cleaned_data['username']
 		password = form.cleaned_data['password2']
@@ -132,7 +128,9 @@ class UserRegisterView(FormView):
 			user = User.objects.create_user(user_name, '', password)			
 			user.save()
 
-			return super(UserRegisterView,self).form_valid(form)
+			# login after
+			login(self.request, user)
+			return HttpResponseRedirect(reverse_lazy('location_list'))
 
 class UserProfileView(TemplateView):
 	template_name='pi/user/profile.html'

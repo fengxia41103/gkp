@@ -17,6 +17,7 @@
 			<div class="my-filter-form">
 				<form action="" method="get" class="form-inline" role="form">
 						{% csrf_token %}
+						
 						{{ filter.form|crispy }}
 					
 					<button class="my-btn" type="submit" id="id_btn_search_submit">Search</button>
@@ -27,10 +28,12 @@
 </li>
 </ul>
 
-{% for filter,val in filter.data.iteritems %}
-	{% if val and filter != "csrfmiddlewaretoken" and filter != "page" %}
-		<span class="flabel">{{ val }}<span class="glyphicon glyphicon-remove my-filter-value-close" for="{{ filter }}"></span></span>
-	{% endif %}
+{% for filter,val in filters.iteritems %}
+	<span class="flabel">
+		<span class="badge">{{filter}}</span>
+		{{ val }}
+		<span class="glyphicon glyphicon-remove my-filter-value-close" for="{{ filter }}"></span>
+	</span>
 {% endfor %}
 
 {# paginator #}

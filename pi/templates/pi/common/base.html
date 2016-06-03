@@ -1,6 +1,7 @@
-{% extends 'pi/common/base_root.html' %}
+{% extends 'pi/common/layout.html' %}
 {% load staticfiles %}
 {% load compress %}
+{% load crispy_forms_tags %}
 
 {% block title %}
 <title>MySAT Platform</title>
@@ -124,7 +125,6 @@
 	</div>
 {% endblock %}<!-- end of block navbar -->
 
-
 {% block custom_js %}
 <script type="text/javascript">
 	var j$ = jQuery.noConflict();
@@ -156,4 +156,3 @@
 	});
 </script>
 {% endblock %}
-

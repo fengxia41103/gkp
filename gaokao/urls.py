@@ -15,7 +15,7 @@ urlpatterns = patterns('',
     url('', include('django.contrib.auth.urls', namespace='auth')),
 
     url(r'^gaokao/', include ('pi.urls')),
-    url(r'^lx/', include ('lx.urls')),        
+    # url(r'^lx/', include ('lx.urls')),        
 )
 
 if settings.DEBUG:
