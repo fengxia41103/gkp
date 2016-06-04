@@ -104,7 +104,7 @@ class LoginView(FormView):
 
 		if user is not None and user.is_active:
 		    login(self.request, user)
-		    return HttpResponseRedirect(reverse_lazy('location_list'))
+		    return HttpResponseRedirect(reverse_lazy('school_echart_map_filter'))
 		else:
 		    return self.form_invalid(form)
 
@@ -130,7 +130,7 @@ class UserRegisterView(FormView):
 
 			# login after
 			login(self.request, user)
-			return HttpResponseRedirect(reverse_lazy('location_list'))
+			return HttpResponseRedirect(reverse_lazy('school_echart_map_filter'))
 
 class UserProfileView(TemplateView):
 	template_name='pi/user/profile.html'

@@ -15,9 +15,21 @@ from datetime import datetime as dt
 from utility import MyUtility
 import simplejson as json
 # import models
+
+from gaokao.tor_handler import TorUtility, SeleniumUtility
 from pi.models import *
 
 class TorUtility():
+	"""Use TOR channel to simulate browser.
+
+	TOR itself is a socket server. You need to set up a privoxy
+	on the same machine as the TOR server so it serves HTTP on a port, and
+	redirect it to TOR.
+
+	The beauty of TOR is to allow us scraping websites anonymously and
+	potentially assigned different IP each time also. This greatly reduced risk
+	of exposing our identity.
+	"""
 	def __init__(self):
 		user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7'
 		self.headers={'User-Agent':user_agent}
@@ -60,12 +72,14 @@ class TorUtility():
 
 class MyBaiduCrawler():
 	def __init__(self):
-		self.tor_util = TorUtility()
+		# self.tor_util = TorUtility()
+		self.tor_util = SeleniumUtility(use_tor=False)
 
 	def tieba(self,keyword):
 		baidu_url = 'http://tieba.baidu.com/f?kw=%s&ie=utf-8'%urllib.quote(keyword.encode('utf-8'))		
 		content = self.tor_util.request(baidu_url)
 		html = lxml.html.document_fromstring(content)
+		print 'baidu html parsed'
 
 		threads = []
 		for t in html.xpath('//li[contains(@class, "j_thread_list")]'):
@@ -91,6 +105,7 @@ class MyBaiduCrawler():
 
 			# add to list
 			threads.append(this_thread)
+		print len(threads), 'threads found'
 
 		return threads
 

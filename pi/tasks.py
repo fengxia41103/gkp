@@ -91,7 +91,6 @@ class MyBaiduCrawler():
 
 			# add to list
 			threads.append(this_thread)
-
 		return threads
 
 	def parser(self, params):

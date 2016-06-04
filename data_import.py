@@ -540,7 +540,7 @@ def cleanup_stop_time():
 
 from pi.tasks import baidu_consumer
 def populate_school_tieba():
-	for school in MySchool.objects.all():
+	for school in MySchool.objects.all()exit:
 		if len(school.mybaidustream_set.all()) == 0:
 			baidu_consumer.delay({'keyword':school.name})
 			print school.name
@@ -869,7 +869,7 @@ def main():
 	#cleanup_city()
 	#crawl_city_wiki()
 	#cleanup_stop_time()
-	#populate_school_tieba()
+	populate_school_tieba()
 	#crawl_job()
 	#crawl_weixin()
 	#cleanup_major_category()
@@ -882,7 +882,7 @@ def main():
 	# cleanup_sevis_zipcode()
 	#download_city_image()
 	#download_school_image()
-	parse_gkp_plan()
+	# parse_gkp_plan()
 
 if __name__ == '__main__':
 	main()
