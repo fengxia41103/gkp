@@ -1,6 +1,7 @@
 {% extends 'pi/common/detail.html' %}
 
-{% load staticfiles %}{% load staticfiles %}
+{% load staticfiles %}
+
 {% block page-header %}
 <div>
 {{ object.name }}
@@ -69,8 +70,6 @@
 {% endblock %}
 
 {% block detail-school-header %}
-{% load static %}
-{% static "" as baseUrl %}
 <div class="school-landing">
   {% with school_photo='img/school/'|add:object.name|add:'正门.jpg' %}
 	<div class="cover-photo"
@@ -81,13 +80,9 @@
 	<div class="school-name-bar">
 		<div id="school-logo">
 			<div id="eggshell-114" class="C-common-school-logo medium">
-				<a class="logo" href="/schools/ucla">
-				<div class="school-icon white">
-					<div class="school-icon-img">
-						<i class="fa fa-institution"></i>
-					</div>
+				<div class="school-icon white" style="text-align:center;padding-top:15px;">
+						<i class="fa fa-institution" style="font-size:80px;"></i>
 				</div>
-				</a>
 			</div>
 		</div>
 		<div class="school-name">
