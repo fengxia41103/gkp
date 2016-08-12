@@ -49,7 +49,7 @@
     <a href="{% url 'school_detail_admission_plan' object.id %}">
 		招生计划
 	</a>
-	</li>	
+	</li>
 </ul>
 {% endblock %}
 
@@ -73,7 +73,7 @@
 {% static "" as baseUrl %}
 <div class="school-landing">
 	<div class="cover-photo"
-	style="background:transparent url({{baseUrl}}img/school/{{object.name}}正门.jpg) no-repeat; background-size:cover;"
+	style="background:transparent url({% get_static_prefix %}/img/school/{{object.name}}正门.jpg) no-repeat; background-size:cover;"
 	>*校园照片来自网络</div>
 	<div class="school-name-bar">
 		<div id="school-logo">
@@ -109,41 +109,41 @@
 
 {% block detail-sidebar %}
 <div class="text-center">
-<div class="btn-group" role="group"> 
+<div class="btn-group" role="group">
     <a
-    	{% if object in user.myuserprofile.school_bookmarks.all %} 
+    	{% if object in user.myuserprofile.school_bookmarks.all %}
     		class="btn btn-small ladda-button btn-default"
     	{% else %}
-    		class="btn btn-small ladda-button" 
+    		class="btn btn-small ladda-button"
     	{% endif %}
-    	role="button" 
-    	id="btn-school-bookmark" 
-    	style="border-right:1px solid #fefefe;margin-right:1px;" 
-    	data-style="expand-left" 
-		data-size="l" 
-		data-spinner-color="#333" 
-		data-toggle="tooltip" 
+    	role="button"
+    	id="btn-school-bookmark"
+    	style="border-right:1px solid #fefefe;margin-right:1px;"
+    	data-style="expand-left"
+		data-size="l"
+		data-spinner-color="#333"
+		data-toggle="tooltip"
 		title="添加到我的收藏中"
 	>
-		<span class="ladda-label"></span>			
+		<span class="ladda-label"></span>
     	<i class="fa fa-heart-o"></i>
     	Bookmark
     </a>
     <a
-    	{% if object in user.myuserprofile.school_xouts.all %} 
+    	{% if object in user.myuserprofile.school_xouts.all %}
     		class="btn btn-small ladda-button btn-default"
     	{% else %}
-    		class="btn btn-small ladda-button" 
+    		class="btn btn-small ladda-button"
     	{% endif %}
     	role="button"
-		data-style="expand-right" 
-		data-size="l" 
-		data-spinner-color="#333" 		    
-    	data-toggle="tooltip" 
-    	title="我再也不想看见这个学校啦 >_<" 
+		data-style="expand-right"
+		data-size="l"
+		data-spinner-color="#333"
+    	data-toggle="tooltip"
+    	title="我再也不想看见这个学校啦 >_<"
     	id="btn-school-xout"
     >
-		<span class="ladda-label"></span>			    
+		<span class="ladda-label"></span>
     	<i class="fa fa-thumbs-o-down"></i>
     	X-OUT
     </a>
@@ -187,19 +187,19 @@
 			<li>
 			<strong>Ph.D</strong>
 			<span class="pull-right">{{ object.no_phd_program}}</span>
-			</li>		
+			</li>
 
 			<li>
 			<strong>Master's</strong>
 			<span class="pull-right">{{ object.no_master_program}}</span>
-			</li>		
+			</li>
 		</ul>
 	</div>
 </div>
 
 {# school feeds #}
-<h3 class="page-header ladda-button" 
-data-style="expand-right" 
+<h3 class="page-header ladda-button"
+data-style="expand-right"
 data-size="l" data-spinner-color="#333" id="school-related">
 <i class="fa fa-map-marker"></i>
 同城大学推荐
@@ -223,10 +223,10 @@ data-size="l" data-spinner-color="#333" id="school-related">
 
 	        // ajax to server to get a list of columns:4"markers that are within the viewport
 	        j$.post("{% url 'user_bookmark' %}", // passed in from view
-	            { 
+	            {
 	                'obj_id':{{ object.id }},
 	                'action':1
-	            }, 
+	            },
 	            function(resp) { // success callback
 	            	if (resp['status'] == 'ok'){
 	            		j$('#btn-school-bookmark').toggleClass('btn-default');
@@ -234,9 +234,9 @@ data-size="l" data-spinner-color="#333" id="school-related">
 	            	}
 	            	update_user_bookmarks();
 	            },'json'
-	        ).always(function(){     
-	        	l.stop(); 	
-	        });			
+	        ).always(function(){
+	        	l.stop();
+	        });
 		});
 		j$('#btn-school-xout').click(function(){
 			var l = Ladda.create(this);
@@ -244,10 +244,10 @@ data-size="l" data-spinner-color="#333" id="school-related">
 
 	        // ajax to server to get a list of columns:4"markers that are within the viewport
 	        j$.post("{% url 'user_bookmark' %}", // passed in from view
-	            { 
+	            {
 	                'obj_id':{{ object.id }},
 	                'action':2
-	            }, 
+	            },
 	            function(resp) { // success callback
 	            	if (resp['status'] == 'ok'){
 	            		j$('#btn-school-xout').toggleClass('btn-default');
@@ -255,29 +255,29 @@ data-size="l" data-spinner-color="#333" id="school-related">
 	            	}
 	            	update_user_bookmarks();
 	            },'json'
-	        ).always(function(){  
-	        	l.stop();     	
-	        });			
-		});		
+	        ).always(function(){
+	        	l.stop();
+	        });
+		});
 	});
 
 function get_related_schools(){
 	// loading spinner
 	var l = Ladda.create(j$('#school-related')[0]);
  	l.start();
- 			
+
     // ajax to server to get a list of columns:4"markers that are within the viewport
     j$.post("{% url 'school_detail_related_schools' %}", // passed in from view
-        { 
+        {
             'obj_id':{{ object.id }}
-        }, 
+        },
         function(resp) { // success callback
-            j$('#related-schools').html(resp['html']);             
+            j$('#related-schools').html(resp['html']);
         },'json'
     ).always(function(){
 		// remove spinner
-		l.stop();        	
-    });  
+		l.stop();
+    });
 }
 </script>
 {% endblock %}
