@@ -1,4 +1,5 @@
 {% extends 'pi/common/detail.html' %}
+{% load staticfiles %}
 
 {% block page-header %}
 	{{ obj }}高校汇总
@@ -18,11 +19,14 @@
 
 {% block detail-school-header %}
 <div class="school-landing">
+  {% with 'img/city/'|add:obj.province.province|add:obj.city|add:'风光.jpg' as city_photo %}
 	<div class="cover-photo"
-	style="background:transparent url({% static 'img/city/{{obj.province}}{{obj}}风光.jpg' %}) no-repeat;">
+	style="background:transparent url({% static city_photo %}) no-repeat; background-size:cover;"
 	*城市照片来自网络
 	</div>
-	<div class="school-name-bar">
+  {% endwith %}
+
+	<div class="school-Name-bar">
 		<div id="school-logo">
 			<div id="eggshell-114" class="C-common-school-logo medium">
 				<a class="logo" href="/schools/ucla">
