@@ -72,9 +72,12 @@
 {% load static %}
 {% static "" as baseUrl %}
 <div class="school-landing">
+  {% with 'img/school/'|add:object.name|add:'正门.jpg' as photo_static%}
 	<div class="cover-photo"
-	style="background:transparent url({% get_static_prefix %}/img/school/{{object.name}}正门.jpg) no-repeat; background-size:cover;"
+	style="background:transparent url({% static photo_static %}) no-repeat; background-size:cover;"
 	>*校园照片来自网络</div>
+  {% endwith %}
+
 	<div class="school-name-bar">
 		<div id="school-logo">
 			<div id="eggshell-114" class="C-common-school-logo medium">
