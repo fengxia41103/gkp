@@ -18,9 +18,9 @@
 
 {% block detail-school-header %}
 <div class="school-landing">
-	<div class="cover-photo" 
-	style="background:transparent url(/static/img/city/{{obj.province}}{{obj}}风光.jpg) no-repeat;">
-	*城市照片来自网络	
+	<div class="cover-photo"
+	style="background:transparent url({% static 'img/city/{{obj.province}}{{obj}}风光.jpg' %}) no-repeat;">
+	*城市照片来自网络
 	</div>
 	<div class="school-name-bar">
 		<div id="school-logo">
@@ -43,7 +43,7 @@
 {% endblock %}
 
 {% block detail-navbar %}
-<ul class="nav nav-pills" data-type="nav-side">  
+<ul class="nav nav-pills" data-type="nav-side">
 </ul>
 {% endblock %}
 
@@ -66,7 +66,7 @@
 	 		<tbody>
 		        {% for school in obj.myschool_set.all %}
 		            <tr><td>
-		            	<h5>{{ school }}</h5>		            	
+		            	<h5>{{ school }}</h5>
 		            </td><td>
 		            	{{ school.description|safe|truncatechars:"100"}}
 
@@ -74,13 +74,13 @@
 		            	<small class="pull-left text-left">
 		            	<a href="{%url 'school_detail' school.id %}">查看学校详情</a>
 		            	</small>
-		            	</p>	            	
+		            	</p>
 		            </td></tr>
-		        {% endfor %} 			
+		        {% endfor %}
 	        </tbody>
 	 		</table>
 
-	        <div id="analysis-detail"></div>        
+	        <div id="analysis-detail"></div>
 	    </div>
 	</div>
 </section>
@@ -102,13 +102,13 @@
 		</div>
 
 		<div class="col-md-8">
-			<div class="input-group left-inner-addon">	
-				<span class="input-group-addon" id="basic-addon1">出发地（市）</span>	
-				<input type="search" class="form-control" placeholder="Departure from City" aria-describedby="basic-addon2" 
-				value="{{ user.myuserprofile.city.city }}" id="input-dept-city">  
+			<div class="input-group left-inner-addon">
+				<span class="input-group-addon" id="basic-addon1">出发地（市）</span>
+				<input type="search" class="form-control" placeholder="Departure from City" aria-describedby="basic-addon2"
+				value="{{ user.myuserprofile.city.city }}" id="input-dept-city">
 				<span class="input-group-addon btn btn-info ladda-button" id="btn-search-train"
-				data-style="expand-right" 
-				data-size="l" data-spinner-color="#333"			
+				data-style="expand-right"
+				data-size="l" data-spinner-color="#333"
 				>
 					<span class="ladda-label">
 					<i class="fa fa-search"></i>
@@ -132,17 +132,17 @@ j$(document).ready(function(){
 
         // ajax to server to get a list of columns:4"markers that are within the viewport
         j$.post("{% url 'train_route' %}", // passed in from view
-            { 
+            {
             	'h': {{obj.id}},
                 'p':j$('#input-dept-state').val(),
                 'c':j$('#input-dept-city').val(),
-            }, 
+            },
             function(resp) { // success callback
             	j$('#trains').html(resp['html']);
             },'json'
-        ).always(function(){  
-        	l.stop();     	
-        });			
+        ).always(function(){
+        	l.stop();
+        });
 	});
 
 	// school list
