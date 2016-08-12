@@ -19,7 +19,7 @@
 
 {% block detail-school-header %}
 <div class="school-landing">
-  {% with 'img/city/'|add:obj.province.province|add:obj.city|add:'风光.jpg' as city_photo %}
+  {% with city_photo='img/city/'|add:obj.province.province|add:obj.city|add:'风光.jpg' %}
 	<div class="cover-photo"
 	style="background:transparent url({% static city_photo %}) no-repeat; background-size:cover;"
 	*城市照片来自网络

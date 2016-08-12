@@ -72,7 +72,7 @@
 {% load static %}
 {% static "" as baseUrl %}
 <div class="school-landing">
-  {% with 'img/school/'|add:object.name|add:'正门.jpg' as school_photo %}
+  {% with school_photo='img/school/'|add:object.name|add:'正门.jpg' %}
 	<div class="cover-photo"
 	style="background:transparent url({% static school_photo %}) no-repeat; background-size:cover;"
 	>*校园照片来自网络</div>
