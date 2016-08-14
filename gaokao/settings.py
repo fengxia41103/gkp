@@ -205,7 +205,8 @@ elif DEPLOY_TYPE == 'production':
 	MEDIA_DIRECTORY = '/media/'
 	STATIC_URL = S3_URL + STATIC_DIRECTORY
 	MEDIA_URL = S3_URL + MEDIA_DIRECTORY
-	STATIC_ROOT = ''
+	STATIC_ROOT = '/static/'
+	MEDIA_ROOT = '/media/'
 
 # Celery redis
 # CELERY SETTINGS

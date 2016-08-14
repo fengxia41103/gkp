@@ -206,6 +206,7 @@ class MyBaiduCrawler():
                             content_object=data,
                             file=File(tmp_file)
                         ).save()
+                        self.logger.debug('Image saved')
 
                     # this will remove the tmp file from filesystem
                     tmp_file.close()
@@ -213,8 +214,8 @@ class MyBaiduCrawler():
 
 @shared_task
 def baidu_consumer(param):
-    #http_agent = PlainUtility(http_manager)
-    http_agent = SeleniumUtility(use_tor=False)
+    http_agent = PlainUtility()
+    #http_agent = SeleniumUtility(use_tor=False)
     # 'The test task executed with argument "%s" ' % json.dumps(param)
     crawler = MyBaiduCrawler(http_agent)
     crawler.parser(param)
