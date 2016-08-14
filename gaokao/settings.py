@@ -189,44 +189,23 @@ if DEPLOY_TYPE == 'dev':
     DEVSERVER_AUTO_PROFILE = False
 
 # S3 storages
-
 if DEPLOY_TYPE == 'dev':
     STATIC_ROOT = '/var/www/static'
     MEDIA_ROOT = '/var/www/media'
     MEDIA_URL = 'http://localhost/media/'
 elif DEPLOY_TYPE == 'production':
-    AWS_HEADERS = {  # see http://developer.yahoo.com/performance/rules.html#expires
-        'Expires': 'Thu, 31 Dec 2099 20:00:00 GMT',
-        'Cache-Control': 'max-age=94608000',
-    }
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-    STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-
-    # Tell django-storages that when coming up with the URL for an item in S3 storage, keep
-    # it simple - just use this domain plus the path. (If this isn't set, things get complicated).
-    # This controls how the `static` template tag from `staticfiles` gets expanded, if you're using it.
-    # We also use it in the next setting.
-    AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
-
-    # This is used by the `static` template tag from `static`, if you're using that. Or if anything else
-    # refers directly to STATIC_URL. So it's safest to always set it.
-    #STATIC_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
-
-    # Tell the staticfiles app to use S3Boto storage when writing the collected static files (when
-    # you run `collectstatic`).
-    #STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-
-    #DEFAULT_FILE_STORAGE = 's3_folder_storage.s3.DefaultStorage'
-    #STATICFILES_STORAGE = 's3_folder_storage.s3.StaticStorage'
-
-    DEFAULT_S3_PATH = "media"
-    MEDIA_ROOT = '/%s/' % DEFAULT_S3_PATH
-    MEDIA_URL = '//s3.amazonaws.com/%s/media/' % AWS_STORAGE_BUCKET_NAME
-
-    STATIC_S3_PATH = "static"
-    STATIC_ROOT = "/%s/" % STATIC_S3_PATH
-    STATIC_URL = '//s3.amazonaws.com/%s/static/' % AWS_STORAGE_BUCKET_NAME
-    ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
+	AWS_HEADERS = {  # see http://developer.yahoo.com/performance/rules.html#expires
+		'Expires': 'Thu, 31 Dec 2099 20:00:00 GMT',
+		'Cache-Control': 'max-age=94608000',
+	}
+	DEFAULT_FILE_STORAGE = 'gaokao.s3utils.MediaS3BotoStorage' 
+	STATICFILES_STORAGE = 'gaokao.s3utils.StaticS3BotoStorage' 
+	S3_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
+	STATIC_DIRECTORY = '/static/'
+	MEDIA_DIRECTORY = '/media/'
+	STATIC_URL = S3_URL + STATIC_DIRECTORY
+	MEDIA_URL = S3_URL + MEDIA_DIRECTORY
+	STATIC_ROOT = ''
 
 # Celery redis
 # CELERY SETTINGS
