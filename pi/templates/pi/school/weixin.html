@@ -27,7 +27,7 @@
 
 			<div class="" style="border-top: 1px solid #dddddd;padding:10px 0;">
 				{% if wx.barcode %}
-				<a href="{{ wx.barcode.url }}" data-lightbox="{{wx.name}}" data-parent data-title="{{wx.name}} / {{wx.account}}" data-footer="{{wx.description}}">
+				<a href="{{ wx.barcode.url }}" data-lightbox="{{wx.name}}" data-toggle="lightbox" data-title="{{wx.name}} / {{wx.account}}" data-footer="{{wx.description}}">
 					<img src="{{wx.barcode.url}}"
 					data-type="attachment-thumbnail" class="img-responsive img-thumbnail" width="40px">
 
@@ -53,11 +53,6 @@ var j$ = jQuery.noConflict();
 j$(document).ready(function(){
 	j$('ul[data-type="nav-side"]').children('li').removeClass('active');
 	j$('#nav-school-weixin').addClass('active');
-
-	//j$(document).delegate('*[data-toggle="lightbox"]', 'click', function(e) {
-	//    e.preventDefault();
-	//    j$(this).ekkoLightbox();
-	//});
 
 	// initialize all tooltips
 	j$("[data-toggle='tooltip']").tooltip({

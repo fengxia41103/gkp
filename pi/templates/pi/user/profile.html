@@ -2,7 +2,7 @@
 	<i class="fa fa-gears"></i>
 	我的私人订制
 </a>
-<div id="user-config" class="dropdown-menu my-dropdown-container">
+<div id="user-config" class="dropdown-menu my-dropdown-container" style="min-width:250px; padding: 15px;">
 	<h4 class="page-header">
 		<b class="fa fa-cogs"></b>
 		你的个人情况
@@ -58,7 +58,7 @@
 			幻想一下考多少分吧？
 			</label>
 			<input name="score" type="number" step="10" class="form-control"
-			placeholder="大胆猜测、不计后果 ^_^" 
+			placeholder="大胆猜测、不计后果 ^_^"
 			value="{{ user.myuserprofile.estimated_score }}">
 		</div><div class="form-group">
 			<label for="tags" class="control-label">
@@ -69,8 +69,8 @@
 			title="最多可定义10个关键词，用逗号分割，例如“工程，教育，计算机“" value="{{user.myuserprofile.tags.all|join:","}}">
 		</div>
 
-		<button class="btn btn-small btn-primary default pull-right ladda-button"  
-		id="btn-save-user-property" data-style="expand-left" 
+		<button class="btn btn-small btn-primary default pull-right ladda-button"
+		id="btn-save-user-property" data-style="expand-left"
 		data-size="l" data-spinner-color="#333">
 			<i class="fa fa-refresh"></i>
 			启动我的私人订制
@@ -78,7 +78,7 @@
 		</button>
 
 	<div id="results"></div> <!-- errors go here -->
-	</form>						
+	</form>
 </div>
 
 <script type="text/javascript">
@@ -93,6 +93,5 @@ j$(document).ready(function(){
 
 		j$(this).parents('form:first').submit();
 	});
-});	
+});
 </script>
-

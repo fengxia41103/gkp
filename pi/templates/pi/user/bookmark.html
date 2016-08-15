@@ -2,7 +2,7 @@
 	<i class="fa fa-save"></i>
 	我的收藏夹 ({{user.myuserprofile.school_bookmarks.all|length}})
 </a>
-<ul class="dropdown-menu my-dropdown-container" style="">
+<ul class="dropdown-menu my-dropdown-container" style="min-width:250px; padding: 15px;">
 	{% regroup schools|dictsort:"city" by city as by_city_list %}
 	{% for city in by_city_list %}
 	<h4 class="page-header">{{city.grouper}}</h4>
@@ -12,17 +12,17 @@
 			<a href="{% url 'school_detail' s.id %}">
 			{{ s }}
 			</a>
-			<span data-toggle="tooltip" data-type="school-xout" 
-				class="glyphicon glyphicon-remove my-filter-value-close ladda-button pull-right" 
+			<span data-toggle="tooltip" data-type="school-xout"
+				class="glyphicon glyphicon-remove my-filter-value-close ladda-button pull-right"
 				obj-id="{{s.id}}"
-				data-style="expand-right" 
-				data-size="l" 
+				data-style="expand-right"
+				data-size="l"
 				data-spinner-color="#333"
 				data-toggle="tooltip"
-				title="Remove {{s.name }} from my bookmarks"				
+				title="Remove {{s.name }} from my bookmarks"
 			>
-				<span class="ladda-label"></span>	
-			</span>			
+				<span class="ladda-label"></span>
+			</span>
 		</li>
 		{% endfor %}
 	</ul>
@@ -42,20 +42,20 @@
 	 		var obj_id = j$(this).attr('obj-id');
 
 	        j$.post("{% url 'user_bookmark' %}", // passed in from view
-	            { 
+	            {
 	                'obj_id':obj_id,
 	                'action':3
-	            }, 
+	            },
 	            function(resp) { // success callback
 	            	if (resp['status'] == 'ok'){
 		            	update_user_bookmarks();
 		            	j$('#btn-school-bookmark').removeClass('btn-primary');
 	            	}
 	            },'json'
-	        ).always(function(){  
-	        	l.stop();     	
-	        });			
-		});	
+	        ).always(function(){
+	        	l.stop();
+	        });
+		});
 
 		// register bookmark events
         j$("[data-type='school-bookmark']").click(function(e){
@@ -65,10 +65,10 @@
             var this_obj = j$(this);
 
             j$.post("{% url 'user_bookmark' %}", // passed in from view
-                { 
+                {
                     'obj_id':obj_id,
                     'action':4 // add bookmark
-                }, 
+                },
                 function(resp) { // success callback
                     if (resp['status'] == 'ok'){
                         update_user_bookmarks();
@@ -76,9 +76,9 @@
                         j$(this_obj).tooltip('destroy').remove();
                     }
                 },'json'
-            ).always(function(){  
-                l.stop();       
-            });         
-        }); 		
+            ).always(function(){
+                l.stop();
+            });
+        });
 	});
 </script>

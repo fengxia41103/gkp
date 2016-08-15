@@ -197,7 +197,6 @@
     	src="{% static 'datatable/js/jquery.jeditable.js' %}">
     </script>
 
-	{# lightbos: http://ashleydw.github.io/lightbox/ #}
     <script type="text/javascript"
     	src="{% static 'bower_components/lightbox2/dist/js/lightbox.min.js' %}">
     </script>
@@ -369,11 +368,7 @@
 		    	todayBtn: true
 		   	});
 
-			//j$(document).delegate('*[data-toggle="lightbox"]', 'click', function(e) {
-			//    e.preventDefault();
-			//    j$(this).ekkoLightbox();
-			//});
-
+            // lightbox
 			j$(document).delegate('[data-type="attachment-thumbnail"]', 'click', function(e){
 				var url = j$(this).attr('src');
 				j$(this).closest('section').find('[data-toggle="lightbox"]').attr('href',url);
