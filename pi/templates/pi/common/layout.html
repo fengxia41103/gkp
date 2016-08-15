@@ -37,16 +37,17 @@
 
 	{# used when there is no INTERNET #}
 	<link rel="stylesheet" href="{% static 'fontawesome/css/font-awesome.css' %}">
-	
+
 	<!-- application specific css -->
-	<!--link rel="stylesheet" type="text/x-scss" href="{% static 'sass/my.scss' %}"-->	
-	
-	{# lightbos http://ashleydw.github.io/lightbox/ #} 
-	<link rel="stylesheet" type="text/css" href="{% static 'lightbox/ekko-lightbox.css' %}">
+	<!--link rel="stylesheet" type="text/x-scss" href="{% static 'sass/my.scss' %}"-->
+
+	{# lightbos http://ashleydw.github.io/lightbox/ #}
+	<!--link rel="stylesheet" type="text/css" href="{% static 'lightbox/ekko-lightbox.css' %}"-->
+	<link rel="stylesheet" type="text/css" href="{% static 'bower_components/lightbox2/dist/css/lightbox.min.css' %}">
 
 	{# loading spinner: http://msurguy.github.io/ladda-bootstrap/ #}
 	<link rel="stylesheet" type="text/css" href="{% static 'loading/ladda-themeless.min.css' %}">
-	
+
 	{# DataTable #}
 	<link rel="stylesheet" type="text/css" href="{% static 'datatable/css/jquery.dataTables.min.css' %}">
 
@@ -59,7 +60,7 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'css/chegg.css' %}">
 
 	{# app specific tweaks #}
-	<link rel="stylesheet" type="text/css" href="{% static 'sass/my.css' %}">	
+	<link rel="stylesheet" type="text/css" href="{% static 'sass/my.css' %}">
 
 	{# bootstrap3-datepicker #}
 	<link rel="stylesheet" type="text/css" href="{% static 'bootstrap-datepicker/css/bootstrap-datepicker.min.css' %}">
@@ -94,7 +95,7 @@
 <body>
 {% block navbar %}
 {% endblock %}<!-- end of block navbar -->
-	
+
 {% block main %}
 	<div class="col-sm-1">
 		<ul class="nav nav-stacked affix">
@@ -109,7 +110,7 @@
 	<div class="container">
 		{% block page-info %}
 		{% endblock %}
-		
+
 		<div class="page-header">
 			<h1>
 				{% block page-header %}
@@ -118,7 +119,7 @@
 		</div><!-- end of block header -->
 		{% block message %}
 		{% endblock %}
-				
+
 		{% block content %}
 		{% endblock %}
 	</div><!-- /.container -->
@@ -130,7 +131,7 @@
 {% endblock %}
 
 {# sandbox for testing client libs/css/js #}
-{% block test %}	
+{% block test %}
 {% endblock %}
 
 {% block footer %}
@@ -150,16 +151,16 @@
 {% endblock %}<!- end of block footer -->
 
 <!-- Placed at the end of the document so the pages load faster -->
-{% block Javascripts %}	
+{% block Javascripts %}
     <script type="text/javascript"
     	src="{% static 'echarts/echarts-all.js' %}">
-    </script> 
+    </script>
 
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="{% static 'bootstrap3/js/bootstrap.min.js' %}"></script>
-		
 
-	<!-- easyui js -->	
+
+	<!-- easyui js -->
 	<!--script type="text/javascript" src="{% static 'easyui/jquery.easyui.min.js' %}"></script-->
 
 	<!-- syntaxhighlighter -->
@@ -168,20 +169,20 @@
 
     <script type="text/javascript"
     	src="{% static 'js/jquery.cookie.js' %}">
-    </script>    
+    </script>
 
     <!-- http://malsup.com/jquery/block/#demos -->
     <script type="text/javascript"
     	src="{% static 'js/jquery.blockUI.min.js' %}">
-    </script> 
-	
+    </script>
+
     {# loading spinner #}
     <script type="text/javascript"
     	src="{% static 'loading/spin.min.js' %}">
-    </script>    
+    </script>
     <script type="text/javascript"
     	src="{% static 'loading/ladda.min.js' %}">
-    </script>    
+    </script>
 
 	{# DataTable #}
     <script type="text/javascript"
@@ -195,11 +196,11 @@
     </script>
     <script type="text/javascript"
     	src="{% static 'datatable/js/jquery.jeditable.js' %}">
-    </script>    
+    </script>
 
-	{# lightbos: http://ashleydw.github.io/lightbox/ #} 
+	{# lightbos: http://ashleydw.github.io/lightbox/ #}
     <script type="text/javascript"
-    	src="{% static 'lightbox/ekko-lightbox.js' %}">
+    	src="{% static 'bower_components/lightbox2/dist/js/lightbox.min.js' %}">
     </script>
 
     {# newticker: http://risq.github.io/jquery-advanced-news-ticker/ #}
@@ -233,50 +234,50 @@
     </script>
 
     {# sticky header https://github.com/jmosbech/StickyTableHeaders #}
-    <script type="text/javascript"   
+    <script type="text/javascript"
     	src="{% static 'stickyheader/jquery.stickytableheaders.min.js' %}">
     </script>
-    
+
     {# jquery validate #}
-    <script type="text/javascript"   
+    <script type="text/javascript"
     	src="{% static 'validator/jquery.validate.min.js' %}">
     </script>
-    
+
     {# JsBarcode, https://github.com/lindell/JsBarcode #}
-    <script type="text/javascript"   
+    <script type="text/javascript"
     	src="{% static 'barcode/JsBarcode.all.min.js' %}">
     </script>
 
     {# highcharts #}
-    <script type="text/javascript"   
+    <script type="text/javascript"
     	src="{% static 'highcharts/highcharts-custom.js' %}">
     </script>
-    <script type="text/javascript"   
+    <script type="text/javascript"
     	src="{% static 'highcharts/js/modules/exporting.js' %}">
     </script>
 
     {# bootstrap toggle switch #}
-    <script type="text/javascript"   
+    <script type="text/javascript"
     	src="{% static 'bootstrap-toggle-switch/js/bootstrap-switch.min.js' %}">
     </script>
 
     {# flippant #}
-    <script type="text/javascript"   
+    <script type="text/javascript"
     	src="{% static 'flippant/flippant.min.js' %}">
     </script>
 
     {# jQuery ajax form plugin #}
-    <script type="text/javascript"   
+    <script type="text/javascript"
     	src="{% static 'form/jquery.form.js' %}">
     </script>
 
     {# hammer.js, gestures! http://hammerjs.github.io/ #}
-    <script type="text/javascript"   
+    <script type="text/javascript"
     	src="{% static 'hammer/hammer.min.js' %}">
     </script>
 
     {# django dynamic formset, https://github.com/elo80ka/django-dynamic-formset #}
-    <script type="text/javascript"   
+    <script type="text/javascript"
     	src="{% static 'formset/jquery.formset.js' %}">
     </script>
 
@@ -315,21 +316,21 @@
 		    }
 		});
 
-		// make fadeOut effect shorter 
-		j$.blockUI.defaults.fadeOut = 1000; 
+		// make fadeOut effect shorter
+		j$.blockUI.defaults.fadeOut = 1000;
 		function myBlockUI(){
- 			j$.blockUI({ css: { 
-	            border: 'none', 
-	            padding: '15px', 
-	            backgroundColor: '#000', 
-	            '-webkit-border-radius': '10px', 
-	            '-moz-border-radius': '10px', 
-	            opacity: .5, 
+ 			j$.blockUI({ css: {
+	            border: 'none',
+	            padding: '15px',
+	            backgroundColor: '#000',
+	            '-webkit-border-radius': '10px',
+	            '-moz-border-radius': '10px',
+	            opacity: .5,
 	            color: '#fff'
 	        	},
 	        	//'message':'请等待 ....'
 	        	'ignoreIfBlocked': true
-        	}); 			
+        	});
 		}
 
 		j$(document).ready(function(){
@@ -344,10 +345,10 @@
 			j$('a[data-toggle="tab"]').click(function ( e ) {
 			    e.preventDefault ();
 			    j$(this).tab('show');
-			});  
+			});
 
 			// show first tab after page loading
-			j$('a[data-toggle="tab"]:first').tab('show');	
+			j$('a[data-toggle="tab"]:first').tab('show');
 
 			// initialize all tooltips
 			j$("[data-toggle='tooltip']").tooltip({
@@ -363,22 +364,22 @@
 			j$('form').validate();
 
 			// datepicker
-		    j$('.dateinput').datepicker({ 
+		    j$('.dateinput').datepicker({
 		    	format: "yyyy-mm-dd" ,
 		    	todayHighlight: true,
 		    	todayBtn: true
 		   	});
 
-			j$(document).delegate('*[data-toggle="lightbox"]', 'click', function(e) {
-			    e.preventDefault();
-			    j$(this).ekkoLightbox();
-			}); 
+			//j$(document).delegate('*[data-toggle="lightbox"]', 'click', function(e) {
+			//    e.preventDefault();
+			//    j$(this).ekkoLightbox();
+			//});
 
-			j$('[data-type="attachment-thumbnail"]').click(function(){
+			j$(document).delegate('[data-type="attachment-thumbnail"]', 'click', function(e){
 				var url = j$(this).attr('src');
 				j$(this).closest('section').find('[data-toggle="lightbox"]').attr('href',url);
 				j$(this).closest('section').find('[data-toggle="lightbox"]').find('img:first-child').attr('src',url);
-			});		
+			});
 		});
 	</script>
 {% endblock %} <!-- end of block JS -->
@@ -391,7 +392,3 @@
 </body>
 
 </html>
-
-
-
-

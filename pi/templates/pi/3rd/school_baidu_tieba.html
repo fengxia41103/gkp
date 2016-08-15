@@ -13,13 +13,13 @@
 				<em>{{ t.last_updated }}</em>
 			{% endif %}
 		</div>
-		
+
 		<div class="" style="padding:0px 0;">
 			{% if t.attachments.all|length %}
-			<a href="{{ t.attachments.all.0.file.url }}" data-toggle="lightbox" data-gallery="multiimages" data-parent data-title="{{t.name}}" data-footer="{{t.description}}">
+			<a href="{{ t.attachments.all.0.file.url }}" data-lightbox="{{ t.school }}"  data-title="{{t.name}}" data-footer="{{t.description}}">
 				<img src="{{t.attachments.all.0.file.url}}" class="img-responsive center-block"
-				style="margin-bottom:20px;">
-			</a>			
+				style="margin-bottom:20px;"/>
+			</a>
 			{% endif %}
 			<p>{{ t.description }}</p>
 		</div>
@@ -29,21 +29,21 @@
 				<ul class="list-inline">
 				{% for img in t.attachments.all %}
 					<li>
-						<img src="{{img.file.url}}" 
+						<img src="{{img.file.url}}"
 						data-type="attachment-thumbnail" class="img-responsive img-thumbnail" width="40px">
 					</li>
 				{% endfor %}
 				</ul>
-			{% endif %}		
+			{% endif %}
 
 
 			by <span style="color:#89e;">{{ t.author }}</span>
-			<span class="text-right pull-right">			
+			<span class="text-right pull-right">
 			<i class="fa fa-comments-o"></i>
 			{{ t.reply_num }}
-			</span>				
+			</span>
 		</div>
-		
+
 		</section>
 	{% endfor %}
 	</div>
@@ -56,15 +56,15 @@
 <script type="text/javascript">
 var j$ = jQuery.noConflict();
 j$(document).ready(function(){
-	j$(document).delegate('*[data-toggle="lightbox"]', 'click', function(e) {
-	    e.preventDefault();
-	    j$(this).ekkoLightbox();
-	}); 
+	//j$(document).delegate('*[data-toggle="lightbox"]', 'click', function(e) {
+	//    e.preventDefault();
+	//    j$(this).ekkoLightbox();
+	//});
 
-	j$('[data-type="attachment-thumbnail"]').click(function(){
-		var url = j$(this).attr('src');
-		j$(this).closest('section').find('[data-toggle="lightbox"]').attr('href',url);
-		j$(this).closest('section').find('[data-toggle="lightbox"]').find('img:first-child').attr('src',url);
-	});		
+	//j$('[data-type="attachment-thumbnail"]').click(function(){
+	//	var url = j$(this).attr('src');
+	//	j$(this).closest('section').find('[data-toggle="lightbox"]').attr('href',url);
+	//	j$(this).closest('section').find('[data-toggle="lightbox"]').find('img:first-child').attr('src',url);
+	//});
 });
 </script>
