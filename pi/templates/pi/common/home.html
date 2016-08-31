@@ -26,22 +26,22 @@
                     </li>
                     {% block extra_nav %}
                     {% endblock %}
-                    
+
                     {# social login #}
                     <li>
-                        <a class="page-scroll" href="#services">一起帮助</a>
-                    </li>                                    
-                    <li>
-                        <a class="page-scroll" href="#showcase">一起考上啦</a>
+                        <a class="page-scroll" href="#services">浏览数据</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#story">一起的故事</a>
-                    </li>                    
-                    <li>
-                        <a class="page-scroll" href="#team">一起的小伙伴</a>
+                        <a class="page-scroll" href="#showcase">择校问答</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#contact">悄悄话</a>
+                        <a class="page-scroll" href="#story">公司背景</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#team">我们的团队</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#contact">联系我们</a>
                     </li>
                 </ul>
             </div>
@@ -54,10 +54,10 @@
 
 {% block main %}
     <!-- Section: intro -->
-    <section  style="background-image: url({% static 'img/header-bg2.jpg' %});background-size: cover;min-height:700px;">
+    <section  style="background-image: url({% static 'img/background-gkp.jpg' %});background-size: cover;min-height:700px;">
         <div class="col-md-offset-1 col-md-6" style="padding-top:100px;color:white;">
-            <h1 style="font-size:55px;font-weight:600;color:white;">上学堂 
-            <span style="display:block;">e-大专院校的搜索引擎</span></h1>
+            <h1 style="font-size:85px;font-weight:600;color:#cecece;">上学堂
+            <span style="display:block;">e-大专院校搜索引擎</span></h1>
             <p>Made College Research Easy</p>
             <a href="{% url 'school_echart_map_filter' %}" class="btn btn-info" title="点击开始学校搜索">
                 点击开始搜索
@@ -67,10 +67,10 @@
             {% block login %}
             {#  login button #}
             <a class="btn btn-primary" href="{% url 'login' %}">Login</a>
-            {% endblock %}            
-            
+            {% endblock %}
+
             <a href="#about" class="btn btn-skin scroll">Learn more</a>
-        </div>  
+        </div>
     </section>
 
 {# Services Section #}
@@ -132,91 +132,72 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-4 col-sm-6 portfolio-item">
-                <a href="#portfolioModal1" class="portfolio-link" data-toggle="modal">
-                    <div class="portfolio-hover">
-                        <div class="portfolio-hover-content">
-                            <i class="fa fa-plus fa-3x"></i>
-                        </div>
-                    </div>
-                    <img src="{% static 'img/portfolio/How-College-Choice-Impacts-Life-Career-infographic.png' %}" class="img-responsive" alt="">
-                </a>
-                <div class="portfolio-caption">
-                    <h4>如何快速筛选学校</h4>
-                    <p class="text-muted">多维度的查询</p>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 portfolio-item">
-                <a href="#portfolioModal2" class="portfolio-link" data-toggle="modal">
-                    <div class="portfolio-hover">
-                        <div class="portfolio-hover-content">
-                            <i class="fa fa-plus fa-3x"></i>
-                        </div>
-                    </div>
-                    <img src="{% static 'img/portfolio/startup-framework.png' %}" class="img-responsive" alt="">
-                </a>
-                <div class="portfolio-caption">
-                    <h4>如何快速了解一个学校</h4>
-                    <p class="text-muted">详尽的学校百科</p>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 portfolio-item">
-                <a href="#portfolioModal3" class="portfolio-link" data-toggle="modal">
-                    <div class="portfolio-hover">
-                        <div class="portfolio-hover-content">
-                            <i class="fa fa-plus fa-3x"></i>
-                        </div>
-                    </div>
-                    <img src="{% static 'img/portfolio/Job-Search.jpg' %}" class="img-responsive" alt="">
-                </a>
-                <div class="portfolio-caption">
-                    <h4>如何选择我的专业</h4>
-                    <p class="text-muted">动态的各专业对口招聘信息</p>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 portfolio-item">
-                <a href="#portfolioModal4" class="portfolio-link" data-toggle="modal">
-                    <div class="portfolio-hover">
-                        <div class="portfolio-hover-content">
-                            <i class="fa fa-plus fa-3x"></i>
-                        </div>
-                    </div>
-                    <img src="{% static 'img/portfolio/golden.png' %}" class="img-responsive" alt="">
-                </a>
-                <div class="portfolio-caption">
-                    <h4>如何了解校园生活</h4>
-                    <p class="text-muted">在校生的社交网络</p>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 portfolio-item">
-                <a href="#portfolioModal5" class="portfolio-link" data-toggle="modal">
-                    <div class="portfolio-hover">
-                        <div class="portfolio-hover-content">
-                            <i class="fa fa-plus fa-3x"></i>
-                        </div>
-                    </div>
-                    <img src="{% static 'img/portfolio/escape.png' %}" class="img-responsive" alt="">
-                </a>
-                <div class="portfolio-caption">
-                    <h4>如何掌握学校的第一手资讯</h4>
-                    <p class="text-muted">学校微信公众号大集合</p>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6 portfolio-item">
-                <a href="#portfolioModal6" class="portfolio-link" data-toggle="modal">
-                    <div class="portfolio-hover">
-                        <div class="portfolio-hover-content">
-                            <i class="fa fa-plus fa-3x"></i>
-                        </div>
-                    </div>
-                    <img src="{% static 'img/portfolio/dreams.png' %}" class="img-responsive" alt="">
-                </a>
-                <div class="portfolio-caption">
-                    <h4>如何5分钟锁定你的高考目标</h4>
-                    <p class="text-muted">量身订制的学校推荐</p>
-                </div>
-            </div>
-        </div>
+          <div class="col-md-4 col-sm-6" style="border-right: 1px solid #ccc;">
+            <a href="#portfolioModal1" data-toggle="modal">
+              <i class="fa fa-question fa-3x col-md-1"></i>
+
+              <div class="col-md-offset-1 col-md-6">
+                <h4>如何快速筛选学校</h4>
+                <p class="text-muted">多维度的查询</p>
+              </div>
+            </a>
+          </div>
+
+          <div class="col-md-4 col-sm-6" style="border-right: 1px solid #ccc;">
+            <a href="#portfolioModal2" data-toggle="modal">
+              <i class="fa fa-question fa-3x col-md-1"></i>
+
+              <div class="col-md-offset-1 col-md-6">
+                <h4>如何快速了解一个学校</h4>
+                <p class="text-muted">详尽的学校百科</p>
+              </div>
+            </a>
+          </div>
+
+          <div class="col-md-4 col-sm-6">
+            <a href="#portfolioModal3" data-toggle="modal">
+              <i class="fa fa-question fa-3x col-md-1"></i>
+
+              <div class="col-md-offset-1 col-md-6">
+                <h4>如何选择我的专业</h4>
+                <p class="text-muted">动态的各大城市专业招聘信息</p>
+              </div>
+            </a>
+          </div>
+        </div><!-- end of row -->
+
+        <div class="row">
+          <div class="col-md-4 col-sm-6" style="border-right: 1px solid #ccc;">
+            <a href="#portfolioModal4" data-toggle="modal">
+              <i class="fa fa-question fa-3x col-md-1"></i>
+
+              <div class="col-md-offset-1 col-md-6">
+                <h4>如何了解校园生活</h4>
+                <p class="text-muted">让我们看看师哥师姐们都在聊些什么</p>
+              </div>
+            </a>
+          </div>
+          <div class="col-md-4 col-sm-6" style="border-right: 1px solid #ccc;">
+            <a href="#portfolioModal5" data-toggle="modal">
+              <i class="fa fa-question fa-3x col-md-1"></i>
+
+              <div class="col-md-offset-1 col-md-6">
+                <h4>如何掌握学校的第一手资讯</h4>
+                <p class="text-muted">来加入我们整理的学校微信公众号大集合吧</p>
+              </div>
+            </a>
+          </div>
+          <div class="col-md-4 col-sm-6">
+            <a href="#portfolioModal6" data-toggle="modal">
+              <i class="fa fa-question fa-3x col-md-1"></i>
+
+              <div class="col-md-offset-1 col-md-6">
+                <h4>如何5分钟锁定你的高考目标</h4>
+                <p class="text-muted">量身定制的学校推荐</p>
+              </div>
+            </a>
+          </div>
+        </div><!-- end of row -->
     </div>
 </section>
 
@@ -245,7 +226,7 @@
                                 <p class="text-muted">
                                 上学堂广罗各路精英，在精心准备6个月后迎来了他的第一步。我们坚信用最优秀的人才，最先进的技术，
                                 最有见识的行业专家，最诚恳的服务精神，让面对高考择校挑战的你不再孤单。
-                    
+
                                 </p>
                             </div>
                         </div>
@@ -279,7 +260,7 @@
                             </div>
                             <div class="timeline-body">
                                 <p class="text-muted">
-                                
+
                                 </p>
                             </div>
                         </div>
@@ -295,7 +276,7 @@
                             </div>
                             <div class="timeline-body">
                                 <p class="text-muted">
-                                
+
                                 </p>
                             </div>
                         </div>
@@ -376,7 +357,7 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 text-center">
                 <p class="large text-muted">
-                
+
                 </p>
             </div>
         </div>
@@ -477,24 +458,27 @@
                         <!-- Project Details Go Here -->
                         <h2>如何选校</h2>
                         <p class="item-intro text-muted">选择一所合适你的学校并不容易</p>
-                        <img class="img-responsive" src="{% static 'img/portfolio/How-College-Choice-Impacts-Life-Career-infographic.png' %}" alt="">
+
                         <p>
                         如何选择一所合适的学校有很多需要考虑的因素，是学本科还是专科？离家远近？学费多少？住宿环境如何？专业排名怎样？
                         未来工作前景又是什么？学校有没有实习机会？所在城市未来的发展又将带来怎样的人生机遇？
                         </p>
-                        <p>
-                            <strong>让我们的海选引擎带你入门</strong>
-                        </p>
+                        <blockquote>
+                          让我们的海选引擎带你入门
+                        </blockquote>
                         <p>
                             通过<a href="｛%url 'school_list' %}">海选引擎</a>，
                             你可以通过多维度的搜索快速浏览、查询<span class="my-huge-font">3383</span>所大专院校，帮助你筛选、定位自己心仪的目标。
                         </p>
-                        <ul class="list-inline">
-                            <li>难题一: 如何择校</li>
-                            <li>对策: <a href="{%url 'school_list'%}">海选引擎</a></li>
-                            <li>我们的目标: 通过多维度的搜索帮助快速定位目标</li>
-                        </ul>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close Project</button>
+                        <dl>
+                            <dt>难题一:</dt>
+                            <dd>如何择校</dd>
+                            <dt>对策:</dt>
+                            <dd><a href="{%url 'school_list'%}">海选引擎</a></dd>
+                            <dt>我们的目标:</dt>
+                            <dd>通过多维度的搜索帮助快速定位目标</dd>
+                        </dl>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -517,16 +501,15 @@
                     <div class="modal-body">
                         <h2>如何快速了解一个学校</h2>
                         <p class="item-intro text-muted">海量的网络数据我们来收集整理</p>
-                        <img class="img-responsive img-centered" src="{% static 'img/portfolio/startup-framework-preview.png' %}" alt="">
                         <p>
                             一所高校已经不再是你所熟悉的白天去上课、晚上回家的生活，你的宿舍就是你的家，你的校园就是你的城市。
                             校园以及校园所在的城市，里面发生的点点滴滴都将
                             对你未来的几年产生影响，是选择一个大城市为了毕业后有更多的机会和人脉？还是一个二三线城市温馨的家的感觉？是去寒冷的北方住上几年看冰灯打雪仗？还是去
                             沐浴南方的阳光沙滩和炽热的夏天？
                         </p>
-                        <p>
-                            <strong>让我们的校园百科告诉你</strong>
-                        </p>
+                        <blockquote>
+                            让我们的校园百科告诉你
+                        </blockquote>
                         <p>
                             我们通过收集整理多个数据来源，编辑出各大专院校的基本情况和他们的<a href="｛%url 'school_detail' 1%}">百科</a>知识，
                             让你轻松就能了解一个学校的基本情况。
@@ -536,7 +519,7 @@
                             <li>对策: <a href="{%url 'school_detail' 1%}">学校百科</a></li>
                             <li>我们的目标: 通过收集整理学校数据提供最直观的学校常识</li>
                         </ul>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close Project</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -560,14 +543,16 @@
                         <!-- Project Details Go Here -->
                         <h2>如何选择我的专业</h2>
                         <p class="item-intro text-muted">选择专业，更是在选择未来的就业</p>
-                        <img class="img-responsive img-centered" src="{% static 'img/portfolio/Job-Search.jpg' %}" alt="">
+
                         <p>
                         术业有专攻，踏入高校也就开始了人生进入职场的第一步。选择的专业不仅要符合自己的兴趣爱好，还希望未来会有
                         一个好的就业前景和发展方向
                         </p>
-                        <p>
-                            <strong>让我们的专业排行榜告诉你</strong>
-                        </p>
+
+                        <blockquote>
+                            让我们的专业排行榜告诉你
+                        </blockquote>
+
                         <p>
                         我们收集了<a href="{%url 'major_list'%}">1663</a>个专业的信息，超过
                         <span class="my-huge-font">7万</span>个高校与专业交叉合集，并且引入了目前企业
@@ -578,7 +563,7 @@
                             <li>对策: <a href="{%url 'major_rank'%}">专业排名</a></li>
                             <li>我们的目标: 通过对接动态的招聘信息，让你看到真实的未来</li>
                         </ul>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close Project</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -600,20 +585,20 @@
                 <div class="col-lg-8 col-lg-offset-2">
                     <div class="modal-body">
                         <!-- Project Details Go Here -->
-                        <h2>如何了解
-                        校园
-                        生活</h2>
+                        <h2>如何了解校园生活</h2>
                         <p class="item-intro text-muted">校园里的故事我们知道</p>
-                        <img class="img-responsive img-centered" src="{% static 'img/portfolio/golden-preview.png' %}" alt="">
+
                         <p>
                         充满了对未来校园生活的期盼，你是不是已经迫不及待的想要知道在校的学长学姐们都在想些什么做些什么？
                         食堂好不好吃？住宿条件怎样？是在快乐的party还是已经被考试折磨的无力吐槽？校花校草们的颜值几许？
                         我是不是能找到心仪的另一半愉快的玩耍？你找不到一个网站、一个百科全书会告诉你这些，而我们利用世界一流
                         的技术和分析工具为你量身打造了答案。
                         </p>
-                        <p>
-                            <strong>让我们的校园吧告诉你</strong>
-                        </p>
+
+                        <blockquote>
+                            让我们的校园吧告诉你
+                        </blockquote>
+
                         <p>
                         我们集中整合了多个流行的社交网络平台，每分钟收集超过<span class="my-huge-font">5万</span>条新帖，不仅
                         为你提供第一手的学生生活缩影，而且海量数据分析出热门话题，让你和当下校园的脉搏
@@ -624,7 +609,7 @@
                             <li>对策: <a href="{%url 'school_detail_stream' 1%}">校园吧</a></li>
                             <li>我们的目标: 整合社交网络的海量数据，为你把握校园的脉动</li>
                         </ul>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close Project</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -648,15 +633,17 @@
                         <!-- Project Details Go Here -->
                         <h2>如何掌握学校的第一手资讯</h2>
                         <p class="item-intro text-muted">史上最全的高校微信黄页</p>
-                        <img class="img-responsive img-centered" src="{% static 'img/portfolio/escape-preview.png' %}" alt="">
+
                         <p>
                         浏览网页已经是过去时，QQ也不再是每天的必备，微信时代的你，不会不微信吧！？跟上时代的大专院校都开设了
                         自己的微信专区，更有N多的学生社团、校园活动在微信中发布自己的新闻、通知。那还说什么呢？赶紧拿起你的手机，
-                        扫一扫吧。                               
+                        扫一扫吧。
                         </p>
-                        <p>
-                            <strong>让我们的校园微信公众号黄页</strong>
-                        </p>
+
+                        <blockquote>
+                            让我们的校园微信公众号黄页
+                        </blockquote>
+
                         <p>
                         我们在浩瀚的几百万微信号中沙里淘金，专门为你编辑整理的
                         <a href="">史上最全高校微信号黄页</a>。轻轻松松扫一扫，你就可以用你最得心应手的应用，在（聊天之余）收听学校的第一手资讯，（备注：并
@@ -667,7 +654,7 @@
                             <li>对策: <a href="{%url 'school_weixin' 1%}">校园微信</a></li>
                             <li>我们的目标: 把微信频道搬到你的家门口</li>
                         </ul>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close Project</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -691,29 +678,34 @@
                         <!-- Project Details Go Here -->
                         <h2>如何5分钟锁定你的高考目标</h2>
                         <p class="item-intro text-muted">让量身订制的服务帮助你筛、筛、筛</p>
-                        <img class="img-responsive img-centered" src="{% static 'img/portfolio/dreams-preview.png' %}" alt="">
+
                         <p>
                         功课、考试、辅导班、课外题、模拟志愿、选校指南，谁还有时间看什么学校百科？什么专业分数线？什么
                         校园微信群？考生、家长需要的不是更多、更快的信息，需要的是专业的汇总、精准的分析、全方位的考虑、
                         人性化的推荐。在大数据的时代，这一切都变成了可能。
                         </p>
-                        <p>
+
+                        <blockquote>
                         你只需回答<span class="my-huge-font">4个</span>问题,
+                        </blockquote>
+
                         <ol>
                             <li>未来的高考省份</li>
                             <li>现在学文还是学理</li>
                             <li>想读本科还是专科</li>
                             <li>自己估计个分数</li>
                         </ol>
+                        <p>
                         我们的量身订制服务将在<span class="my-huge-font">1分钟</span>内锁定最符合你条件的学校，
                         </p>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close Project</button>
+
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>    
+</div>
 {% endblock %}
 
 {% block theme_css %}
