@@ -101,6 +101,8 @@ class HomeView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(TemplateView, self).get_context_data(**kwargs)
         context['contact_form'] = ContactForm()
+        context['login_form'] = AuthenticationForm()
+        context['registration_form'] = UserCreationForm()
         return context
 
 ###################################################
@@ -111,9 +113,9 @@ class HomeView(TemplateView):
 
 
 class LoginView(FormView):
-    template_name = 'registration/login.html'
-    success_url = reverse_lazy('location_list')
+    success_url = reverse_lazy('school_echart_map_filter')
     form_class = AuthenticationForm
+    template_name = 'pi/common/home.html'
 
     def form_valid(self, form):
         username = form.cleaned_data['username']
@@ -122,13 +124,17 @@ class LoginView(FormView):
 
         if user is not None and user.is_active:
             login(self.request, user)
-            return HttpResponseRedirect(reverse_lazy('school_echart_map_filter'))
+            return HttpResponseRedirect(self.success_url)
         else:
             return self.form_invalid(form)
 
+    def form_invalid(self, form):
+        messages.error(
+            self.request, 'Login failed! Please check your username and password.')
+        return HttpResponseRedirect(reverse_lazy('home'))
+
 
 class LogoutView(TemplateView):
-    template_name = 'registration/logged_out.html'
 
     def get(self, request):
         logout(request)
@@ -136,22 +142,31 @@ class LogoutView(TemplateView):
 
 
 class UserRegisterView(FormView):
-    template_name = 'registration/registration.html'
     form_class = UserCreationForm
-    success_url = reverse_lazy('login')
+    success_url = reverse_lazy('school_echart_map_filter')
 
     def form_valid(self, form):
-        user_name = form.cleaned_data['username']
+        username = form.cleaned_data['username']
         password = form.cleaned_data['password2']
-        if len(User.objects.filter(username=user_name)) > 0:
+        if len(User.objects.filter(username=username)) > 0:
             return self.form_invalid(form)
         else:
-            user = User.objects.create_user(user_name, '', password)
+            user = User.objects.create_user(username, '', password)
             user.save()
 
-            # login after
+        # login after
+        user = authenticate(username=username, password=password)
+
+        if user is not None and user.is_active:
             login(self.request, user)
-            return HttpResponseRedirect(reverse_lazy('school_echart_map_filter'))
+            return HttpResponseRedirect(self.success_url)
+        else:
+            return self.form_invalid(form)
+
+    def form_invalid(self, form):
+        messages.error(
+            self.request, 'User registration failed! Please check your username and password.')
+        return HttpResponseRedirect(reverse_lazy('home'))
 
 
 class UserProfileView(TemplateView):

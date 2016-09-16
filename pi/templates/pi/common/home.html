@@ -1,77 +1,78 @@
 {% extends 'pi/common/base.html' %}
+
 {% load staticfiles %}
 {% load crispy_forms_tags %}
 {% load widget_tweaks %}
 
 {% block navbar %}
-    <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-fixed-top">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header page-scroll">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-            </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="" style="">
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="hidden">
-                        <a href="#page-top"></a>
-                    </li>
-                    {% block extra_nav %}
-                    {% endblock %}
-
-                    {# social login #}
-                    <li>
-                        <a class="page-scroll" href="#services">浏览数据</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#showcase">择校问答</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#story">公司背景</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#team">我们的团队</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#contact">联系我们</a>
-                    </li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
         </div>
-        <!-- /.container-fluid -->
-    </nav>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="" style="">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="hidden">
+                    <a href="#page-top"></a>
+                </li>
+                {% block extra_nav %}
+                {% endblock %}
+                <li>
+                    <a class="page-scroll" href="#services">浏览数据</a>
+                </li>
+                <li>
+                    <a class="page-scroll" href="#showcase">择校问答</a>
+                </li>
+                <li>
+                    <a class="page-scroll" href="#story">公司背景</a>
+                </li>
+                <li>
+                    <a class="page-scroll" href="#team">我们的团队</a>
+                </li>
+
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container-fluid -->
+</nav>
 {% endblock %}
 
-
 {% block main %}
-    <!-- Section: intro -->
-    <section  style="background-image: url({% static 'img/background-gkp.jpg' %});background-size: cover;min-height:700px;">
-        <div class="col-md-offset-1 col-md-6" style="padding-top:100px;color:white;">
-            <h1 style="font-size:45px;font-weight:600;color:#ececec;">
-              <strong>上学堂</strong>
+<!-- Section: intro -->
+<section style="background-image: url({% static 'img/background-gkp.jpg' %});background-size: cover;min-height:700px;">
+    <div class="col-md-offset-1 col-md-6" style="padding-top:100px;color:white;">
+        <h1 style="font-size:45px;font-weight:600;color:#ececec;">
+            <strong>上学堂</strong>
             <span style="display:block;">e-大专院校搜索引擎</span></h1>
-            <p>Made College Research Easy</p>
-            <a href="{% url 'school_echart_map_filter' %}" class="btn btn-info" title="点击开始学校搜索">
-                点击开始搜索
-                <i class="fa fa-arrow-right"></i>
-            </a>
+        <p>Made College Research Easy</p>
 
-            {% block login %}
-            {#  login button #}
-            <a class="btn btn-primary" href="{% url 'login' %}">Login</a>
-            {% endblock %}
+        {% block login %}
+        <ul class="list-inline">
+            <li>
+                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#registrationModal">
+                    Register
+                </button>
+            </li>
+            <li>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#loginModal">
+                    Login
+                </button>
+            </li>
+        </ul>
+        {% endblock %}
 
-            <a href="#about" class="btn btn-skin scroll">Learn more</a>
-        </div>
-    </section>
+    </div>
+</section>
 
 {# Services Section #}
 <section id="services">
@@ -90,10 +91,9 @@
                 </span>
                 <h4 class="service-heading">选学校</h4>
                 <p class="text-muted">一览<span class="my-huge-font">3383</span>所大、专院校的
-                <a href="{%url 'school_list'%}">海选引擎</a>，读
-                <a href="｛%url 'school_detail_hd' 78 %｝">学校百科</a>
-                了解学校的基本情况，每分钟<span class="my-huge-font">5万</span>条<a href="{%url 'school_detail_stream' 78%}">
-                校园动态</a>贴让你现在就知道校园里正在发生的故事</p>
+                海选引擎，读学校百科</a> 了解学校的基本情况，每分钟
+                    <span class="my-huge-font">5万</span>条
+                校园动态贴让你现在就知道校园里正在发生的故事</p>
             </div>
             <div class="col-md-4">
                 <span class="fa-stack fa-4x">
@@ -101,9 +101,9 @@
                     <i class="fa fa-graduation-cap fa-stack-1x fa-inverse"></i>
                 </span>
                 <h4 class="service-heading">选专业</h4>
-                <p class="text-muted">搜索<span class="my-huge-font">1663</span>个<a href="{%url 'major_list'%}">专业</a>、
-                <span class="my-huge-font">79910</span>个高校专业交叉合集，让我们的数据分析告诉你
-                哪个专业是<a href="{% url 'major_rank' %}">职场</a><span class="my-huge-font">大热门</span>
+                <p class="text-muted">搜索<span class="my-huge-font">1663</span>个专业,
+                    <span class="my-huge-font">79910</span>个高校专业交叉合集，让我们的数据分析告诉你 哪个专业是
+                    职场<span class="my-huge-font">大热门</span>
                 </p>
             </div>
             <div class="col-md-4">
@@ -113,10 +113,10 @@
                 </span>
                 <h4 class="service-heading">选服务</h4>
                 <p class="text-muted">
-                <span class="my-huge-font">33万</span>条历年<a href="{%url 'admission_school_list' %}">高校考分</a>，
-                <span class="my-huge-font"> 2百万</span>条学校<a href="{%url 'admission_major_list'%}">专业分数</a>排名，
-                我们为你提供只有<span class="my-huge-font">大数据</span>才能支撑起的<a href="{%url 'major_rank'%}">知分选校</a>服务
-                 </p>
+                    <span class="my-huge-font">33万</span>条历年高校考分，
+                    <span class="my-huge-font"> 2百万</span>条学校专业分数排名， 我们为你提供只有
+                    <span class="my-huge-font">大数据</span>才能支撑起的知分选校服务
+                </p>
             </div>
         </div>
     </div>
@@ -132,72 +132,74 @@
             </div>
         </div>
         <div class="row">
-          <div class="col-md-4 col-sm-6" style="border-right: 1px solid #ccc;">
-            <a href="#portfolioModal1" data-toggle="modal">
-              <i class="fa fa-question fa-3x col-md-1"></i>
+            <div class="col-md-4 col-sm-6" style="border-right: 1px solid #ccc;">
+                <a href="#portfolioModal1" data-toggle="modal">
+                    <i class="fa fa-question fa-3x col-md-1"></i>
 
-              <div class="col-md-offset-1 col-md-6">
-                <h4>如何快速筛选学校</h4>
-                <p class="text-muted">多维度的查询</p>
-              </div>
-            </a>
-          </div>
+                    <div class="col-md-offset-1 col-md-6">
+                        <h4>如何快速筛选学校</h4>
+                        <p class="text-muted">多维度的查询</p>
+                    </div>
+                </a>
+            </div>
 
-          <div class="col-md-4 col-sm-6" style="border-right: 1px solid #ccc;">
-            <a href="#portfolioModal2" data-toggle="modal">
-              <i class="fa fa-question fa-3x col-md-1"></i>
+            <div class="col-md-4 col-sm-6" style="border-right: 1px solid #ccc;">
+                <a href="#portfolioModal2" data-toggle="modal">
+                    <i class="fa fa-question fa-3x col-md-1"></i>
 
-              <div class="col-md-offset-1 col-md-6">
-                <h4>如何快速了解一个学校</h4>
-                <p class="text-muted">详尽的学校百科</p>
-              </div>
-            </a>
-          </div>
+                    <div class="col-md-offset-1 col-md-6">
+                        <h4>如何快速了解一个学校</h4>
+                        <p class="text-muted">详尽的学校百科</p>
+                    </div>
+                </a>
+            </div>
 
-          <div class="col-md-4 col-sm-6">
-            <a href="#portfolioModal3" data-toggle="modal">
-              <i class="fa fa-question fa-3x col-md-1"></i>
+            <div class="col-md-4 col-sm-6">
+                <a href="#portfolioModal3" data-toggle="modal">
+                    <i class="fa fa-question fa-3x col-md-1"></i>
 
-              <div class="col-md-offset-1 col-md-6">
-                <h4>如何选择我的专业</h4>
-                <p class="text-muted">动态的各大城市专业招聘信息</p>
-              </div>
-            </a>
-          </div>
-        </div><!-- end of row -->
+                    <div class="col-md-offset-1 col-md-6">
+                        <h4>如何选择我的专业</h4>
+                        <p class="text-muted">动态的各大城市专业招聘信息</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!-- end of row -->
 
         <div class="row">
-          <div class="col-md-4 col-sm-6" style="border-right: 1px solid #ccc;">
-            <a href="#portfolioModal4" data-toggle="modal">
-              <i class="fa fa-question fa-3x col-md-1"></i>
+            <div class="col-md-4 col-sm-6" style="border-right: 1px solid #ccc;">
+                <a href="#portfolioModal4" data-toggle="modal">
+                    <i class="fa fa-question fa-3x col-md-1"></i>
 
-              <div class="col-md-offset-1 col-md-6">
-                <h4>如何了解校园生活</h4>
-                <p class="text-muted">让我们看看师哥师姐们都在聊些什么</p>
-              </div>
-            </a>
-          </div>
-          <div class="col-md-4 col-sm-6" style="border-right: 1px solid #ccc;">
-            <a href="#portfolioModal5" data-toggle="modal">
-              <i class="fa fa-question fa-3x col-md-1"></i>
+                    <div class="col-md-offset-1 col-md-6">
+                        <h4>如何了解校园生活</h4>
+                        <p class="text-muted">让我们看看师哥师姐们都在聊些什么</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6" style="border-right: 1px solid #ccc;">
+                <a href="#portfolioModal5" data-toggle="modal">
+                    <i class="fa fa-question fa-3x col-md-1"></i>
 
-              <div class="col-md-offset-1 col-md-6">
-                <h4>如何掌握学校的第一手资讯</h4>
-                <p class="text-muted">来加入我们整理的学校微信公众号大集合吧</p>
-              </div>
-            </a>
-          </div>
-          <div class="col-md-4 col-sm-6">
-            <a href="#portfolioModal6" data-toggle="modal">
-              <i class="fa fa-question fa-3x col-md-1"></i>
+                    <div class="col-md-offset-1 col-md-6">
+                        <h4>如何掌握学校的第一手资讯</h4>
+                        <p class="text-muted">来加入我们整理的学校微信公众号大集合吧</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <a href="#portfolioModal6" data-toggle="modal">
+                    <i class="fa fa-question fa-3x col-md-1"></i>
 
-              <div class="col-md-offset-1 col-md-6">
-                <h4>如何5分钟锁定你的高考目标</h4>
-                <p class="text-muted">量身定制的学校推荐</p>
-              </div>
-            </a>
-          </div>
-        </div><!-- end of row -->
+                    <div class="col-md-offset-1 col-md-6">
+                        <h4>如何5分钟锁定你的高考目标</h4>
+                        <p class="text-muted">量身定制的学校推荐</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!-- end of row -->
     </div>
 </section>
 
@@ -224,8 +226,7 @@
                             </div>
                             <div class="timeline-body">
                                 <p class="text-muted">
-                                上学堂广罗各路精英，在精心准备6个月后迎来了他的第一步。我们坚信用最优秀的人才，最先进的技术，
-                                最有见识的行业专家，最诚恳的服务精神，让面对高考择校挑战的你不再孤单。
+                                    上学堂广罗各路精英，在精心准备6个月后迎来了他的第一步。我们坚信用最优秀的人才，最先进的技术， 最有见识的行业专家，最诚恳的服务精神，让面对高考择校挑战的你不再孤单。
 
                                 </p>
                             </div>
@@ -242,9 +243,7 @@
                             </div>
                             <div class="timeline-body">
                                 <p class="text-muted">
-                                与有信服力的cool idea比起来，我们更愿意选择让事实说话。
-                                从第一天起，他就带着互联网的基因，不仅自身拥有海量数据库，而且整合了数十个网络信息源，在大数据的年代让我们
-                                用数据说话。
+                                    与有信服力的cool idea比起来，我们更愿意选择让事实说话。 从第一天起，他就带着互联网的基因，不仅自身拥有海量数据库，而且整合了数十个网络信息源，在大数据的年代让我们 用数据说话。
                                 </p>
                             </div>
                         </div>
@@ -392,56 +391,7 @@
     </div>
 </aside>
 
-<section id="contact">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6"></div>
-            <div class="col-md-6 text-center">
-                <h2 class="section-heading">给我留言</h2>
-                <h3 class="section-subheading text-muted">有任何问题我们都愿意知道</h3>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6"></div>
-            <div class="col-lg-6">
-                <form name="sentMessage" id="contactForm" novalidate>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <input type="text" class="form-control" placeholder="名字 *" id="name" required data-validation-required-message="Please enter your name.">
-                                <p class="help-block text-danger"></p>
-                            </div>
-                            <div class="form-group">
-                                <input type="email" class="form-control" placeholder="邮箱 *" id="email" required data-validation-required-message="Please enter your email address.">
-                                <p class="help-block text-danger"></p>
-                            </div>
-                            <div class="form-group">
-                                <input type="tel" class="form-control" placeholder="手机 *" id="phone" required data-validation-required-message="Please enter your phone number.">
-                                <p class="help-block text-danger"></p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <textarea class="form-control" placeholder="你的留言 *" id="message" required data-validation-required-message="Please enter a message."></textarea>
-                                <p class="help-block text-danger"></p>
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-                        <div class="col-lg-12 text-center">
-                            <div id="success"></div>
-                            <button type="submit" class="btn btn-xl">发送</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</section>
-{% endblock %}
-
-{% block modal %}
-    {% block registration %}
-    {% endblock %}
+{% endblock %} {% block modal %}
 <!-- Portfolio Modal 1 -->
 <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-content">
@@ -460,21 +410,20 @@
                         <p class="item-intro text-muted">选择一所合适你的学校并不容易</p>
 
                         <p>
-                        如何选择一所合适的学校有很多需要考虑的因素，是学本科还是专科？离家远近？学费多少？住宿环境如何？专业排名怎样？
-                        未来工作前景又是什么？学校有没有实习机会？所在城市未来的发展又将带来怎样的人生机遇？
+                            如何选择一所合适的学校有很多需要考虑的因素，是学本科还是专科？离家远近？学费多少？住宿环境如何？专业排名怎样？ 未来工作前景又是什么？学校有没有实习机会？所在城市未来的发展又将带来怎样的人生机遇？
                         </p>
                         <blockquote>
-                          让我们的海选引擎带你入门
+                            让我们的海选引擎带你入门
                         </blockquote>
                         <p>
-                            通过<a href="｛%url 'school_list' %}">海选引擎</a>，
-                            你可以通过多维度的搜索快速浏览、查询<span class="my-huge-font">3383</span>所大专院校，帮助你筛选、定位自己心仪的目标。
+                            通过海选引擎， 你可以通过多维度的搜索快速浏览、查询
+                            <span class="my-huge-font">3383</span>所大专院校，帮助你筛选、定位自己心仪的目标。
                         </p>
                         <dl>
                             <dt>难题一:</dt>
                             <dd>如何择校</dd>
                             <dt>对策:</dt>
-                            <dd><a href="{%url 'school_list'%}">海选引擎</a></dd>
+                            <dd>海选引擎</dd>
                             <dt>我们的目标:</dt>
                             <dd>通过多维度的搜索帮助快速定位目标</dd>
                         </dl>
@@ -502,21 +451,17 @@
                         <h2>如何快速了解一个学校</h2>
                         <p class="item-intro text-muted">海量的网络数据我们来收集整理</p>
                         <p>
-                            一所高校已经不再是你所熟悉的白天去上课、晚上回家的生活，你的宿舍就是你的家，你的校园就是你的城市。
-                            校园以及校园所在的城市，里面发生的点点滴滴都将
-                            对你未来的几年产生影响，是选择一个大城市为了毕业后有更多的机会和人脉？还是一个二三线城市温馨的家的感觉？是去寒冷的北方住上几年看冰灯打雪仗？还是去
-                            沐浴南方的阳光沙滩和炽热的夏天？
+                            一所高校已经不再是你所熟悉的白天去上课、晚上回家的生活，你的宿舍就是你的家，你的校园就是你的城市。 校园以及校园所在的城市，里面发生的点点滴滴都将 对你未来的几年产生影响，是选择一个大城市为了毕业后有更多的机会和人脉？还是一个二三线城市温馨的家的感觉？是去寒冷的北方住上几年看冰灯打雪仗？还是去 沐浴南方的阳光沙滩和炽热的夏天？
                         </p>
                         <blockquote>
                             让我们的校园百科告诉你
                         </blockquote>
                         <p>
-                            我们通过收集整理多个数据来源，编辑出各大专院校的基本情况和他们的<a href="｛%url 'school_detail' 1%}">百科</a>知识，
-                            让你轻松就能了解一个学校的基本情况。
+                            我们通过收集整理多个数据来源，编辑出各大专院校的基本情况和他们的百科知识， 让你轻松就能了解一个学校的基本情况。
                         </p>
                         <ul class="list-inline">
                             <li>难题二: 如何了解一个学校</li>
-                            <li>对策: <a href="{%url 'school_detail' 1%}">学校百科</a></li>
+                            <li>对策: 学校百科</li>
                             <li>我们的目标: 通过收集整理学校数据提供最直观的学校常识</li>
                         </ul>
                         <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
@@ -545,8 +490,7 @@
                         <p class="item-intro text-muted">选择专业，更是在选择未来的就业</p>
 
                         <p>
-                        术业有专攻，踏入高校也就开始了人生进入职场的第一步。选择的专业不仅要符合自己的兴趣爱好，还希望未来会有
-                        一个好的就业前景和发展方向
+                            术业有专攻，踏入高校也就开始了人生进入职场的第一步。选择的专业不仅要符合自己的兴趣爱好，还希望未来会有 一个好的就业前景和发展方向
                         </p>
 
                         <blockquote>
@@ -554,13 +498,12 @@
                         </blockquote>
 
                         <p>
-                        我们收集了<a href="{%url 'major_list'%}">1663</a>个专业的信息，超过
-                        <span class="my-huge-font">7万</span>个高校与专业交叉合集，并且引入了目前企业
-                        的招聘动态数据，让你第一时间看到所选专业的就业前景。
+                            我们收集了1663个专业的信息，超过
+                            <span class="my-huge-font">7万</span>个高校与专业交叉合集，并且引入了目前企业 的招聘动态数据，让你第一时间看到所选专业的就业前景。
                         </p>
                         <ul class="list-inline">
                             <li>难题三: 如何选择一个专业</li>
-                            <li>对策: <a href="{%url 'major_rank'%}">专业排名</a></li>
+                            <li>对策: 专业排名</li>
                             <li>我们的目标: 通过对接动态的招聘信息，让你看到真实的未来</li>
                         </ul>
                         <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
@@ -589,10 +532,7 @@
                         <p class="item-intro text-muted">校园里的故事我们知道</p>
 
                         <p>
-                        充满了对未来校园生活的期盼，你是不是已经迫不及待的想要知道在校的学长学姐们都在想些什么做些什么？
-                        食堂好不好吃？住宿条件怎样？是在快乐的party还是已经被考试折磨的无力吐槽？校花校草们的颜值几许？
-                        我是不是能找到心仪的另一半愉快的玩耍？你找不到一个网站、一个百科全书会告诉你这些，而我们利用世界一流
-                        的技术和分析工具为你量身打造了答案。
+                            充满了对未来校园生活的期盼，你是不是已经迫不及待的想要知道在校的学长学姐们都在想些什么做些什么？ 食堂好不好吃？住宿条件怎样？是在快乐的party还是已经被考试折磨的无力吐槽？校花校草们的颜值几许？ 我是不是能找到心仪的另一半愉快的玩耍？你找不到一个网站、一个百科全书会告诉你这些，而我们利用世界一流 的技术和分析工具为你量身打造了答案。
                         </p>
 
                         <blockquote>
@@ -600,13 +540,11 @@
                         </blockquote>
 
                         <p>
-                        我们集中整合了多个流行的社交网络平台，每分钟收集超过<span class="my-huge-font">5万</span>条新帖，不仅
-                        为你提供第一手的学生生活缩影，而且海量数据分析出热门话题，让你和当下校园的脉搏
-                        形影不离。
+                            我们集中整合了多个流行的社交网络平台，每分钟收集超过<span class="my-huge-font">5万</span>条新帖，不仅 为你提供第一手的学生生活缩影，而且海量数据分析出热门话题，让你和当下校园的脉搏 形影不离。
                         </p>
                         <ul class="list-inline">
                             <li>难题四: 如何了解校园生活</li>
-                            <li>对策: <a href="{%url 'school_detail_stream' 1%}">校园吧</a></li>
+                            <li>对策: 校园吧</li>
                             <li>我们的目标: 整合社交网络的海量数据，为你把握校园的脉动</li>
                         </ul>
                         <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
@@ -635,9 +573,7 @@
                         <p class="item-intro text-muted">史上最全的高校微信黄页</p>
 
                         <p>
-                        浏览网页已经是过去时，QQ也不再是每天的必备，微信时代的你，不会不微信吧！？跟上时代的大专院校都开设了
-                        自己的微信专区，更有N多的学生社团、校园活动在微信中发布自己的新闻、通知。那还说什么呢？赶紧拿起你的手机，
-                        扫一扫吧。
+                            浏览网页已经是过去时，QQ也不再是每天的必备，微信时代的你，不会不微信吧！？跟上时代的大专院校都开设了 自己的微信专区，更有N多的学生社团、校园活动在微信中发布自己的新闻、通知。那还说什么呢？赶紧拿起你的手机， 扫一扫吧。
                         </p>
 
                         <blockquote>
@@ -645,13 +581,12 @@
                         </blockquote>
 
                         <p>
-                        我们在浩瀚的几百万微信号中沙里淘金，专门为你编辑整理的
-                        <a href="">史上最全高校微信号黄页</a>。轻轻松松扫一扫，你就可以用你最得心应手的应用，在（聊天之余）收听学校的第一手资讯，（备注：并
-                        给了爸妈一个你24小时无时无刻不在微信、微信、微信的正当理由）。
+                            我们在浩瀚的几百万微信号中沙里淘金，专门为你编辑整理的
+                            史上最全高校微信号黄页。轻轻松松扫一扫，你就可以用你最得心应手的应用，在（聊天之余）收听学校的第一手资讯，（备注：并给了爸妈一个你24小时无时无刻不在微信、微信、微信的正当理由）。
                         </p>
                         <ul class="list-inline">
                             <li>难题五: 如何掌握学校的第一手资讯</li>
-                            <li>对策: <a href="{%url 'school_weixin' 1%}">校园微信</a></li>
+                            <li>对策: 校园微信</li>
                             <li>我们的目标: 把微信频道搬到你的家门口</li>
                         </ul>
                         <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
@@ -680,13 +615,11 @@
                         <p class="item-intro text-muted">让量身订制的服务帮助你筛、筛、筛</p>
 
                         <p>
-                        功课、考试、辅导班、课外题、模拟志愿、选校指南，谁还有时间看什么学校百科？什么专业分数线？什么
-                        校园微信群？考生、家长需要的不是更多、更快的信息，需要的是专业的汇总、精准的分析、全方位的考虑、
-                        人性化的推荐。在大数据的时代，这一切都变成了可能。
+                            功课、考试、辅导班、课外题、模拟志愿、选校指南，谁还有时间看什么学校百科？什么专业分数线？什么 校园微信群？考生、家长需要的不是更多、更快的信息，需要的是专业的汇总、精准的分析、全方位的考虑、 人性化的推荐。在大数据的时代，这一切都变成了可能。
                         </p>
 
                         <blockquote>
-                        你只需回答<span class="my-huge-font">4个</span>问题,
+                            你只需回答<span class="my-huge-font">4个</span>问题,
                         </blockquote>
 
                         <ol>
@@ -696,7 +629,7 @@
                             <li>自己估计个分数</li>
                         </ol>
                         <p>
-                        我们的量身订制服务将在<span class="my-huge-font">1分钟</span>内锁定最符合你条件的学校，
+                            我们的量身订制服务将在<span class="my-huge-font">1分钟</span>内锁定最符合你条件的学校，
                         </p>
 
                         <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
@@ -706,12 +639,89 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="loginModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="{% url 'login' %}" method="POST">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">User login</h4>
+                </div>
+                <div class="modal-body">
+
+
+                    {{ login_form|crispy }} {% if login_form.errors %}
+                    <div class="alert alert-danger">
+                        <p>Your username and password didn’t match. Please try again.</p>
+                    </div>
+                    {% endif %}
+
+
+                </div>
+                <!-- end of modal body-->
+                <div class="modal-footer">
+                    <input class="btn btn-primary btn-default" type="submit" value="Login" />
+                </div>
+                <!-- end of modal footer-->
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="registrationModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="{% url 'user_register' %}" method="POST">
+
+                {% csrf_token %}
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Register new user</h4>
+                </div>
+                <div class="modal-body">
+
+                    {{ registration_form|crispy }} {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <p>Your username/password are not successful. Please try again.</p>
+                    </div>
+                    {% endif %}
+
+
+                </div>
+                <!-- end of modal body-->
+                <div class="modal-footer">
+                    <input class="btn btn-primary default" type="submit" value="Register" />
+                </div>
+                <!-- end of modal footer-->
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block theme_css %}
+<!-- Custom Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+<link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" type="text/css" href="{% static 'theme/agency/css/agency.css' %}">
 {% endblock %}
 
 {% block theme_js %}
-<script type="text/javascript" src="{% static 'theme/agency/js/agency.js' %}"></script>
+<!-- Plugin JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+
+<!-- Contact Form JavaScript -->
+<script src="{% static 'theme/agency/js/jqBootstrapValidation.js' %}"></script>
+
+<!-- Theme JavaScript -->
+<script src="{% static 'theme/agency/js/agency.min.js' %}"></script>
+
 {% endblock %}
