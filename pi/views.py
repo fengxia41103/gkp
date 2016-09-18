@@ -1238,7 +1238,7 @@ class AnalysisMajorBySubcategory(TemplateView):
 #
 ###################################################
 from tasks import baidu_consumer
-# import pynlpir #
+import pynlpir
 # http://pynlpir.readthedocs.org/en/latest/api.html#module-pynlpir.nlpir
 
 
@@ -1278,15 +1278,15 @@ class IntegrationBaiduTiebaAJAX(TemplateView):
         }))
 
         # hot topics
-        # pynlpir.open() # must have this line!
-        #topics = feeds[:50]
-        #content = loader.get_template(self.newsticker_template_name)
-        # newsticker_html= content.render(Context({
-        #	'objs':topics,
-        #	'keywords': pynlpir.get_key_words(''.join([f.name+f.description for f in feeds]), max_words=50, weighted=True)
-        #	}))
-        # pynlpir.close()
-        newsticker_html = ''
+        pynlpir.open()  # must have this line!
+        topics = feeds[:50]
+        content = loader.get_template(self.newsticker_template_name)
+        newsticker_html = content.render(Context({
+            'objs': topics,
+            'keywords': pynlpir.get_key_words(''.join([f.name + f.description for f in feeds]), max_words=50, weighted=True)
+        }))
+        pynlpir.close()
+        #newsticker_html = ''
 
         return HttpResponse(json.dumps({'bd_html': tieba_html, 'news_html': newsticker_html}),
                             content_type='application/javascript')

@@ -16,7 +16,7 @@
 
 		<div class="" style="padding:0px 0;">
 			{% if t.attachments.all|length %}
-			<a href="{{ t.attachments.all.0.file.url }}" data-lightbox="{{ t.school }}"  data-toggle="lightbox" data-title="{{t.name}}" data-footer="{{t.description}}">
+			<a href="{{ t.attachments.all.0.file.url }}" data-lightbox="{{ t.school }}" data-toggle="lightbox" data-title="{{t.name}}" data-footer="{{t.description}}">
 				<img src="{{t.attachments.all.0.file.url}}" class="img-responsive center-block"
 				style="margin-bottom:20px;"/>
 			</a>
@@ -46,6 +46,20 @@
 		</section>
 	{% endfor %}
 	</div>
+
+<script type = "text/javascript" >
+    var j$ = jQuery.noConflict();
+
+    j$(document).ready(function() {
+
+        // lightbox
+        j$(document).delegate('[data-type="attachment-thumbnail"]', 'click', function(e) {
+            var url = j$(this).attr('src');
+            j$(this).closest('section').find('[data-toggle="lightbox"]').attr('href', url);
+            j$(this).closest('section').find('[data-toggle="lightbox"]').find('img:first-child').attr('src', url);
+        });
+    });
+</script>
 
 
 {% else %}

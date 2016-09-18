@@ -21,21 +21,17 @@
 <div class="school-landing">
   {% with city_photo='img/city/'|add:obj.province.province|add:obj.city|add:'风光.jpg' %}
 	<div class="cover-photo"
-	style="background:transparent url({% static city_photo %}) no-repeat; background-size:cover;"
+	style="background:transparent url({% static city_photo %}) no-repeat;background-size:cover;">
 	*城市照片来自网络
 	</div>
   {% endwith %}
 
-	<div class="school-Name-bar">
+	<div class="school-name-bar">
 		<div id="school-logo">
 			<div id="eggshell-114" class="C-common-school-logo medium">
-				<a class="logo" href="/schools/ucla">
-				<div class="school-icon white">
-					<div class="school-icon-img">
-						<i class="fa fa-quote-left"></i>
-					</div>
+				<div class="school-icon white" style="text-align:center;padding-top:15px;">
+						<i class="fa fa-quote-left" style="font-size:80px;"></i>
 				</div>
-				</a>
 			</div>
 		</div>
 		<div class="school-name">
