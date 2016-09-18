@@ -1006,8 +1006,11 @@ class MySchoolMapFilter (TemplateView):
         coords = request.POST  # viewport bounds
 
         # based on filter criteria we conclude a list
-        filtered_objs = MySchool.objects.visible((float(coords['sw.k']), float(
-            coords['sw.D']), float(coords['ne.k']), float(coords['ne.D'])))
+        try:
+            filtered_objs = MySchool.objects.visible((float(coords['sw.k']), float(
+                coords['sw.D']), float(coords['ne.k']), float(coords['ne.D'])))
+        except:
+            filtered_objs = MySchool.objects.all()[:50]
 
         markers = []
         visible_template = loader.get_template(self.visible_template_name)

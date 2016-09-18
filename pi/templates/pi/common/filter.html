@@ -17,10 +17,10 @@
 			<div class="my-filter-form">
 				<form action="" method="get" class="form-inline" role="form">
 						{% csrf_token %}
-						
+
 						{{ filter.form|crispy }}
-					
-					<button class="my-btn" type="submit" id="id_btn_search_submit">Search</button>
+
+					<button class="btn form-group" style="margin-top:1em;" type="submit" id="id_btn_search_submit">Search</button>
 				</form>
 			</div>
 		</li>
@@ -40,7 +40,7 @@
 <div class="pull-right">
 	{# bootstrap_pagination page_obj #}
 	{# autopaginate object_list #}
-	{% paginate %}	
+	{% paginate %}
 </div>
 {% endblock %}
 
