@@ -52,7 +52,7 @@ INSTALLED_APPS = (
     'widget_tweaks',  # https://github.com/kmike/django-widget-tweaks/
     'crispy_forms',  # django-crispy-forms
     'devserver',  # django-devserver
-    'debug_toolbar',
+    #'debug_toolbar',
     'storages',  # django-storage
     'compressor',  # django_compressor
     'django_filters',  # django-filters
@@ -74,7 +74,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # django-pagination-bootstrap
     'pagination_bootstrap.middleware.PaginationMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    #'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = 'gaokao.urls'
@@ -131,18 +131,6 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.7/howto/static-files/
-STATIC_URL = '/static/'
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
-)
-STATICFILES_FINDERS = (
-    "django.contrib.staticfiles.finders.FileSystemFinder",
-    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-    'compressor.finders.CompressorFinder',
-)
-
 # crispy forms
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
@@ -190,6 +178,7 @@ if DEPLOY_TYPE == 'dev':
 
 # S3 storages
 if DEPLOY_TYPE == 'dev':
+    STATIC_URL = '/static/'
     STATIC_ROOT = '/var/www/static'
     MEDIA_ROOT = '/var/www/media'
     MEDIA_URL = 'http://localhost/media/'
@@ -199,14 +188,28 @@ elif DEPLOY_TYPE == 'production':
 		'Cache-Control': 'max-age=94608000',
 	}
 	DEFAULT_FILE_STORAGE = 'gaokao.s3utils.MediaS3BotoStorage' 
-	STATICFILES_STORAGE = 'gaokao.s3utils.StaticS3BotoStorage' 
-	S3_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
+	STATICFILES_STORAGE = 'gaokao.s3utils.StaticS3BotoStorage'
+	#DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+	#STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+	S3_URL = 'http://%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 	STATIC_DIRECTORY = '/static/'
 	MEDIA_DIRECTORY = '/media/'
 	STATIC_URL = S3_URL + STATIC_DIRECTORY
 	MEDIA_URL = S3_URL + MEDIA_DIRECTORY
 	STATIC_ROOT = '/static/'
 	MEDIA_ROOT = '/media/'
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.7/howto/static-files/
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),
+)
+STATICFILES_FINDERS = (
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    'compressor.finders.CompressorFinder',
+)
+
 
 # Celery redis
 # CELERY SETTINGS
