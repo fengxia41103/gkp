@@ -62,7 +62,7 @@ docutils==0.12
 easy-thumbnails==2.3
 EasyProcess==0.1.6
 EbookLib==0.15
-ecdsa==0.13
+ecdsa==0.13.3
 extras==0.0.3
 Fabric==1.11.1
 factory-boy==2.4.1
