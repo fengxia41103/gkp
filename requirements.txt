@@ -119,7 +119,7 @@ Pympler==0.4
 PyNLPIR==0.4.4
 PySocks==1.5.0
 python-dateutil==2.5.2
-python-docx==0.8.5
+python-docx==0.8.6
 python-memcached==1.54
 python-mimeparse==1.5.1
 python-openid==2.2.5
